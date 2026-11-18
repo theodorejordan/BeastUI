@@ -69,7 +69,7 @@ Built with the system itself, in its own visual language. It is the showcase. It
 - **Principles** page: what the system believes in
 - **Design rationale**: the research, explored directions and why the chosen one won (from Phases 2–3)
 - **Case studies**: the three apps, with before/after
-- **Built with BeastUI**: a gallery of snapshots of the sites and apps built with the system, growing as new apps adopt it
+- **Built with BeastUI**: the sites and apps built with the system, growing as new apps adopt it. Start with a strip on the landing page showing every app at once (no carousel), each as a short muted usage loop (5–10 s, recorded with playwright-cli), with a pause control, a still poster under `prefers-reduced-motion`, and lazy loading. A full gallery page links from it.
 - install and usage docs for each layer (tokens only, CSS only, Preact)
 - bundle size per package
 
