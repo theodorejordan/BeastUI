@@ -2,7 +2,7 @@
 
 Phase 1 of the [brief](BRIEF.md). It inventories what Attaque Défense (AD) and Masterz already contain, says what to keep and what to rebuild, flags quality and accessibility problems, and checks the release slicing.
 
-Status: **code audit complete**. The rendered screenshots (§14) come in a follow-up pass.
+Status: **complete**: code audit, plus rendered screens with their findings (§14).
 
 ## 1. TL;DR
 
@@ -221,6 +221,7 @@ Listed only. Fixing them is not in Phase 1's scope; each is a small, separate ch
 6. **AD: the static `theme-color`** (`index.html:14`, the manifest) stays light in Casino.
 7. **Masterz: a server blip removes the table.** A failed state poll sets `state` to null (`App.tsx:77`), so the table and panels vanish. There's also an unhandled rejection in the job poll (`:75, :87`).
 8. **Masterz: performance.** The waveform re-renders about 800 SVG lines on every `timeupdate` (`Player.tsx:101`).
+9. **Masterz: `npm run dev` serves a blank page.** The `'/api'` proxy also catches the module `/api.ts`. Found while taking the screenshots; see §14.
 
 ## 9. Transcribz
 
@@ -322,8 +323,34 @@ Tree, tabs, toast and dialog follow in v0.2 with AD. Masterz's tree waits for v0
 
 ## 14. Rendered screens
 
-**Pending.** Planned follow-up:
-- AD (with test accounts and a throwaway database): desktop 1440×900, phone 390×844 and 844×390, in the Lin and Casino themes.
-- Masterz (with a mock API, so no real library data): 1440, 1100 and 390 wide.
+46 captures in [`audit/`](audit/). They double as the "before" images for the case studies.
 
-The captures go into `audit/` and double as the "before" images for the case studies.
+**How they were taken (2026-11-18).**
+- Tool: [playwright-cli](https://github.com/microsoft/playwright-cli), headless Chromium.
+- AD at `9dfc296` plus the same uncommitted changes as §2 (the only new commit since the audit touches `CLAUDE.md`). Run with `--dev` on a throwaway database (`DATABASE_PATH`), one test account and four bots, through one full game.
+- Masterz at `5a86422` (same: only `CLAUDE.md` changed). Front end only, on a fake API serving invented tracks, so no real library data. See bug 9 for why its own `npm run dev` could not be used.
+- File names read `app-theme-width-step-screen.png`, for example `ad-casino-390-11-table-myturn.png`.
+
+**What the screens confirm**, measured in the running apps rather than read in the code:
+- **Bug 1 (AD cascade).** In the upright lobby, "Start game" measures **52px at weight 500**, where `lobby.css:641-647` asks for 60px at 600 (`ad-lin-390-09-lobby-full.png`).
+- **Bug 2 (Masterz breakpoints).** At 390px the stacked sidebar stays **200px wide**, and the table is clipped on the right (`mz-390-02-table.png`).
+- **No focus restore.** After closing Profile, Settings or Rules with Escape, `document.activeElement` is `<body>`. When the AD end modal (`aria-modal`) opens, focus stays on `<body>` too, and the chat input outside it remains usable (`ad-lin-1440-17-end.png`).
+- **Veil without `inert`.** While Masterz masters, 61 buttons behind the veil stay enabled and reachable by keyboard (`mz-1440-10-veil-job.png`).
+- **Selection = hover.** Selected rows, the hovered row and the expanded row share one felt tint (`mz-1440-03-selected-hover.png`, `mz-1440-06-player.png`).
+- **Faint outlines.** The turn outline around the player's hand and the hovered target's dashed outline are hard to see, on Casino as on Lin (`ad-casino-1440-13-table-hover-hint.png`, `ad-lin-844-11-table.png`).
+- **Two progress styles in one screen.** The veil's bar and the crate's thin underline appear together (`mz-1440-11-analysis-veil.png`).
+- **The same tabs, two looks.** Desktop tabs are underlined (`ad-lin-1440-04-profile.png`). The phone menu sheet draws them as a segmented control (`ad-lin-390-15-menu-sheet.png`).
+
+**New findings**
+- **Bug 9: Masterz `npm run dev` serves a blank page.** `vite.config.ts` proxies `'/api'`, and Vite matches string keys by prefix ([docs](https://vite.dev/config/server-options#server-proxy)). So the module `/api.ts` is sent to the backend too. FastAPI's catch-all route answers with `index.html`, and the browser refuses to run it as a module. The fix is the key `'/api/'`. It is a one-line change in Masterz, not done here.
+- **Masterz: Escape does not close the Guide or Settings panel.** Only "Close" or the toggle does.
+- **Masterz: the Settings checkbox is browser blue.** `accent-color: var(--ink)` is scoped to the table (`styles.css:443`), so the panel's checkbox falls back to the browser's default blue (`mz-1440-08-settings.png`).
+- **AD: the phone and desktop versions of a screen are two designs, not one layout.**
+  - The desktop lobby is flat rows on lines. The phone lobby is rounded felt cards, a dashed "Add bot" tile and a disclosure row (`ad-lin-1440-09-lobby-full.png` vs `ad-lin-390-09-lobby-full.png`).
+  - The language switch reads "EN / FR" on desktop and "English / Français" on phone.
+  - The same panel is titled "Menu" on desktop and "Settings" on phone.
+
+  This strengthens §10.3: the system needs responsive components, not a second stylesheet per mode.
+- **AD: the portrait status overlaps the discard pile.** "Your turn · Pick a player" runs under the 2♦ (`ad-lin-390-11-table.png`).
+- **Faded text, again.** Disabled options ("2 decks", the phone damage preference) and the chat's older lines are drawn with opacity and fall below 4.5:1 (`ad-lin-390-14-chat-sheet.png`, `ad-lin-390-06-settings.png`). This is the "opacity as disabled text" row of §12.
+- **AD: the modal has a soft drop shadow.** This contradicts the "no shadows" restraint found everywhere else (`ad-lin-1440-04-profile.png`). Phase 3 should decide whether elevation gets a token or a line.
