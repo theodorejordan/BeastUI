@@ -64,11 +64,12 @@ Propose adjustments to this slicing after the audit if the repos suggest a bette
 
 ## Docs site (core deliverable from v0.1)
 
-Built with the system itself, in its own visual language. It is the showcase. It includes:
+Built with the system itself, in its own visual language. It is the showcase. Its docs pages match the bar of the best UI-library docs (Tailwind CSS, daisyUI): fast navigation and search, copyable examples, every variant shown. The landing and showcase carry the nuda.studio feel. It includes:
 - live component playgrounds with theme and playful-mode toggles, light/dark switch
 - **Principles** page: what the system believes in
 - **Design rationale**: the research, explored directions and why the chosen one won (from Phases 2–3)
 - **Case studies**: the three apps, with before/after
+- **Built with BeastUI**: a gallery of snapshots of the sites and apps built with the system, growing as new apps adopt it
 - install and usage docs for each layer (tokens only, CSS only, Preact)
 - bundle size per package
 
@@ -89,7 +90,7 @@ Do not take what exists in the repos as granted. Give options and debate them. W
 Read all three repos. Inventory components, styles and patterns in Attaque Défense and Masterz: duplicates, divergent implementations, unique pieces, keep vs rebuild. Flag quality and accessibility problems. Confirm or challenge the release slicing. Output: `docs/ui-system/00-audit.md`.
 
 ### Phase 2 — Research
-Study products and systems with strong identity and good ergonomics (Linear, Vercel/Geist, Raycast, Stripe, Arc, Radix, shadcn/ui, Ark UI, nuda.studio, and anything better). Also study what makes a design-system docs site great. Extract concrete lessons on clarity, outlines, motion, empty states, theming, documentation. What to steal, what to avoid. Output: `docs/ui-system/01-research.md`.
+Study products and systems with strong identity and good ergonomics (Linear, Vercel/Geist, Raycast, Stripe, Arc, Radix, shadcn/ui, Ark UI, daisyUI, nuda.studio, and anything better). Also study what makes a design-system docs site great (Tailwind CSS and daisyUI docs as the bar). Extract concrete lessons on clarity, outlines, motion, empty states, theming, documentation. What to steal, what to avoid. Output: `docs/ui-system/01-research.md`.
 
 ### Phase 3 — Proposals
 3–4 genuinely different directions (different visual languages, not palettes). For each: concept, token sketch, 4–5 representative components as real CSS + Preact in a scratch preview app, how it handles the playful layer, how it suits an audio tool, how the docs site would look, risks. Include one bold option. Propose 3–5 names for the system. Recommend one direction and argue against it. Output: `docs/ui-system/02-proposals.md` + preview app.
