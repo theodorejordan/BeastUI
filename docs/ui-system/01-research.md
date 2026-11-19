@@ -441,12 +441,12 @@ A checklist every data component's docs page fills in:
 1. **Paper ground as an invariant: yes.** The ground's hue may change per theme (AD's Sage, Slate and Casino), but it is always a tinted ground, never pure white or flat grey. Its dark mode is a warm dark.
 2. **`light-dark()` and Safari 17.5+: yes.** Option A in §4.
 3. **Own primitives over Zag: yes.** Option A in §5, with the hybrid escape hatch.
-4. **Plain Astro vs Starlight: no opinion yet.** Recommendation stands (plain Astro); to be decided in Phase 4.
+4. **Plain Astro over Starlight: yes.** The docs chrome is built with BeastUI itself. To be formalised in a Phase 4 decision record.
 
 **Visual references named by the owner for Phase 3**
-- **Linear** (app UI): already covered in §3 and §6 for its generated themes and hierarchy by dimming. Phase 3 should study its app screens directly, not only its marketing site.
+- **Linear** (app UI): already covered in §3 and §6 for its generated themes and hierarchy by dimming. The owner has an account, so Phase 3 can study the app screens directly (an annotate session), not only the marketing site.
 - **Front** (shared inbox): "less good, but worth looking at". Dense lists, conversation views and side panels are close to Masterz's table and Transcribz's transcript.
-- **Orca**: the exact product and link are to be confirmed by the owner.
+- **Orca** (the dev tool whose CLI the owner uses): its interface is a reference for a calm, dense developer UI.
 
 ## 11. Sources
 
