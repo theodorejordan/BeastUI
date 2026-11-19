@@ -79,6 +79,7 @@
     --row-h: 36px;
     --row-gap: 0px;
     --row-rule: var(--border-subtle);
+    --col-rule: transparent;
     --row-radius: 0px;
     --row-hover: var(--surface-raised);
     --cell-pad: 12px;

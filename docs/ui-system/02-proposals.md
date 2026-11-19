@@ -2,7 +2,7 @@
 
 Phase 3 of the [brief](BRIEF.md). It builds on the [audit](00-audit.md) and the [research](01-research.md), and on the owner's answers at the end of research §10.
 
-**Status: checkpoint 3 (preview, round 2).** The concepts (checkpoint 1) were accepted. Round 1 of the preview (§9) got the owner's reaction, and round 2 (§10) acts on it. The names and the recommendation come after the owner has looked at round 2.
+**Status: closed on 2026-11-19.** Direction: the synthesis (§13). Name: BeastUI (§12). The playful layer is a base, to be reworked with AD's mock-ups. Next: Phase 4, architecture.
 
 ## 1. TL;DR
 
@@ -12,6 +12,7 @@ Phase 3 of the [brief](BRIEF.md). It builds on the [audit](00-audit.md) and the 
   3. **Soft Geometry**: shapes over lines. Pills, soft thick outlines, tinted bands.
   4. **Synthesis**: Paper & Ink as the core, Instrument as the "tool" theme, Soft Geometry as the playful layer.
 - The pure directions are **controls**: next to them, the synthesis shows what it gains and loses, and which of the three should lead the core.
+- **Recommendation** (§13): the synthesis, with Paper & Ink as the core, a `tool` layer for desk apps (which absorbed Instrument), and playful v2 for AD. **Name pick** (§12): Deckle, with BeastUI as the honest alternative.
 - **After round 1** (§10): Paper & Ink leads, by far, and is the core. The synthesis's `tool` layer is liked for desk apps (Masterz, Transcribz). Soft Geometry is **dropped** ("too childish, naive"). Instrument is kept close as a possible user-selectable "B-side" theme, softened in a v2. The playful layer is rebuilt on the core's shapes. The interface may go all-lowercase.
 - The bold option from the plan ("Poster": giant type, flat accent fills) was dropped at the owner's request.
 - Linear's app, measured directly (§2), confirms two things: hierarchy by lightness at a **fixed ratio** works in both modes, and its controls fail 3:1 like the marketing site did. Steal the first, not the second.
@@ -302,7 +303,7 @@ The owner also wants to explore **lowercase everywhere in the interface**, and a
 Taken by the owner on 2026-11-19.
 
 1. **Playful v2 is a good base for AD.** It gets refined when AD's screens are mocked up (Phase 5/6), not now.
-2. **Instrument v2 becomes an optional theme**, picked by the user (a "B-side"), like AD's Sage or Slate today. Not in v0.1; kept close.
+2. **Instrument v2 merges into `tool`.** At first it was kept as an optional theme the user could pick (a "B-side"). Then the owner pointed out that it overlaps with `tool`: both are straight, mono for numbers, with an amber signal. One or the other, and `tool` wins. `tool` takes Instrument's **column rules** in tables (a value, `--col-rule`, transparent in the core). Instrument stays in the preview and the screenshots for the record only.
 3. **The interface case follows the app.** Lowercase everywhere was judged too much.
 
    | Scope | Case |
@@ -314,9 +315,64 @@ Taken by the owner on 2026-11-19.
 
    **Content rule:** copy is always written with an initial capital, and lowercase is only a rendering choice (`text-transform`). The reverse is impossible: "serato" can't become "Serato" again. This goes into the docs' content guide.
 
+   The preview caught the trap right away: in `tool`, "Turn down −2.2 dB" rendered as "db", and the "WAV" option as "wav". Units and formats need `.b-keep` even inside a status string. Phase 5 should give the status and option components a slot for that, so authors can't forget it.
+4. **Boldness is not a goal.** "It's a personal project: beautiful, clean, modern first." Point 4 of §13's case against is therefore accepted, not mitigated.
+
 The preview follows these decisions. Its case toggle now reads `Auto` / `Aa` / `aa`, and `Auto` follows the layer.
 
-## 12. Next
+## 12. Names
 
-1. 3–5 names, checked against npm.
-2. A recommendation, and the case against it.
+**What a name has to do**
+- Fit "calm, restraint, outlined, paper and ink", or at least not fight it.
+- Work as an npm scope: the packages will be `@name/tokens`, `@name/css`, `@name/preact`. A free scope matters more than a free bare name.
+- Read the same in French and English, and stay short in a URL and on a résumé.
+- Not be confused with an active library.
+
+**Availability**, checked on 2026-11-19:
+- "Scope" means no package is published under `@name`. That is a strong hint but not a proof: an npm user or org can hold a scope with no packages. Running `npm org create` is the only definitive check.
+- GitHub matters less, since the repo lives under the owner's account.
+
+| Name | Meaning | npm bare name | npm scope | For | Against |
+|---|---|---|---|---|---|
+| **BeastUI** | The working name | `beastui` free; `beast-ui` taken (v8.1.15, updated 2026-09) | free | Already in use, memorable, the owner's own | "Beast" fights calm and restraint. Easy to confuse with the active `beast-ui` package. GitHub `beastui` is someone else's org. |
+| **Deckle** | The rough, uneven edge of handmade paper | taken (v0.1.0, 2024) | free | Paper identity, and "deck" nods to AD's cards. Unusual, so searchable. | Few people know the word. The bare npm name is taken by a small package. |
+| **Linen** | Linen paper: warm, textured, quiet | taken (v0.3.40, 2022, dormant) | free | Calm and warm, easy to say in both languages. GitHub handle free. | Soft, a little generic; doesn't say "outlined". |
+| **Hairline** | The thinnest rule a printer draws | taken (v1.0.0, 2022) | free | Describes the outline language exactly | Descriptive and common, so hard to own and to search |
+| **Recto** | The front side of a sheet | taken (v4.5.0-1, 2022) | free | Short, the same in French and English, paper vocabulary | Obscure. The bare name belongs to a template library, so some confusion is possible. |
+
+Checked and set aside: Vellum (bare name active, updated 2026-11-16), Inkline (an existing UI library), Quire, Papier, Inkwell, Foolscap, Graphite.
+
+**Chosen by the owner: BeastUI.** The scope `@beastui` keeps the packages clearly apart from `beast-ui`; the npm org should be created early in Phase 4 to secure it.
+
+**My pick was Deckle.** It says paper and edge, the two things the core is made of. Its "deck" echo links the calm apps and the game without making either the main one. A free scope is all the packages need. **The case for keeping BeastUI** is real, though: it is already the repo's name and the owner's, and a portfolio piece benefits from a name people remember. If it stays, the docs must make the `beast-ui` difference obvious.
+
+The name must be chosen before Phase 4: it fixes the package names, the repo, and the CSS prefix (`.b-` today).
+
+## 13. Recommendation, and the case against it
+
+**Recommendation: the synthesis, shaped by the owner's decisions.**
+- **Core = Paper & Ink**: paper ground, ink, two line levels, Inter Tight + Outfit, initial-capital voice.
+- **`tool` layer** for desk apps (Masterz, Transcribz): squarer, denser, mono numerals, column rules, an amber signal, lowercase.
+- **Playful layer v2** for AD: the core's shapes, plus colour on data and springs on game moments.
+- **Shipping order:** v0.1 ships the core and `tool` only, because that is what Masterz needs. Playful arrives with AD in v0.2, as the brief's release slicing already says.
+
+**Why.** It is what the apps already are, cleaned up and made consistent. It maps one to one onto the brief's layers. And round 2 tested its central rule: the synthesis renders the whole preview with token values only, with zero extra rules.
+
+**The case against it**
+1. **Paper & Ink can be forgettable.** Its identity rests on a tinted ground, a thin line and a display face. As a portfolio piece next to nuda.studio, that is a quiet bet. *Mitigation:* the docs landing spends the novelty budget (display type, one motion moment, the "Built with" strip). The core components stay quiet.
+2. **The test matrix grows fast.** Core, `tool` and playful, times light and dark, times two cases: about 12 combinations for visual-regression checks. *Mitigation:* v0.1 tests only core and `tool` in both modes. Each later layer pays for its own checks.
+3. **"Values only" is untested where it matters most.** It held for the preview's components, but AD's real screens need cards, a HUD and seats. Those are new components, not layer values. *Mitigation:* game components live in their own package, outside the core. The playful layer stays a set of values, and the rule stays enforceable.
+4. **There is no bold option left.** The brief asked for one; Poster and then Soft Geometry were dropped by the owner. Accepted by the owner (§11): beautiful, clean and modern come first.
+5. **Coupling the voice to the `tool` layer** means a desk app that wants an initial capital must override it. That costs one attribute, but it is one more thing to document.
+
+**What would change my mind.** If the AD mock-ups in Phase 5 need shapes the core can't give, the playful layer becomes a real theme with its own rules, and this recommendation should be reopened for AD.
+
+## 14. Phase 3 decisions
+
+Taken by the owner on 2026-11-19.
+
+1. **Direction: the synthesis.**
+   - Core = Paper & Ink.
+   - `tool` layer for Masterz and Transcribz. It absorbed Instrument.
+   - Playful v2 for AD, **as a base only**: it will be reworked with AD's mock-ups.
+2. **Name: BeastUI**, published under the `@beastui` npm scope.

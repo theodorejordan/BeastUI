@@ -298,6 +298,11 @@
     white-space: nowrap;
     transition: background-color var(--dur-1) var(--ease-move);
   }
+  /* Column rules are a value: transparent in the core, a faint line in the tool layer. */
+  .b-table td + td,
+  .b-table th + th {
+    border-left: var(--hair) solid var(--col-rule);
+  }
   .b-table td:first-child {
     border-radius: var(--row-radius) 0 0 var(--row-radius);
   }

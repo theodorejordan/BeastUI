@@ -41,6 +41,7 @@
     --control-h: 28px;
     --row-h: 32px;
     --cell-pad: 10px;
+    --col-rule: var(--border-subtle); /* taken from Instrument (owner, 02-proposals §11) */
 
     /* v1 had a segmented "pixel" bar (owner: ugly). Now a thin continuous bar + stage graduations. */
     --progress-h: 4px;

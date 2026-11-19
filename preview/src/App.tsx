@@ -198,7 +198,11 @@ function Controls() {
 const TRACKS = [
   { title: 'Lumen Drift - Afterglow (Extended Mix)', file: ['MP3 320'], lufs: -12.4, at: 30, punch: 10.8, state: 'todo', status: 'Bring up' },
   { title: 'Nadia Okafor - Paper Moons', file: ['WAV'], lufs: -9.3, at: 55, punch: 10.8, state: 'review', status: 'In range', selected: true },
-  { title: 'The Velvet Orbit - Slow Signal', file: ['MP3 320', 'Dense master'], lufs: -6.8, at: 80, punch: 6.2, state: 'progress', status: 'Turn down −2.2 dB' },
+  { title: 'The Velvet Orbit - Slow Signal', file: ['MP3 320', 'Dense master'], lufs: -6.8, at: 80, punch: 6.2, state: 'progress', status: (
+      <>
+        Turn down −2.2 <span class="b-keep">dB</span>
+      </>
+    ) },
   { title: 'Kasper Lind - Night Market', file: ['MP3 192', 'Low bitrate'], lufs: -13.1, at: 22, punch: 10.8, state: 'error', status: 'Re-download', danger: true },
   { title: 'Sol Mirage - Copper Sky (Dub)', file: ['MP3 320'], lufs: -9.0, at: 60, punch: 9.4, state: 'done', status: 'Mastered: −12.1 → −9.0' },
   { title: 'Halcyon Tape - Low Tide', file: ['MP3 320', 'Clipped'], lufs: -5.9, at: 92, punch: 6.2, state: 'done', status: 'Loud, kept' },
@@ -256,7 +260,7 @@ function TrackTable({ compact = false }: { compact?: boolean }) {
               <td>
                 <span class="b-state" data-tone={t.danger ? 'danger' : undefined}>
                   <span class="b-status" data-state={t.state} aria-hidden="true" />
-                  {t.status}
+                  <span>{t.status}</span>
                 </span>
               </td>
             </tr>
@@ -302,7 +306,7 @@ function Drawer() {
             onChange={setFormat}
             options={[
               { id: 'source', name: 'Keep source' },
-              { id: 'wav', name: 'WAV' },
+              { id: 'wav', name: 'WAV', keep: true },
               { id: 'mp3', name: 'MP3 320', keep: true },
             ]}
           />
