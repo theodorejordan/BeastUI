@@ -1,0 +1,21 @@
+{
+  "name": "beastui-preview",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Throwaway Phase 3 preview: the same markup rendered in four directions.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build"
+  },
+  "dependencies": {
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/inter-tight": "^5.3.0",
+    "@fontsource/outfit": "^5.3.0",
+    "preact": "^11.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8"
+  }
+}

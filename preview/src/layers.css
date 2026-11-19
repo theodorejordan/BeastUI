@@ -1,0 +1,41 @@
+/*
+ * The cascade order of the whole preview, declared once and first.
+ * tokens   : each direction's values, scoped by [data-direction]
+ * voice    : the lowercase knob; a later layer, so it wins over any direction's casing
+ * components: one shared stylesheet, driven only by tokens
+ * direction: the few rules a direction adds on top (shape it can't express as a value)
+ * preview  : the page chrome around the samples
+ */
+@layer beast.tokens, beast.voice, beast.components, beast.direction, preview;
+
+@layer beast.tokens {
+  /* Light and dark through color-scheme + light-dark() (owner's answer 2, option A in research §4). */
+  :root {
+    color-scheme: light dark;
+  }
+  :root[data-mode='light'] {
+    color-scheme: light;
+  }
+  :root[data-mode='dark'] {
+    color-scheme: dark;
+  }
+}
+
+/* Interface case (owner, 2026-11-19): it follows the app. The core and the playful layer use an
+ * initial capital; the tool layer (Masterz, Transcribz) sets lowercase in its tokens. An app can
+ * force either with data-case. Never user content, units or proper nouns: those carry .b-keep.
+ * Copy is always written with an initial capital; lowercase is only a rendering choice. */
+@layer beast.voice {
+  :root[data-case='sentence'] {
+    --ui-case: none;
+    --btn-case: none;
+    --label-case: none;
+    --tag-case: none;
+  }
+  :root[data-case='lower'] {
+    --ui-case: lowercase;
+    --btn-case: lowercase;
+    --label-case: lowercase;
+    --tag-case: lowercase;
+  }
+}

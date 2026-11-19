@@ -1,0 +1,1048 @@
+/*
+ * The shared components. Every direction renders this exact stylesheet and this exact markup;
+ * only the tokens change, plus a few rules in each direction's `beast.direction` layer.
+ * That is the CSS-first claim of the brief, tested: a direction is mostly values.
+ */
+@layer beast.components {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    background: var(--surface);
+    color: var(--text);
+    font: 400 var(--fs-2) / 1.45 var(--font-ui);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Focus: 2px outline, offset 2px, same in every direction (research §10, constraint 3). */
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  .b-num {
+    font-family: var(--font-num);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .b-label {
+    font: var(--label-weight) var(--label-size) / 1.2 var(--label-font);
+    letter-spacing: var(--label-track);
+    text-transform: var(--label-case);
+    color: var(--text-muted);
+  }
+
+  .b-display {
+    font: var(--display-weight) var(--fs-5) / 1.1 var(--font-display);
+    letter-spacing: var(--display-track);
+  }
+
+  /* Icons: drawn with the UI stroke, in screen pixels (research §6, Raycast). */
+  .b-icon {
+    width: 16px;
+    height: 16px;
+    flex: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: var(--stroke);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+  }
+  .b-icon * {
+    vector-effect: non-scaling-stroke;
+  }
+
+  /* ---------- Button ---------- */
+  .b-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: var(--control-h);
+    padding: 0 var(--btn-pad);
+    border: var(--stroke) solid transparent;
+    border-radius: var(--r-btn);
+    background: transparent;
+    color: var(--text);
+    font: var(--btn-weight) var(--btn-size) / 1 var(--btn-font);
+    letter-spacing: var(--btn-track);
+    text-transform: var(--btn-case);
+    cursor: pointer;
+    transition:
+      background-color var(--dur-1) var(--ease-move),
+      border-color var(--dur-1) var(--ease-move),
+      transform var(--dur-2) var(--ease-press);
+  }
+  .b-btn:active:not(:disabled) {
+    transform: scale(var(--press-scale));
+  }
+  .b-btn[data-variant='primary'] {
+    background: var(--text);
+    color: var(--on-ink);
+  }
+  .b-btn[data-variant='primary']:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--text) 84%, var(--surface));
+  }
+  .b-btn[data-variant='secondary'] {
+    border-color: var(--border-strong);
+  }
+  .b-btn[data-variant='secondary']:hover:not(:disabled),
+  .b-btn[data-variant='quiet']:hover:not(:disabled) {
+    background: var(--surface-raised);
+  }
+  .b-btn[data-variant='danger'] {
+    border-color: var(--danger);
+    color: var(--danger-text);
+  }
+  .b-btn[data-variant='danger']:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--danger) 10%, transparent);
+  }
+  .b-btn[data-icon] {
+    width: var(--control-h);
+    padding: 0;
+  }
+  /* Disabled: a dashed outline as well as muted text, never opacity alone (research §7). */
+  .b-btn:disabled {
+    background: transparent;
+    border-color: var(--border-subtle);
+    border-style: dashed;
+    color: var(--text-muted);
+    cursor: not-allowed;
+  }
+
+  /* ---------- Segmented control (Masterz filters) ---------- */
+  .b-seg {
+    display: inline-flex;
+    width: fit-content;
+    gap: 2px;
+    padding: 2px;
+    border: var(--hair) solid var(--border-subtle);
+    border-radius: calc(var(--r-btn) + 3px);
+  }
+  .b-seg button {
+    height: calc(var(--control-h) - 6px);
+    padding: 0 10px;
+    border: var(--stroke) solid transparent;
+    border-radius: var(--r-btn);
+    background: none;
+    color: var(--text-muted);
+    font: 500 var(--fs-1) / 1 var(--btn-font);
+    letter-spacing: var(--btn-track);
+    text-transform: var(--btn-case);
+    cursor: pointer;
+  }
+  .b-seg button:hover {
+    color: var(--text);
+  }
+  /* Selected: an outline at 3:1 and full-ink text, not only a tint (research §3). */
+  .b-seg button[aria-pressed='true'] {
+    border-color: var(--border-strong);
+    background: var(--surface-raised);
+    color: var(--text);
+  }
+
+  /* ---------- Field ---------- */
+  .b-field {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
+  }
+  .b-field__label {
+    text-transform: var(--ui-case);
+    font-weight: 500;
+    font-size: var(--fs-1);
+    color: var(--text);
+  }
+  .b-input {
+    height: var(--control-h);
+    width: 100%;
+    padding: 0 10px;
+    border: var(--stroke) solid var(--border-strong);
+    border-radius: var(--r-field);
+    background: var(--field-bg);
+    color: var(--text);
+    font: inherit;
+  }
+  .b-input::placeholder {
+    color: var(--text-muted);
+  }
+  .b-input[aria-invalid='true'] {
+    border-color: var(--danger);
+  }
+  .b-input-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .b-input-group .b-input {
+    text-align: right;
+  }
+  .b-field__hint {
+    font-size: var(--fs-1);
+    color: var(--text-muted);
+  }
+  /* Error: an icon and words, so it does not rely on red (1.4.1). */
+  .b-field__error {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--fs-1);
+    color: var(--danger-text);
+  }
+
+  /* ---------- Checkbox ---------- */
+  .b-check {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    border: var(--stroke) solid var(--border-strong);
+    border-radius: var(--r-check);
+    background: var(--field-bg);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    flex: none;
+  }
+  .b-check:checked {
+    border-color: var(--text);
+    background: var(--text);
+  }
+  .b-check:checked::after {
+    content: '';
+    width: 8px;
+    height: 4px;
+    border: solid var(--on-ink);
+    border-width: 0 0 1.75px 1.75px;
+    transform: translateY(-1px) rotate(-45deg);
+  }
+
+  /* ---------- Tag ---------- */
+  .b-tag {
+    display: inline-flex;
+    align-items: center;
+    height: 20px;
+    padding: 0 6px;
+    border: var(--hair) solid var(--border-strong);
+    border-radius: var(--r-tag);
+    background: var(--tag-bg);
+    color: var(--text-muted);
+    font: 500 var(--fs-0) / 1 var(--tag-font);
+    letter-spacing: var(--tag-track);
+    text-transform: var(--tag-case);
+    white-space: nowrap;
+  }
+  .b-tag[data-tone='danger'] {
+    border-color: var(--danger);
+    color: var(--danger-text);
+  }
+
+  /* ---------- Status glyph: the shape changes with the state, not only the colour (§2, Linear) ---------- */
+  .b-status {
+    --p: 0;
+    width: 14px;
+    height: 14px;
+    flex: none;
+    border: var(--stroke) solid currentColor;
+    border-radius: var(--r-status);
+    padding: 2px;
+    background: conic-gradient(currentColor calc(var(--p) * 1turn), transparent 0) content-box;
+  }
+  .b-status[data-state='progress'] {
+    --p: 0.5;
+  }
+  .b-status[data-state='review'] {
+    --p: 0.75;
+  }
+  .b-status[data-state='done'] {
+    --p: 1;
+    padding: 0;
+  }
+  .b-status[data-state='error'] {
+    border-radius: 2px;
+    transform: rotate(45deg) scale(0.86);
+    --p: 1;
+  }
+  .b-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .b-state[data-tone='danger'] {
+    color: var(--danger-text);
+  }
+
+  /* ---------- Table ---------- */
+  .b-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 var(--row-gap);
+    font-size: var(--fs-2);
+  }
+  .b-table th {
+    height: var(--row-h);
+    padding: 0 var(--cell-pad);
+    text-align: left;
+    white-space: nowrap;
+    border-bottom: var(--hair) solid var(--border-subtle);
+  }
+  .b-table td {
+    height: var(--row-h);
+    padding: 0 var(--cell-pad);
+    border-bottom: var(--hair) solid var(--row-rule);
+    white-space: nowrap;
+    transition: background-color var(--dur-1) var(--ease-move);
+  }
+  .b-table td:first-child {
+    border-radius: var(--row-radius) 0 0 var(--row-radius);
+  }
+  .b-table td:last-child {
+    border-radius: 0 var(--row-radius) var(--row-radius) 0;
+  }
+  .b-table [data-num] {
+    text-align: right;
+    font-family: var(--font-num);
+    font-variant-numeric: tabular-nums;
+  }
+  .b-table tbody tr:hover td {
+    background: var(--row-hover);
+  }
+  /* Selected: tint + an ink edge + the checked box. Three cues, colour is only one (research §3). */
+  .b-table tbody tr[aria-selected='true'] td {
+    background: var(--surface-raised);
+  }
+  .b-table tbody tr[aria-selected='true'] td:first-child {
+    box-shadow: inset var(--sel-edge) 0 0 var(--text);
+  }
+  .b-table .b-cell-title {
+    font-weight: 500;
+    max-width: 280px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .b-table .b-cell-tags {
+    display: flex;
+    gap: 4px;
+  }
+
+  /* ---------- Loudness scale (Masterz's mini chart) ---------- */
+  .b-scale {
+    position: relative;
+    display: block;
+    width: 120px;
+    height: 12px;
+    background: linear-gradient(var(--border-subtle), var(--border-subtle)) center / 100% var(--hair) no-repeat;
+  }
+  .b-scale::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 1px;
+    width: 24px;
+    height: 10px;
+    border: var(--hair) solid var(--border-strong);
+    border-radius: var(--r-1);
+  }
+  .b-scale__dot {
+    position: absolute;
+    top: 50%;
+    left: calc(var(--at) * 1%);
+    width: 8px;
+    height: 8px;
+    margin: -4px 0 0 -4px;
+    border: var(--stroke) solid var(--text);
+    border-radius: var(--r-dot);
+    background: var(--surface);
+  }
+
+  /* ---------- Drawer ---------- */
+  .b-drawer {
+    position: absolute;
+    inset: var(--drawer-inset) var(--drawer-inset) var(--drawer-inset) auto;
+    width: min(340px, 88%);
+    display: flex;
+    flex-direction: column;
+    background: var(--surface-raised);
+    /* A floating drawer (inset > 0) is framed all round; a docked one only on its open edge. */
+    border: var(--stroke) solid var(--drawer-frame);
+    border-left-color: var(--border-strong);
+    border-radius: var(--drawer-radius);
+    animation: b-drawer-in var(--dur-3) var(--ease-enter) both;
+  }
+  @keyframes b-drawer-in {
+    from {
+      transform: translateX(24px);
+      opacity: 0;
+    }
+  }
+  .b-drawer__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 12px 12px 16px;
+    border-bottom: var(--hair) solid var(--border-subtle);
+  }
+  .b-drawer__title {
+    margin: 0;
+    text-transform: var(--ui-case);
+    font: var(--display-weight) var(--fs-4) / 1.2 var(--font-display);
+    letter-spacing: var(--display-track);
+  }
+  .b-drawer__body {
+    display: grid;
+    align-content: start;
+    gap: 16px;
+    padding: 16px;
+    overflow: auto;
+    flex: 1;
+  }
+  .b-drawer__foot {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 12px 16px;
+    border-top: var(--hair) solid var(--border-subtle);
+  }
+
+  /* Label / value list (§2, Linear's properties panel) */
+  .b-props {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px 16px;
+    margin: 0;
+  }
+  .b-props dt {
+    color: var(--text-muted);
+  }
+  .b-props dd {
+    margin: 0;
+  }
+
+  /* ---------- Progress ---------- */
+  .b-progress {
+    height: var(--progress-h);
+    border-radius: var(--progress-radius);
+    background: var(--progress-track);
+    overflow: hidden;
+  }
+  .b-progress__fill {
+    height: 100%;
+    width: calc(var(--value) * 1%);
+    border-radius: inherit;
+    background: var(--progress-fill);
+    transition: width var(--dur-3) linear;
+  }
+  /* Graduations at the stage boundaries, under the bar: the instrument feel without pixels. */
+  .b-progress__ticks {
+    height: var(--progress-ticks-h);
+    margin-top: calc(var(--progress-ticks-h) / 3);
+    background:
+      linear-gradient(90deg, var(--border-strong) 1px, transparent 1px) right / 1px 100% no-repeat,
+      repeating-linear-gradient(90deg, var(--border-strong) 0 1px, transparent 1px calc(100% / var(--n)));
+  }
+
+  .b-steps {
+    display: grid;
+    grid-template-columns: repeat(var(--n), 1fr);
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--fs-1);
+    color: var(--text-muted);
+    text-align: left;
+  }
+  .b-steps li {
+    text-transform: var(--ui-case);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .b-steps li[aria-current='step'] {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* ---------- Veil (long job over the page) ---------- */
+  .b-veil {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 16px;
+    background: color-mix(in srgb, var(--surface) 82%, transparent);
+    backdrop-filter: blur(2px);
+  }
+  .b-veil__panel {
+    width: min(400px, 100%);
+    display: grid;
+    gap: 14px;
+    padding: 20px;
+    border: var(--stroke) solid var(--border-strong);
+    border-radius: var(--r-3);
+    background: var(--surface-raised);
+  }
+  .b-veil__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .b-veil__title {
+    margin: 0;
+    text-transform: var(--ui-case);
+    font: var(--display-weight) var(--fs-4) / 1.2 var(--font-display);
+    letter-spacing: var(--display-track);
+  }
+  .b-veil__meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: var(--fs-1);
+    color: var(--text-muted);
+  }
+  .b-veil__foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    font-size: var(--fs-1);
+    color: var(--text-muted);
+  }
+
+  /* ---------- Playful: energy meter ---------- */
+  .b-meter {
+    display: grid;
+    gap: 6px;
+  }
+  .b-meter__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .b-meter__track {
+    height: var(--meter-h);
+    padding: 2px;
+    border: var(--stroke) solid var(--border-strong);
+    border-radius: var(--meter-radius);
+    background: var(--meter-track);
+  }
+  .b-meter__fill {
+    height: 100%;
+    width: calc(var(--value) * 1%);
+    border-radius: calc(var(--meter-radius) - 3px);
+    background: var(--meter-fill);
+    mask: repeating-linear-gradient(
+      90deg,
+      #000 0 var(--meter-seg-on),
+      transparent var(--meter-seg-on) calc(var(--meter-seg-on) + var(--meter-seg-gap))
+    );
+    transition: width var(--dur-4) var(--ease-spring);
+  }
+
+  /* ---------- Playful: rank badge ---------- */
+  .b-badge {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border: var(--stroke) solid var(--text);
+    border-radius: var(--badge-radius);
+    background: var(--badge-bg);
+    font: var(--badge-weight) 22px / 1 var(--badge-font);
+    letter-spacing: var(--badge-track);
+  }
+
+  /* ---------- Playful: turn indicator ---------- */
+  .b-turn {
+    text-transform: var(--ui-case);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 28px;
+    padding: 0 12px 0 8px;
+    border: var(--stroke) solid var(--text);
+    border-radius: var(--r-btn);
+    font-weight: 600;
+    font-size: var(--fs-1);
+  }
+  .b-turn__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: var(--r-dot);
+    background: var(--signal);
+    animation: b-pulse calc(1200ms * var(--motion-scale)) ease-in-out infinite;
+  }
+  @keyframes b-pulse {
+    50% {
+      transform: scale(1.6);
+      opacity: 0.6;
+    }
+  }
+
+  /* Reduce, don't remove (research §6): movement becomes a short fade, loops stop. */
+  @media (prefers-reduced-motion: reduce) {
+    .b-drawer {
+      animation-name: b-fade-in;
+      animation-duration: var(--dur-1);
+    }
+    .b-turn__dot {
+      animation: none;
+    }
+    .b-btn:active:not(:disabled) {
+      transform: none;
+    }
+  }
+  @keyframes b-fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+}
+
+/* ===================== Round 2: the components that show a direction's identity ===================== */
+@layer beast.components {
+  /* ---------- Tabs: the selected tab carries a 2px mark, not only a colour ---------- */
+  .b-tabs {
+    display: flex;
+    gap: var(--tab-gap);
+    border-bottom: var(--hair) solid var(--border-subtle);
+  }
+  .b-tab {
+    position: relative;
+    height: calc(var(--control-h) + 6px);
+    padding: 0 2px;
+    border: 0;
+    background: none;
+    color: var(--text-muted);
+    font: 500 var(--fs-2) / 1 var(--btn-font);
+    letter-spacing: var(--btn-track);
+    text-transform: var(--ui-case);
+    cursor: pointer;
+  }
+  .b-tab:hover,
+  .b-tab[aria-selected='true'] {
+    color: var(--text);
+  }
+  .b-tab[aria-selected='true']::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 -1px;
+    height: 2px;
+    background: var(--tab-mark);
+  }
+
+  /* ---------- Switch ---------- */
+  .b-switch {
+    appearance: none;
+    position: relative;
+    flex: none;
+    width: 32px;
+    height: 18px;
+    margin: 0;
+    border: var(--stroke) solid var(--border-strong);
+    border-radius: var(--switch-radius);
+    background: var(--field-bg);
+    cursor: pointer;
+    transition:
+      background-color var(--dur-2) var(--ease-move),
+      border-color var(--dur-2) var(--ease-move);
+  }
+  .b-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: calc(14px - 2 * var(--stroke));
+    aspect-ratio: 1;
+    border-radius: var(--switch-radius);
+    background: var(--border-strong);
+    transition:
+      transform var(--dur-2) var(--ease-press),
+      background-color var(--dur-2) var(--ease-move);
+  }
+  .b-switch:checked {
+    border-color: var(--text);
+    background: var(--text);
+  }
+  .b-switch:checked::after {
+    transform: translateX(14px);
+    background: var(--on-ink);
+  }
+
+  /* ---------- Radio ---------- */
+  .b-radio {
+    appearance: none;
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    border: var(--stroke) solid var(--border-strong);
+    border-radius: 50%;
+    background: var(--field-bg);
+    cursor: pointer;
+  }
+  .b-radio:checked {
+    border-color: var(--text);
+  }
+  .b-radio:checked::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text);
+  }
+  .b-choice {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+  .b-choices {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .b-choices legend {
+    padding: 0;
+    margin-bottom: 8px;
+  }
+
+  /* ---------- Slider (native range) ---------- */
+  .b-slider {
+    --pct: calc((var(--v) - var(--min)) / (var(--max) - var(--min)) * 100%);
+    appearance: none;
+    width: 100%;
+    height: 20px;
+    margin: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+  .b-slider::-webkit-slider-runnable-track {
+    height: var(--slider-track-h);
+    border-radius: var(--slider-track-h);
+    background:
+      linear-gradient(var(--text), var(--text)) 0 / var(--pct) 100% no-repeat,
+      var(--border-subtle);
+  }
+  .b-slider::-moz-range-track {
+    height: var(--slider-track-h);
+    border-radius: var(--slider-track-h);
+    background:
+      linear-gradient(var(--text), var(--text)) 0 / var(--pct) 100% no-repeat,
+      var(--border-subtle);
+  }
+  .b-slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    margin-top: calc((var(--slider-track-h) - 16px) / 2);
+    border: var(--stroke) solid var(--text);
+    border-radius: var(--slider-thumb-radius);
+    background: var(--surface-raised);
+  }
+  .b-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border: var(--stroke) solid var(--text);
+    border-radius: var(--slider-thumb-radius);
+    background: var(--surface-raised);
+  }
+
+  /* ---------- Select and menu: elevation by line and a ground shift, no shadow ---------- */
+  .b-select {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-width: 200px;
+    height: var(--control-h);
+    padding: 0 8px 0 10px;
+    border: var(--stroke) solid var(--border-strong);
+    border-radius: var(--r-field);
+    background: var(--field-bg);
+    color: var(--text);
+    font: inherit;
+    cursor: pointer;
+  }
+  .b-menu {
+    display: grid;
+    gap: 1px;
+    min-width: 220px;
+    margin: 0;
+    padding: 4px;
+    list-style: none;
+    background: var(--surface-raised);
+    border: var(--stroke) solid var(--border-strong);
+    border-radius: var(--r-2);
+  }
+  .b-menu__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: calc(var(--control-h) - 2px);
+    padding: 0 8px;
+    border-radius: var(--r-1);
+    text-transform: var(--ui-case);
+    cursor: pointer;
+  }
+  .b-menu__item .b-icon {
+    visibility: hidden;
+  }
+  .b-menu__item[aria-checked='true'] .b-icon {
+    visibility: visible;
+  }
+  .b-menu__item:hover,
+  .b-menu__item[data-active] {
+    background: var(--surface);
+  }
+  .b-menu__item .b-kbd {
+    margin-left: auto;
+  }
+  .b-menu__item[data-tone='danger'] {
+    color: var(--danger-text);
+  }
+  .b-menu__sep {
+    height: var(--hair);
+    margin: 4px -4px;
+    background: var(--border-subtle);
+  }
+
+  /* ---------- Tooltip and kbd ---------- */
+  .b-tooltip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 8px;
+    border-radius: var(--r-1);
+    background: var(--text);
+    color: var(--on-ink);
+    font-size: var(--fs-1);
+    white-space: nowrap;
+  }
+  .b-kbd {
+    display: inline-grid;
+    place-items: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    border: var(--hair) solid var(--border-strong);
+    border-radius: var(--r-1);
+    color: var(--text-muted);
+    font: 500 var(--fs-0) / 1 var(--font-num);
+  }
+  .b-tooltip .b-kbd {
+    border-color: color-mix(in srgb, var(--on-ink) 45%, transparent);
+    color: var(--on-ink);
+  }
+
+  /* ---------- Toast ---------- */
+  .b-toasts {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    display: grid;
+    gap: 8px;
+    width: min(360px, calc(100% - 32px));
+  }
+  .b-toast {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 8px 8px 14px;
+    border: var(--stroke) solid var(--border-strong);
+    border-radius: var(--r-2);
+    background: var(--surface-raised);
+    animation: b-rise var(--dur-3) var(--ease-enter) backwards;
+    animation-delay: calc(var(--i, 0) * 60ms);
+  }
+  .b-toast__text {
+    flex: 1;
+  }
+  .b-toast[data-tone='danger'] {
+    border-color: var(--danger);
+    color: var(--danger-text);
+  }
+  @keyframes b-rise {
+    from {
+      transform: translateY(12px);
+      opacity: 0;
+    }
+  }
+
+  /* ---------- Dialog (its backdrop is the veil) ---------- */
+  .b-dialog {
+    display: grid;
+    gap: 12px;
+    width: min(420px, 100%);
+    padding: 20px;
+    border: var(--stroke) solid var(--border-strong);
+    border-radius: var(--r-3);
+    background: var(--surface-raised);
+    animation: b-pop var(--dur-3) var(--ease-enter) backwards;
+  }
+  .b-dialog__title {
+    margin: 0;
+    font: var(--display-weight) var(--fs-4) / 1.2 var(--font-display);
+    letter-spacing: var(--display-track);
+    text-transform: var(--ui-case);
+  }
+  .b-dialog p {
+    margin: 0;
+    color: var(--text-muted);
+  }
+  .b-dialog__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  @keyframes b-pop {
+    from {
+      transform: scale(0.97);
+      opacity: 0;
+    }
+  }
+
+  /* ---------- Empty state ---------- */
+  .b-empty {
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+    padding: 40px 20px;
+    border: var(--hair) dashed var(--border-strong);
+    border-radius: var(--r-3);
+    text-align: center;
+  }
+  .b-empty > .b-icon {
+    width: 32px;
+    height: 32px;
+    color: var(--text-muted);
+  }
+  .b-empty__title {
+    margin: 0;
+    font: var(--display-weight) var(--fs-4) / 1.2 var(--font-display);
+    letter-spacing: var(--display-track);
+    text-transform: var(--ui-case);
+  }
+  .b-empty p {
+    max-width: 38ch;
+    margin: 0;
+    color: var(--text-muted);
+  }
+
+  /* ---------- Game table (Attaque Défense) ---------- */
+  .b-game {
+    display: grid;
+    justify-items: center;
+    gap: 24px;
+    padding: 24px 16px;
+    border: var(--hair) solid var(--border-subtle);
+    border-radius: var(--r-3);
+  }
+  .b-seats {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+  }
+  .b-seat {
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+  }
+  .b-seat__name {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--fs-1);
+    font-weight: 500;
+  }
+  .b-pile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .b-hand {
+    display: flex;
+    gap: 8px;
+    padding-top: 12px;
+  }
+  .b-card {
+    --w: 48px;
+    display: grid;
+    place-content: center;
+    gap: 2px;
+    width: var(--w);
+    aspect-ratio: 5 / 7;
+    padding: 0;
+    border: var(--stroke) solid var(--border-strong);
+    border-radius: var(--card-radius);
+    background: var(--surface-card);
+    color: var(--text);
+    font: 400 20px / 1 var(--font-display);
+    text-align: center;
+    transition:
+      transform var(--dur-3) var(--ease-spring),
+      border-color var(--dur-1) var(--ease-move);
+    animation: b-deal var(--deal-dur) var(--ease-spring) backwards;
+    animation-delay: calc(var(--i, 0) * 90ms);
+  }
+  .b-card[data-suit='red'] {
+    color: var(--play-red);
+    border-color: color-mix(in srgb, var(--play-red) 70%, transparent);
+  }
+  .b-card__suit {
+    font-size: 15px;
+  }
+  .b-card[data-back] {
+    background:
+      repeating-linear-gradient(45deg, var(--border-subtle) 0 1px, transparent 1px 6px),
+      var(--surface-card);
+  }
+  .b-hand .b-card {
+    --w: 60px;
+    font-size: 26px;
+    cursor: pointer;
+  }
+  /* The picked card: lifted and outlined in full ink. Position and line, not colour. */
+  .b-card[aria-pressed='true'] {
+    transform: translateY(calc(-1 * var(--card-lift)));
+    border-color: var(--text);
+    outline: var(--hair) solid var(--text);
+  }
+  @keyframes b-deal {
+    from {
+      transform: translateY(-48px) rotate(-8deg);
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .b-card,
+    .b-toast,
+    .b-dialog {
+      animation-name: b-fade-in;
+      animation-duration: var(--dur-1);
+    }
+  }
+
+  /* Voice rule: short interface strings follow --ui-case; full sentences (hints, body text) never do. */
+  :where(.b-tooltip, .b-toast__text, .b-select > span, .b-choice > span, .b-props dt, .b-state) {
+    text-transform: var(--ui-case);
+  }
+
+  /* Protected from the lowercase voice: units, acronyms, proper nouns, user content. */
+  .b-keep,
+  .b-seg button.b-keep {
+    text-transform: none;
+  }
+}

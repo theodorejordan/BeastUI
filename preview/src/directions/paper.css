@@ -1,0 +1,128 @@
+/*
+ * Direction 1 — Paper & Ink (02-proposals.md §4).
+ * It is also the baseline: every token is declared here on :root, and the other
+ * directions only list what they change. Reading their files is reading their difference.
+ */
+@layer beast.tokens {
+  :root {
+    /* Colour roles. Dark values from research §3: a warm dark, not a grey one. */
+    --surface: light-dark(#dcd7cc, #1a1814);
+    --surface-raised: light-dark(#eeeae2, #26241f);
+    --text: light-dark(#1b1b1f, #ece7de);
+    --on-ink: light-dark(#eeeae2, #1a1814);
+    --text-muted: light-dark(#56555c, #a59f94);
+    --border-subtle: light-dark(rgb(27 27 31 / 0.3), rgb(236 231 222 / 0.22));
+    --border-strong: light-dark(rgb(27 27 31 / 0.56), rgb(236 231 222 / 0.45));
+    --focus: var(--text);
+    --danger: light-dark(#a3302a, #e0786c);
+    --danger-text: var(--danger);
+    --signal: var(--text);
+    --field-bg: transparent;
+    --tag-bg: transparent;
+    /* Game: a card face, and the colours the playful layer may spend on data (never on chrome) */
+    --surface-card: light-dark(#f8f6f1, #2b2823);
+    --play-red: light-dark(#b0322a, #e8857a);
+    --play-gold: light-dark(#8a5f0e, #dcae4c);
+    --play-green: light-dark(#3f7a46, #8fcf8a);
+
+    /* Voice: casing of the interface (buttons, labels, tabs, titles), never of content */
+    --ui-case: none;
+
+    /* Line */
+    --hair: 1px;
+    --stroke: 1.5px;
+
+    /* Radius */
+    --r-1: 4px;
+    --r-2: 8px;
+    --r-3: 12px;
+    --r-btn: 8px;
+    --r-field: 6px;
+    --r-tag: 999px;
+    --r-check: 3px;
+    --r-status: 50%;
+    --r-dot: 50%;
+
+    /* Type: Inter Tight for UI, Outfit 300 letter-spaced for display (audit §3) */
+    --font-ui: 'Inter Tight', system-ui, sans-serif;
+    --font-display: 'Outfit', system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --font-num: var(--font-ui);
+    --display-weight: 300;
+    --display-track: 0.08em;
+    --fs-0: 11px;
+    --fs-1: 12px;
+    --fs-2: 14px;
+    --fs-3: 15px;
+    --fs-4: 20px;
+    --fs-5: 32px;
+
+    --label-font: var(--font-ui);
+    --label-weight: 500;
+    --label-size: var(--fs-1);
+    --label-track: 0;
+    --label-case: none;
+
+    --btn-font: var(--font-ui);
+    --btn-weight: 500;
+    --btn-size: var(--fs-2);
+    --btn-track: 0;
+    --btn-case: none;
+    --btn-pad: 14px;
+
+    --tag-font: var(--font-ui);
+    --tag-track: 0.02em;
+    --tag-case: uppercase;
+
+    /* Density (Masterz's --row is 36px) */
+    --control-h: 32px;
+    --row-h: 36px;
+    --row-gap: 0px;
+    --row-rule: var(--border-subtle);
+    --row-radius: 0px;
+    --row-hover: var(--surface-raised);
+    --cell-pad: 12px;
+    --sel-edge: 2px;
+
+    /* Drawer, progress, meter, badge */
+    --drawer-inset: 0px;
+    --drawer-radius: 0px;
+    --drawer-frame: transparent;
+    --progress-h: 3px;
+    --progress-radius: 2px;
+    --progress-track: var(--border-subtle);
+    --progress-fill: var(--text);
+    --progress-ticks-h: 0px;
+    --meter-h: 14px;
+    --meter-radius: 4px;
+    --meter-track: transparent;
+    --meter-fill: var(--text);
+    --meter-seg-on: 10px;
+    --meter-seg-gap: 2px;
+    --badge-radius: 50%;
+    --badge-bg: transparent;
+    --badge-font: var(--font-display);
+    --badge-weight: 300;
+    --badge-track: 0;
+    --switch-radius: 999px;
+    --slider-track-h: 3px;
+    --slider-thumb-radius: 50%;
+    --tab-gap: 20px;
+    --tab-mark: var(--text);
+    --card-radius: 8px;
+    --card-lift: 8px;
+    --deal-dur: 0ms;
+
+    /* Motion: short, fades and slides only (research §6) */
+    --motion-scale: 1;
+    --dur-1: 100ms;
+    --dur-2: 160ms;
+    --dur-3: 240ms;
+    --dur-4: 400ms;
+    --ease-move: cubic-bezier(0.2, 0, 0, 1);
+    --ease-enter: cubic-bezier(0.05, 0.7, 0.1, 1);
+    --ease-press: var(--ease-move);
+    --ease-spring: var(--ease-move);
+    --press-scale: 1;
+  }
+}

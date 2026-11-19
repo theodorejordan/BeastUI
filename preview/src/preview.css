@@ -1,0 +1,104 @@
+/* The page around the samples. Not part of any direction. */
+@layer preview {
+  .pv-bar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 20px;
+    padding: 12px 20px;
+    background: var(--surface);
+    border-bottom: var(--hair) solid var(--border-subtle);
+  }
+  .pv-mark {
+    font: 300 22px / 1 var(--font-display);
+    letter-spacing: 0.14em;
+  }
+  .pv-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-left: auto;
+  }
+  .pv-main {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr));
+    gap: 20px;
+    padding: 20px;
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+  .pv-card {
+    display: grid;
+    align-content: start;
+    gap: 16px;
+    min-width: 0;
+  }
+  .pv-card h2 {
+    margin: 0;
+  }
+  .pv-wide {
+    grid-column: 1 / -1;
+  }
+  .pv-stack {
+    display: grid;
+    gap: 16px;
+  }
+  .pv-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+  }
+  .pv-grid2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+  }
+  .pv-scroll {
+    overflow-x: auto;
+  }
+  .stage {
+    position: relative;
+    height: 500px;
+    overflow: hidden;
+    border: var(--hair) solid var(--border-subtle);
+    border-radius: var(--r-3);
+  }
+  .pv-float {
+    height: 360px;
+  }
+  .pv-float__menu {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: grid;
+    gap: 6px;
+    justify-items: start;
+  }
+  .pv-float__tip {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: grid;
+    gap: 8px;
+    justify-items: end;
+  }
+  .pv-short {
+    height: 240px;
+  }
+  .pv-contrast {
+    border-collapse: collapse;
+    font-size: var(--fs-1);
+  }
+  .pv-contrast td {
+    padding: 4px 16px 4px 0;
+    border-bottom: var(--hair) solid var(--border-subtle);
+  }
+  .pv-contrast tr[data-ok='false'] {
+    color: var(--danger-text);
+    font-weight: 600;
+  }
+}

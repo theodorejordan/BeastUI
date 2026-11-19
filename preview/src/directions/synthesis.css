@@ -1,0 +1,102 @@
+/*
+ * Direction 4 — Synthesis (02-proposals.md §7).
+ * Core = Paper & Ink (the :root baseline). Two layers move knobs, and only knobs:
+ * a layer changes values, it never adds a shape. So this file has no beast.direction rules.
+ *
+ * The radius scale is derived from one knob, --radius-factor. Derived tokens freeze where they
+ * are declared (research §4, pitfall 1), so they are declared on the same element as the knob.
+ */
+@layer beast.tokens {
+  :root[data-direction='synthesis'] {
+    --radius-factor: 1;
+    --r-1: calc(4px * var(--radius-factor));
+    --r-2: calc(8px * var(--radius-factor));
+    --r-3: calc(12px * var(--radius-factor));
+    --r-btn: var(--r-2);
+    --r-field: calc(6px * var(--radius-factor));
+    --r-check: calc(3px * var(--radius-factor));
+  }
+
+  /* Theme "tool": functional → squarer, denser, mono numerals, one signal colour. Masterz, Transcribz. */
+  :root[data-direction='synthesis'][data-layer='tool'] {
+    --radius-factor: 0.5;
+    --stroke: 1px;
+    --border-subtle: light-dark(rgb(27 27 31 / 0.24), rgb(236 231 222 / 0.18));
+    --signal: light-dark(#a65300, #f0a43a);
+
+    --font-num: var(--font-mono);
+    --fs-2: 13px;
+    --label-font: var(--font-mono);
+    --label-weight: 400;
+    --label-size: var(--fs-0);
+    --label-track: 0.04em;
+    --tag-font: var(--font-mono);
+
+    /* Desk apps speak lowercase, like Masterz today (owner's decision, 02-proposals §11) */
+    --ui-case: lowercase;
+    --btn-case: lowercase;
+    --label-case: lowercase;
+    --tag-case: lowercase;
+
+    --control-h: 28px;
+    --row-h: 32px;
+    --cell-pad: 10px;
+
+    /* v1 had a segmented "pixel" bar (owner: ugly). Now a thin continuous bar + stage graduations. */
+    --progress-h: 4px;
+    --progress-ticks-h: 6px;
+    --slider-track-h: 2px;
+    --switch-radius: var(--r-2);
+    --slider-thumb-radius: var(--r-1);
+    --meter-fill: var(--signal);
+    --meter-seg-on: 100%;
+    --meter-seg-gap: 0px;
+    --meter-radius: calc(4px * var(--radius-factor));
+    --badge-radius: var(--r-1);
+    --badge-font: var(--font-mono);
+    --badge-weight: 500;
+
+    --motion-scale: 0.75;
+    --dur-3: 180ms;
+  }
+
+  /*
+   * Playful layer v2. v1 borrowed Soft Geometry's pills and bands (owner: "too childish, naive").
+   * v2 keeps the core's shapes and spends its novelty on colour and motion only, as AD already does:
+   * suit red on cards, gold for rewards, green for energy, springs when a card is dealt or picked.
+   */
+  :root[data-direction='synthesis'][data-layer='playful'] {
+    --radius-factor: 1.25;
+    --signal: var(--play-green);
+    --tag-case: none;
+
+    --fs-4: 22px;
+    --fs-5: 40px;
+
+    --control-h: 36px;
+    --progress-h: 6px;
+    --progress-radius: 3px;
+    --progress-fill: var(--play-green);
+    --meter-h: 16px;
+    --meter-radius: calc(5px * var(--radius-factor));
+    --meter-fill: var(--play-green);
+    --meter-seg-on: 100%;
+    --meter-seg-gap: 0px;
+    --badge-bg: color-mix(in srgb, var(--play-gold) 22%, transparent);
+    --card-radius: calc(8px * var(--radius-factor));
+    --card-lift: 14px;
+    --deal-dur: 520ms;
+
+    --motion-scale: 1.5;
+    --dur-2: 200ms;
+    --dur-3: 280ms;
+    --dur-4: 600ms;
+    --ease-spring: linear(
+      0, 0.009, 0.035 2.1%, 0.141 4.4%, 0.723 12.9%, 0.938 16.7%, 1.017 19.4%, 1.067, 1.099 24.3%,
+      1.104 26.4%, 1.098 28.5%, 1.056 33.4%, 0.996 40.5%, 0.978 44.5%, 0.976 48.5%, 0.997 59.8%,
+      1.002 66.2%, 1
+    );
+    --ease-press: var(--ease-spring);
+    --press-scale: 0.97;
+  }
+}

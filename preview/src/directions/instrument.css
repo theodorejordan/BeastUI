@@ -1,0 +1,98 @@
+/*
+ * Direction 2 — Instrument v2 (02-proposals.md §5). A "B-side" candidate, kept close.
+ * v1 was "too robotic" (owner, 2026-11-19): uppercase mono everywhere, zero radius, a drawing grid.
+ * v2 stays straight but warmer: 3px corners, Inter Tight for words and mono for numbers only,
+ * amber as the warm signal (selected edge, progress, meters), discreet corner ticks, no grid.
+ */
+@layer beast.tokens {
+  :root[data-direction='instrument'] {
+    --border-subtle: light-dark(rgb(27 27 31 / 0.24), rgb(236 231 222 / 0.18));
+    --signal: light-dark(#a65300, #f0a43a);
+    --field-bg: light-dark(rgb(255 255 255 / 0.28), rgb(0 0 0 / 0.18));
+
+    --stroke: 1px;
+
+    --r-1: 2px;
+    --r-2: 3px;
+    --r-3: 4px;
+    --r-btn: 3px;
+    --r-field: 3px;
+    --r-tag: 2px;
+    --r-check: 2px;
+    --switch-radius: 3px;
+    --slider-thumb-radius: 3px;
+    --card-radius: 4px;
+
+    --font-num: var(--font-mono);
+    --display-track: 0.04em;
+    --fs-2: 13px;
+    --fs-4: 18px;
+
+    --tag-font: var(--font-mono);
+    --tag-track: 0.02em;
+    --tag-case: none;
+
+    --control-h: 28px;
+    --row-h: 32px;
+    --cell-pad: 10px;
+    --sel-edge: 3px;
+
+    --progress-h: 4px;
+    --progress-radius: 0px;
+    --progress-fill: var(--signal);
+    --progress-ticks-h: 6px;
+    --slider-track-h: 2px;
+    --tab-mark: var(--signal);
+    --meter-radius: 3px;
+    --meter-fill: var(--signal);
+    --meter-seg-on: 100%;
+    --meter-seg-gap: 0px;
+    --badge-radius: 4px;
+    --badge-font: var(--font-mono);
+    --badge-weight: 500;
+
+    --dur-3: 180ms;
+    --ease-enter: cubic-bezier(0.2, 0, 0, 1);
+  }
+}
+
+/* What Instrument adds beyond values: discreet corner ticks, column rules, a warm selected edge. */
+@layer beast.direction {
+  :root[data-direction='instrument'] {
+    .b-drawer,
+    .b-veil__panel,
+    .b-dialog,
+    .b-menu {
+      --t: 6px;
+      --c: var(--border-strong);
+      border-color: var(--border-subtle);
+      background:
+        linear-gradient(var(--c), var(--c)) top left / var(--t) 1px no-repeat,
+        linear-gradient(var(--c), var(--c)) top left / 1px var(--t) no-repeat,
+        linear-gradient(var(--c), var(--c)) top right / var(--t) 1px no-repeat,
+        linear-gradient(var(--c), var(--c)) top right / 1px var(--t) no-repeat,
+        linear-gradient(var(--c), var(--c)) bottom left / var(--t) 1px no-repeat,
+        linear-gradient(var(--c), var(--c)) bottom left / 1px var(--t) no-repeat,
+        linear-gradient(var(--c), var(--c)) bottom right / var(--t) 1px no-repeat,
+        linear-gradient(var(--c), var(--c)) bottom right / 1px var(--t) no-repeat,
+        var(--surface-raised);
+    }
+    /* Ticks need a visible frame line under them to read as a panel edge, not decoration. */
+    .b-menu {
+      border-color: var(--border-strong);
+    }
+
+    .b-table td + td,
+    .b-table th + th {
+      border-left: var(--hair) solid var(--border-subtle);
+    }
+    .b-table tbody tr[aria-selected='true'] td:first-child {
+      box-shadow: inset var(--sel-edge) 0 0 var(--signal);
+    }
+    .b-badge {
+      outline: var(--hair) solid var(--border-strong);
+      outline-offset: 3px;
+      font-size: 17px;
+    }
+  }
+}
