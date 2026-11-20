@@ -4,6 +4,11 @@
   "description": "BeastUI for Preact: thin components that add behaviour to @beastui/css. No visual rule lives in JS.",
   "type": "module",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theodorejordan/BeastUI.git",
+    "directory": "packages/preact"
+  },
   "files": [
     "dist"
   ],
@@ -14,6 +19,7 @@
     "./package.json": "./package.json"
   },
   "publishConfig": {
+    "access": "public",
     "exports": {
       ".": {
         "types": "./dist/index.d.ts",

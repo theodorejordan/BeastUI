@@ -7,3 +7,7 @@ packages:
 # Supply chain: never install a version published less than 48 hours ago (shadcn does the same).
 # A compromised release is usually caught and pulled within that window.
 minimumReleaseAge: 2880
+
+# Releases (decision 0007): trusted publishing from GitHub Actions turns provenance on by
+# default, and npm refuses provenance from a private repo. Remove this line when the repo goes public.
+provenance: false

@@ -4,6 +4,11 @@
   "description": "BeastUI components as plain CSS classes, zero JS, inside BeastUI's cascade layers.",
   "type": "module",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theodorejordan/BeastUI.git",
+    "directory": "packages/css"
+  },
   "files": [
     "dist"
   ],
@@ -18,6 +23,7 @@
     "./package.json": "./package.json"
   },
   "publishConfig": {
+    "access": "public",
     "exports": {
       "./beastui.css": "./dist/beastui.css",
       "./tokens.css": "./dist/tokens.css",

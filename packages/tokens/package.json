@@ -4,6 +4,11 @@
   "description": "BeastUI design tokens: one DTCG source, built to CSS variables, JSON and TypeScript constants.",
   "type": "module",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theodorejordan/BeastUI.git",
+    "directory": "packages/tokens"
+  },
   "files": [
     "dist",
     "src"
@@ -33,5 +38,8 @@
   },
   "dependencies": {
     "@terrazzo/token-types": "^2.10.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
