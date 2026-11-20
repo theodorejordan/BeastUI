@@ -3,3 +3,6 @@ dist/
 .playwright-cli/
 .astro/
 *.tsbuildinfo
+.vitest/
+test-results/
+playwright-report/

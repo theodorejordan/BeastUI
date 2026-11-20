@@ -34,3 +34,19 @@ Every push runs:
 
 - **Argos or Chromatic:** a review UI and no flakiness to manage, but a 5,000-screenshot monthly cap on free plans (about 25 runs).
 - **No visual regression** (most surveyed libraries): cheaper, but the brief requires it, and themes make silent regressions likely.
+
+## Amendment (2026-11-20): a lean first version
+
+The owner wants to reach the apps' design soon, and the thin slice has one component. Phase 5,
+step 6 therefore ships a subset, in one workflow (`.github/workflows/ci.yml`), one job:
+
+- **Now:** build, typecheck, Vitest unit tests in a real Chromium (browser mode), the contrast
+  test (`packages/css/test/contrast.test.ts`), the package checks (`scripts/check-packages.mjs`:
+  publint, Are the types wrong?, install the tarballs and load every entry), and Playwright on
+  the built docs (axe WCAG 2.1 A/AA on every page in every theme and mode, keyboard tests).
+- **Later, at about five components:** screenshots in the pinned Docker image, size-limit
+  budgets (a single button is no base to set them from), and lint and formatting (a choice
+  between Biome and ESLint + Prettier, to make on its own).
+
+The first run already paid for itself: the contrast test found the danger button's hover label
+at 4.2:1 in light mode, and axe found code blocks that keyboard users could not scroll.

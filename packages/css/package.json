@@ -27,12 +27,17 @@
     }
   },
   "scripts": {
-    "build": "node scripts/build.mjs"
+    "build": "node scripts/build.mjs",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@beastui/tokens": "workspace:*",
+    "@vitest/browser-playwright": "^5.1.1",
     "browserslist": "^4.29.6",
-    "lightningcss": "^1.33.0"
+    "lightningcss": "^1.33.0",
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.1"
   },
   "volta": {
     "extends": "../../package.json"
