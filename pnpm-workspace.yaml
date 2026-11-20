@@ -1,0 +1,9 @@
+# The BeastUI workspace (decision 0001). Packages are published to npm under @beastui;
+# apps are not. The Phase 3 preview/ stays outside the workspace, with its own npm lockfile.
+packages:
+  - packages/*
+  - apps/*
+
+# Supply chain: never install a version published less than 48 hours ago (shadcn does the same).
+# A compromised release is usually caught and pulled within that window.
+minimumReleaseAge: 2880

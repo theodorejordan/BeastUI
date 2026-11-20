@@ -1,0 +1,20 @@
+{
+  // Shared by every package and app. Each one extends it and adds its own include/outDir.
+  "compilerOptions": {
+    "target": "ES2023",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    // One file in, one file out, imports kept as written (decision 0003: ESM, unbundled)
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    // Declarations can be emitted file by file, which keeps tsdown's type build fast
+    "isolatedDeclarations": true,
+    "declaration": true,
+    "skipLibCheck": true
+  }
+}

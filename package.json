@@ -1,0 +1,16 @@
+{
+  "name": "beastui-workspace",
+  "private": true,
+  "type": "module",
+  "description": "BeastUI: a calm, outlined UI system. Workspace root, not published.",
+  "packageManager": "pnpm@12.21.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "pnpm --recursive --filter './packages/*' run build",
+    "dev:docs": "pnpm --filter docs dev",
+    "typecheck": "pnpm --recursive run typecheck",
+    "test": "pnpm --recursive run test"
+  }
+}
