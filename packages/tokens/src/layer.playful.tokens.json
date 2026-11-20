@@ -1,0 +1,98 @@
+{
+  "$description": "Playful layer v2 (Attaque Défense): the core's shapes, novelty spent on colour and motion. Values only.",
+  "size": {
+    "$type": "dimension",
+    "control": {
+      "$value": {
+        "value": 40,
+        "unit": "px"
+      }
+    },
+    "row": {
+      "$value": {
+        "value": 44,
+        "unit": "px"
+      }
+    }
+  },
+  "inset": {
+    "$type": "dimension",
+    "control": {
+      "$value": "{space.4}"
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "1": {
+      "$value": {
+        "value": 5,
+        "unit": "px"
+      }
+    },
+    "2": {
+      "$value": {
+        "value": 10,
+        "unit": "px"
+      }
+    },
+    "3": {
+      "$value": {
+        "value": 15,
+        "unit": "px"
+      }
+    }
+  },
+  "font": {
+    "size": {
+      "$type": "dimension",
+      "4": {
+        "$value": {
+          "value": 22,
+          "unit": "px"
+        }
+      },
+      "5": {
+        "$value": {
+          "value": 40,
+          "unit": "px"
+        }
+      }
+    },
+    "line-height": {
+      "$type": "dimension",
+      "5": {
+        "$value": {
+          "value": 48,
+          "unit": "px"
+        }
+      }
+    }
+  },
+  "color": {
+    "$type": "color",
+    "signal": {
+      "$value": "{color.play.green}"
+    }
+  },
+  "duration": {
+    "$type": "duration",
+    "2": {
+      "$value": {
+        "value": 200,
+        "unit": "ms"
+      }
+    },
+    "3": {
+      "$value": {
+        "value": 280,
+        "unit": "ms"
+      }
+    },
+    "4": {
+      "$value": {
+        "value": 600,
+        "unit": "ms"
+      }
+    }
+  }
+}

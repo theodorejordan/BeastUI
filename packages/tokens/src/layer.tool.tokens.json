@@ -1,0 +1,85 @@
+{
+  "$description": "Layer tool (Masterz, Transcribz): squarer, denser, one amber signal (02-proposals §11). Values only.",
+  "size": {
+    "$type": "dimension",
+    "control": {
+      "$value": {
+        "value": 28,
+        "unit": "px"
+      }
+    },
+    "row": {
+      "$value": {
+        "value": 32,
+        "unit": "px"
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "1": {
+      "$value": {
+        "value": 2,
+        "unit": "px"
+      }
+    },
+    "2": {
+      "$value": {
+        "value": 4,
+        "unit": "px"
+      }
+    },
+    "3": {
+      "$value": {
+        "value": 6,
+        "unit": "px"
+      }
+    }
+  },
+  "line": {
+    "$type": "dimension",
+    "stroke": {
+      "$value": {
+        "value": 1,
+        "unit": "px"
+      }
+    }
+  },
+  "font": {
+    "size": {
+      "$type": "dimension",
+      "2": {
+        "$value": {
+          "value": 13,
+          "unit": "px"
+        }
+      }
+    },
+    "family": {
+      "$type": "fontFamily",
+      "num": {
+        "$value": "{font.family.mono}"
+      }
+    }
+  },
+  "color": {
+    "$type": "color",
+    "border": {
+      "subtle": {
+        "$value": "{color.border.subtle-quiet}"
+      }
+    },
+    "signal": {
+      "$value": "{color.amber}"
+    }
+  },
+  "duration": {
+    "$type": "duration",
+    "3": {
+      "$value": {
+        "value": 180,
+        "unit": "ms"
+      }
+    }
+  }
+}

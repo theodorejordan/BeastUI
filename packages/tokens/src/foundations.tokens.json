@@ -1,0 +1,383 @@
+{
+  "$description": "BeastUI foundations (docs/ui-system/04-foundations.md). Core values; layers override some of them.",
+  "space": {
+    "$type": "dimension",
+    "$description": "One 4px grid (§2). The name is the multiple of 4: space.3 = 12px. Half steps only inside small controls and for the icon gap.",
+    "0-5": {
+      "$value": {
+        "value": 2,
+        "unit": "px"
+      }
+    },
+    "1": {
+      "$value": {
+        "value": 4,
+        "unit": "px"
+      }
+    },
+    "1-5": {
+      "$value": {
+        "value": 6,
+        "unit": "px"
+      }
+    },
+    "2": {
+      "$value": {
+        "value": 8,
+        "unit": "px"
+      }
+    },
+    "3": {
+      "$value": {
+        "value": 12,
+        "unit": "px"
+      }
+    },
+    "4": {
+      "$value": {
+        "value": 16,
+        "unit": "px"
+      }
+    },
+    "6": {
+      "$value": {
+        "value": 24,
+        "unit": "px"
+      }
+    },
+    "8": {
+      "$value": {
+        "value": 32,
+        "unit": "px"
+      }
+    },
+    "12": {
+      "$value": {
+        "value": 48,
+        "unit": "px"
+      }
+    }
+  },
+  "gap": {
+    "$type": "dimension",
+    "$description": "Proximity ladder (§3): the space inside a group is always smaller than the space around it.",
+    "hint": {
+      "$value": "{space.1}"
+    },
+    "icon": {
+      "$value": "{space.1-5}"
+    },
+    "field": {
+      "$value": "{space.2}"
+    },
+    "choice": {
+      "$value": "{space.2}"
+    },
+    "inline": {
+      "$value": "{space.2}"
+    },
+    "stack": {
+      "$value": "{space.4}"
+    },
+    "group": {
+      "$value": "{space.6}"
+    },
+    "section": {
+      "$value": "{space.12}"
+    }
+  },
+  "size": {
+    "$type": "dimension",
+    "$description": "Sizes (§1): one control height per density, small and large one step away.",
+    "control": {
+      "$value": {
+        "value": 32,
+        "unit": "px"
+      }
+    },
+    "step": {
+      "$value": {
+        "value": 8,
+        "unit": "px"
+      }
+    },
+    "row": {
+      "$value": {
+        "value": 36,
+        "unit": "px"
+      }
+    },
+    "badge": {
+      "$value": {
+        "value": 20,
+        "unit": "px"
+      }
+    },
+    "glyph": {
+      "$value": {
+        "value": 16,
+        "unit": "px"
+      }
+    },
+    "glyph-lg": {
+      "$value": {
+        "value": 32,
+        "unit": "px"
+      }
+    }
+  },
+  "inset": {
+    "$type": "dimension",
+    "$description": "Insets (§8). Text is measured from the outer edge, empty bands from the border's inner edge.",
+    "control": {
+      "$value": "{space.3}"
+    },
+    "nested": {
+      "$value": "{space.1}"
+    },
+    "panel": {
+      "$value": "{space.4}"
+    },
+    "dialog": {
+      "$value": "{space.6}"
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "$description": "Radius by size (§4); nested corners are computed in the component CSS, never picked.",
+    "1": {
+      "$value": {
+        "value": 4,
+        "unit": "px"
+      }
+    },
+    "2": {
+      "$value": {
+        "value": 8,
+        "unit": "px"
+      }
+    },
+    "3": {
+      "$value": {
+        "value": 12,
+        "unit": "px"
+      }
+    },
+    "control": {
+      "$value": "{radius.2}"
+    },
+    "check": {
+      "$value": "{radius.1}"
+    },
+    "tag": {
+      "$value": {
+        "value": 999,
+        "unit": "px"
+      }
+    }
+  },
+  "line": {
+    "$type": "dimension",
+    "$description": "Three widths and no others (§7).",
+    "hair": {
+      "$value": {
+        "value": 1,
+        "unit": "px"
+      }
+    },
+    "stroke": {
+      "$value": {
+        "value": 1.5,
+        "unit": "px"
+      }
+    },
+    "bold": {
+      "$value": {
+        "value": 2,
+        "unit": "px"
+      }
+    }
+  },
+  "width": {
+    "$type": "dimension",
+    "$description": "Widths of floating things, on the grid (§11).",
+    "menu": {
+      "$value": {
+        "value": 224,
+        "unit": "px"
+      }
+    },
+    "toast": {
+      "$value": {
+        "value": 360,
+        "unit": "px"
+      }
+    },
+    "drawer": {
+      "$value": {
+        "value": 360,
+        "unit": "px"
+      }
+    },
+    "dialog": {
+      "$value": {
+        "value": 400,
+        "unit": "px"
+      }
+    }
+  },
+  "font": {
+    "family": {
+      "$type": "fontFamily",
+      "ui": {
+        "$value": [
+          "Inter Tight",
+          "system-ui",
+          "sans-serif"
+        ]
+      },
+      "display": {
+        "$value": [
+          "Outfit",
+          "system-ui",
+          "sans-serif"
+        ]
+      },
+      "mono": {
+        "$value": [
+          "IBM Plex Mono",
+          "ui-monospace",
+          "monospace"
+        ]
+      },
+      "num": {
+        "$value": "{font.family.ui}"
+      }
+    },
+    "size": {
+      "$type": "dimension",
+      "$description": "Each size comes with its line height (§5).",
+      "0": {
+        "$value": {
+          "value": 11,
+          "unit": "px"
+        }
+      },
+      "1": {
+        "$value": {
+          "value": 12,
+          "unit": "px"
+        }
+      },
+      "2": {
+        "$value": {
+          "value": 14,
+          "unit": "px"
+        }
+      },
+      "4": {
+        "$value": {
+          "value": 20,
+          "unit": "px"
+        }
+      },
+      "5": {
+        "$value": {
+          "value": 32,
+          "unit": "px"
+        }
+      }
+    },
+    "line-height": {
+      "$type": "dimension",
+      "0": {
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        }
+      },
+      "1": {
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        }
+      },
+      "2": {
+        "$value": {
+          "value": 20,
+          "unit": "px"
+        }
+      },
+      "4": {
+        "$value": {
+          "value": 28,
+          "unit": "px"
+        }
+      },
+      "5": {
+        "$value": {
+          "value": 40,
+          "unit": "px"
+        }
+      }
+    },
+    "weight": {
+      "$type": "fontWeight",
+      "regular": {
+        "$value": 400
+      },
+      "medium": {
+        "$value": 500
+      },
+      "display": {
+        "$value": 300
+      }
+    }
+  },
+  "duration": {
+    "$type": "duration",
+    "1": {
+      "$value": {
+        "value": 100,
+        "unit": "ms"
+      }
+    },
+    "2": {
+      "$value": {
+        "value": 160,
+        "unit": "ms"
+      }
+    },
+    "3": {
+      "$value": {
+        "value": 240,
+        "unit": "ms"
+      }
+    },
+    "4": {
+      "$value": {
+        "value": 400,
+        "unit": "ms"
+      }
+    }
+  },
+  "easing": {
+    "$type": "cubicBezier",
+    "move": {
+      "$value": [
+        0.2,
+        0,
+        0,
+        1
+      ]
+    },
+    "enter": {
+      "$value": [
+        0.05,
+        0.7,
+        0.1,
+        1
+      ]
+    }
+  }
+}

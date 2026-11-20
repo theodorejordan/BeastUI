@@ -1,0 +1,23 @@
+{
+  "name": "@beastui/tokens",
+  "version": "0.0.0",
+  "description": "BeastUI design tokens: one DTCG source, built to CSS variables, JSON and TypeScript constants.",
+  "type": "module",
+  "license": "MIT",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "sideEffects": [
+    "*.css"
+  ],
+  "scripts": {
+    "build": "tz build"
+  },
+  "devDependencies": {
+    "@terrazzo/cli": "^2.10.0",
+    "@terrazzo/plugin-css": "^2.10.0",
+    "@terrazzo/plugin-js": "^2.10.0",
+    "@terrazzo/token-tools": "2.10.0"
+  }
+}

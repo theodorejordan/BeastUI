@@ -1,0 +1,60 @@
+{
+  "name": "BeastUI",
+  "version": "2025.10",
+  "description": "BeastUI tokens: foundations, then the colour mode, then the layer. Layers only change values (decision 0002).",
+  "sets": {
+    "foundations": {
+      "sources": [
+        {
+          "$ref": "foundations.tokens.json"
+        }
+      ]
+    }
+  },
+  "modifiers": {
+    "mode": {
+      "description": "Colour mode. In CSS both modes ship together as light-dark() pairs.",
+      "default": "light",
+      "contexts": {
+        "light": [
+          {
+            "$ref": "color.light.tokens.json"
+          }
+        ],
+        "dark": [
+          {
+            "$ref": "color.dark.tokens.json"
+          }
+        ]
+      }
+    },
+    "layer": {
+      "description": "The app's layer: core (default), tool for desk apps, playful for the game.",
+      "default": "core",
+      "contexts": {
+        "core": [],
+        "tool": [
+          {
+            "$ref": "layer.tool.tokens.json"
+          }
+        ],
+        "playful": [
+          {
+            "$ref": "layer.playful.tokens.json"
+          }
+        ]
+      }
+    }
+  },
+  "resolutionOrder": [
+    {
+      "$ref": "#/sets/foundations"
+    },
+    {
+      "$ref": "#/modifiers/mode"
+    },
+    {
+      "$ref": "#/modifiers/layer"
+    }
+  ]
+}
