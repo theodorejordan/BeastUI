@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from 'preact/hooks';
+import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { Icon } from './icons.tsx';
 import { PAIRS, ratio } from './contrast.ts';
 
@@ -38,9 +38,33 @@ function useParam(key: string, fallback: string): [string, (v: string) => void] 
   return [value, set];
 }
 
+// The selection is one outline that slides to the picked option. CSS draws and animates it;
+// this only measures where it goes (the job @beastui/preact will do). Without JS, the picked
+// option draws its own outline, so the control still reads right.
 function Seg({ label, options, value, onChange }: { label: string; options: readonly Option[]; value: string; onChange: (v: string) => void }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    const root = ref.current;
+    if (!root) return;
+    const place = () => {
+      const picked = root.querySelector<HTMLElement>('button[aria-pressed="true"]');
+      if (!picked) return;
+      // Sub-pixel rects, not offsetLeft/offsetWidth (they round, and the outline would be off by a fraction).
+      const box = root.getBoundingClientRect();
+      const r = picked.getBoundingClientRect();
+      root.style.setProperty('--seg-x', `${r.left - box.left - root.clientLeft}px`);
+      root.style.setProperty('--seg-w', `${r.width}px`);
+      root.dataset.thumb = '';
+    };
+    place();
+    // Widths change with fonts, the interface case and the layer, so follow the buttons' size.
+    const observer = new ResizeObserver(place);
+    root.querySelectorAll('button').forEach((b) => observer.observe(b));
+    return () => observer.disconnect();
+  }, [value, options]);
   return (
-    <div class="b-seg" role="group" aria-label={label}>
+    <div class="b-seg" role="group" aria-label={label} ref={ref}>
+      <span class="b-seg__thumb" aria-hidden="true" />
       {options.map((o) => (
         <button type="button" class={o.keep ? 'b-keep' : undefined} aria-pressed={o.id === value} onClick={() => onChange(o.id)}>
           {o.name}

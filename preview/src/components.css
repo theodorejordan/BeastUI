@@ -2,6 +2,19 @@
  * The shared components. Every direction renders this exact stylesheet and this exact markup;
  * only the tokens change, plus a few rules in each direction's `beast.direction` layer.
  * That is the CSS-first claim of the brief, tested: a direction is mostly values.
+ *
+ * Foundations pass (04-foundations.md): no raw lengths. Every size, gap and radius below is a
+ * token or is computed from one. The exceptions are data-viz geometry (the loudness scale) and
+ * one-pixel optical nudges, each commented where it happens.
+ *
+ * Three rules do most of the work:
+ *  - Sizes: every control is --control-h tall; small = one --size-step less, large = one more.
+ *  - Inset: text sits --pad-x from the edge of any control, and the same inset holds through
+ *    nesting (a menu item's text lines up with the select that opened it). Every inset is
+ *    measured from the outer visible edge, border included: the padding gives back the border.
+ *  - Concentric corners: when a shape sits inside another at a small inset, the inner radius is
+ *    the outer radius minus the inset (Apple, WWDC25 session 356). The anchored shape is the one
+ *    that must match its siblings elsewhere; the other is computed.
  */
 @layer beast.components {
   *,
@@ -14,14 +27,15 @@
     margin: 0;
     background: var(--surface);
     color: var(--text);
-    font: 400 var(--fs-2) / 1.45 var(--font-ui);
+    font: 400 var(--fs-2) / var(--lh-2) var(--font-ui);
     -webkit-font-smoothing: antialiased;
   }
 
-  /* Focus: 2px outline, offset 2px, same in every direction (research §10, constraint 3). */
+  /* Focus: 2px outline, offset 2px, same in every direction (research §10, constraint 3).
+     An outline follows border-radius, so the ring's corners stay concentric with the control. */
   :focus-visible {
-    outline: 2px solid var(--focus);
-    outline-offset: 2px;
+    outline: var(--stroke-bold) solid var(--focus);
+    outline-offset: var(--sp-0-5);
   }
 
   .b-num {
@@ -30,21 +44,22 @@
   }
 
   .b-label {
-    font: var(--label-weight) var(--label-size) / 1.2 var(--label-font);
+    font: var(--label-weight) var(--label-size) / var(--lh-1) var(--label-font);
     letter-spacing: var(--label-track);
     text-transform: var(--label-case);
     color: var(--text-muted);
   }
 
   .b-display {
-    font: var(--display-weight) var(--fs-5) / 1.1 var(--font-display);
+    font: var(--display-weight) var(--fs-5) / var(--lh-5) var(--font-display);
     letter-spacing: var(--display-track);
   }
 
-  /* Icons: drawn with the UI stroke, in screen pixels (research §6, Raycast). */
+  /* Icons: drawn with the UI stroke, in screen pixels (research §6, Raycast).
+     16px with 14px text (Carbon, Atlassian); the same slot as a checkbox or a status glyph. */
   .b-icon {
-    width: 16px;
-    height: 16px;
+    width: var(--glyph);
+    height: var(--glyph);
     flex: none;
     fill: none;
     stroke: currentColor;
@@ -62,21 +77,27 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: var(--gap-icon);
     height: var(--control-h);
-    padding: 0 var(--btn-pad);
+    padding: 0 calc(var(--pad-x) - var(--stroke));
     border: var(--stroke) solid transparent;
-    border-radius: var(--r-btn);
+    border-radius: var(--r-control);
     background: transparent;
     color: var(--text);
     font: var(--btn-weight) var(--btn-size) / 1 var(--btn-font);
     letter-spacing: var(--btn-track);
     text-transform: var(--btn-case);
+    white-space: nowrap;
     cursor: pointer;
     transition:
       background-color var(--dur-1) var(--ease-move),
       border-color var(--dur-1) var(--ease-move),
       transform var(--dur-2) var(--ease-press);
+  }
+  /* Optical inset: an icon's drawing sits inside its box, so a leading icon needs less room
+     than a letter to look evenly padded. */
+  .b-btn:not([data-icon]):has(> .b-icon:first-child) {
+    padding-inline-start: calc(var(--pad-x) - var(--sp-1) - var(--stroke));
   }
   .b-btn:active:not(:disabled) {
     transform: scale(var(--press-scale));
@@ -102,6 +123,7 @@
   .b-btn[data-variant='danger']:hover:not(:disabled) {
     background: color-mix(in srgb, var(--danger) 10%, transparent);
   }
+  /* Icon-only: a square of the control height (Radix, Atlassian). */
   .b-btn[data-icon] {
     width: var(--control-h);
     padding: 0;
@@ -115,58 +137,101 @@
     cursor: not-allowed;
   }
 
-  /* ---------- Segmented control (Masterz filters) ---------- */
+  /* ---------- Segmented control (Masterz filters) ----------
+     The outside is a control (same height and radius as a button next to it). Inside, the empty
+     band is --inset wide everywhere: between the border and the options, and between options.
+     It is measured from the border's inner edge, because that band is what the eye compares.
+     The selection is one outline that slides to the picked option (owner, 2026-11-20): no fill.
+     Its position comes from @beastui/preact (here, the preview's Seg); without JS, the picked
+     option draws its own outline instead, so the control still works server-rendered. */
   .b-seg {
+    position: relative;
     display: inline-flex;
     width: fit-content;
-    gap: 2px;
-    padding: 2px;
+    height: var(--control-h);
+    gap: var(--inset);
+    padding: var(--inset);
     border: var(--hair) solid var(--border-subtle);
-    border-radius: calc(var(--r-btn) + 3px);
+    border-radius: var(--r-control);
+  }
+  .b-seg__thumb {
+    position: absolute;
+    top: var(--inset);
+    bottom: var(--inset);
+    left: 0;
+    width: var(--seg-w, 0px);
+    transform: translateX(var(--seg-x, 0px));
+    border: var(--stroke) solid var(--border-strong);
+    /* concentric with the frame's inner edge */
+    border-radius: max(var(--r-control) - var(--hair) - var(--inset), 0px);
+    pointer-events: none;
+    transition:
+      transform var(--dur-3) var(--ease-move),
+      width var(--dur-3) var(--ease-move);
+  }
+  .b-seg:not([data-thumb]) .b-seg__thumb {
+    display: none;
   }
   .b-seg button {
-    height: calc(var(--control-h) - 6px);
-    padding: 0 10px;
+    position: relative;
+    height: 100%;
+    padding: 0 calc(var(--pad-x) - var(--inset) - var(--hair) - var(--stroke));
     border: var(--stroke) solid transparent;
-    border-radius: var(--r-btn);
+    border-radius: max(var(--r-control) - var(--hair) - var(--inset), 0px);
     background: none;
     color: var(--text-muted);
     font: 500 var(--fs-1) / 1 var(--btn-font);
     letter-spacing: var(--btn-track);
     text-transform: var(--btn-case);
+    white-space: nowrap;
     cursor: pointer;
   }
   .b-seg button:hover {
     color: var(--text);
   }
-  /* Selected: an outline at 3:1 and full-ink text, not only a tint (research §3). */
+  /* Selected: an outline at 3:1 and full-ink text, not only a tint (research §3). No fill. */
   .b-seg button[aria-pressed='true'] {
-    border-color: var(--border-strong);
-    background: var(--surface-raised);
     color: var(--text);
   }
+  .b-seg:not([data-thumb]) button[aria-pressed='true'] {
+    border-color: var(--border-strong);
+  }
 
-  /* ---------- Field ---------- */
+  /* ---------- Field ----------
+     Proximity: the label is 8px above its control, the hint 4px below. The hint is closer
+     because it talks about the value; the label names the whole group. */
   .b-field {
     display: grid;
-    gap: 6px;
+    gap: var(--gap-hint);
     min-width: 0;
   }
   .b-field__label {
+    margin-bottom: calc(var(--gap-field) - var(--gap-hint));
     text-transform: var(--ui-case);
-    font-weight: 500;
-    font-size: var(--fs-1);
+    font: 500 var(--fs-1) / var(--lh-1) var(--font-ui);
     color: var(--text);
   }
   .b-input {
     height: var(--control-h);
     width: 100%;
-    padding: 0 10px;
+    padding: 0 calc(var(--pad-x) - var(--stroke));
     border: var(--stroke) solid var(--border-strong);
-    border-radius: var(--r-field);
+    border-radius: var(--r-control);
     background: var(--field-bg);
     color: var(--text);
     font: inherit;
+  }
+  /* Focus on a field: no ring around it (owner: no extra layer). Its own border turns bold and
+     full ink. The padding gives back the extra width, so nothing moves. */
+  .b-input:focus-visible,
+  .b-select:focus-visible {
+    outline: none;
+    border-width: var(--stroke-bold);
+    border-color: var(--focus);
+    padding-inline: calc(var(--pad-x) - var(--stroke-bold));
+  }
+  .b-select:focus-visible {
+    padding-inline-end: calc(var(--sp-2) - var(--stroke-bold));
   }
   .b-input::placeholder {
     color: var(--text-muted);
@@ -177,29 +242,31 @@
   .b-input-group {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--gap-inline);
   }
   .b-input-group .b-input {
     text-align: right;
   }
   .b-field__hint {
     font-size: var(--fs-1);
+    line-height: var(--lh-1);
     color: var(--text-muted);
   }
   /* Error: an icon and words, so it does not rely on red (1.4.1). */
   .b-field__error {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--gap-icon);
     font-size: var(--fs-1);
+    line-height: var(--lh-1);
     color: var(--danger-text);
   }
 
   /* ---------- Checkbox ---------- */
   .b-check {
     appearance: none;
-    width: 16px;
-    height: 16px;
+    width: var(--glyph);
+    height: var(--glyph);
     margin: 0;
     border: var(--stroke) solid var(--border-strong);
     border-radius: var(--r-check);
@@ -215,19 +282,20 @@
   }
   .b-check:checked::after {
     content: '';
-    width: 8px;
-    height: 4px;
+    width: calc(var(--glyph) / 2);
+    height: calc(var(--glyph) / 4);
     border: solid var(--on-ink);
-    border-width: 0 0 1.75px 1.75px;
-    transform: translateY(-1px) rotate(-45deg);
+    border-width: 0 0 var(--stroke-bold) var(--stroke-bold);
+    /* optical: a rotated tick reads low, so it moves up one pixel */
+    transform: translateY(calc(-1 * var(--hair))) rotate(-45deg);
   }
 
   /* ---------- Tag ---------- */
   .b-tag {
     display: inline-flex;
     align-items: center;
-    height: 20px;
-    padding: 0 6px;
+    height: var(--badge-h);
+    padding: 0 calc(var(--sp-1-5) - var(--hair));
     border: var(--hair) solid var(--border-strong);
     border-radius: var(--r-tag);
     background: var(--tag-bg);
@@ -242,15 +310,18 @@
     color: var(--danger-text);
   }
 
-  /* ---------- Status glyph: the shape changes with the state, not only the colour (§2, Linear) ---------- */
+  /* ---------- Status glyph: the shape changes with the state, not only the colour (§2, Linear) ----------
+     It fills the same 16px slot as an icon or a checkbox, drawn 2px smaller: a solid round shape
+     looks bigger than a line icon of the same box. */
   .b-status {
     --p: 0;
-    width: 14px;
-    height: 14px;
+    width: calc(var(--glyph) - var(--sp-0-5));
+    height: calc(var(--glyph) - var(--sp-0-5));
+    margin: var(--hair);
     flex: none;
     border: var(--stroke) solid currentColor;
     border-radius: var(--r-status);
-    padding: 2px;
+    padding: var(--sp-0-5);
     background: conic-gradient(currentColor calc(var(--p) * 1turn), transparent 0) content-box;
   }
   .b-status[data-state='progress'] {
@@ -264,14 +335,14 @@
     padding: 0;
   }
   .b-status[data-state='error'] {
-    border-radius: 2px;
+    border-radius: calc(var(--r-1) / 2);
     transform: rotate(45deg) scale(0.86);
     --p: 1;
   }
   .b-state {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--gap-icon);
   }
   .b-state[data-tone='danger'] {
     color: var(--danger-text);
@@ -297,6 +368,11 @@
     border-bottom: var(--hair) solid var(--row-rule);
     white-space: nowrap;
     transition: background-color var(--dur-1) var(--ease-move);
+  }
+  /* The checkbox column is as narrow as its glyph: the box lines up with the title above it. */
+  .b-table :is(th, td):has(> .b-check),
+  .b-table th[aria-label='Select'] {
+    width: calc(var(--glyph) + 2 * var(--cell-pad));
   }
   /* Column rules are a value: transparent in the core, a faint line in the tool layer. */
   .b-table td + td,
@@ -326,16 +402,17 @@
   }
   .b-table .b-cell-title {
     font-weight: 500;
-    max-width: 280px;
+    max-width: 36ch;
     overflow: hidden;
     text-overflow: ellipsis;
   }
   .b-table .b-cell-tags {
     display: flex;
-    gap: 4px;
+    gap: var(--sp-1);
   }
 
-  /* ---------- Loudness scale (Masterz's mini chart) ---------- */
+  /* ---------- Loudness scale (Masterz's mini chart) ----------
+     Data-viz geometry: its lengths draw a chart, they are not spacing. */
   .b-scale {
     position: relative;
     display: block;
@@ -369,7 +446,7 @@
   .b-drawer {
     position: absolute;
     inset: var(--drawer-inset) var(--drawer-inset) var(--drawer-inset) auto;
-    width: min(340px, 88%);
+    width: min(var(--w-drawer), 88%);
     display: flex;
     flex-direction: column;
     background: var(--surface-raised);
@@ -381,36 +458,41 @@
   }
   @keyframes b-drawer-in {
     from {
-      transform: translateX(24px);
+      transform: translateX(var(--sp-6));
       opacity: 0;
     }
   }
+  /* Head and foot are the same height. The close button is quiet (no border), so it lines up
+     by its glyph: its X sits on the body's right edge, not its invisible box. */
   .b-drawer__head {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 12px 12px 16px;
+    height: calc(var(--control-h) + 2 * var(--sp-3));
+    padding: 0 calc(var(--pad-panel) - (var(--control-h) - var(--glyph)) / 2) 0 var(--pad-panel);
     border-bottom: var(--hair) solid var(--border-subtle);
   }
   .b-drawer__title {
     margin: 0;
     text-transform: var(--ui-case);
-    font: var(--display-weight) var(--fs-4) / 1.2 var(--font-display);
+    font: var(--display-weight) var(--fs-4) / var(--lh-4) var(--font-display);
     letter-spacing: var(--display-track);
   }
   .b-drawer__body {
     display: grid;
     align-content: start;
-    gap: 16px;
-    padding: 16px;
+    gap: var(--gap-stack);
+    padding: var(--pad-panel);
     overflow: auto;
     flex: 1;
   }
   .b-drawer__foot {
     display: flex;
     justify-content: flex-end;
-    gap: 8px;
-    padding: 12px 16px;
+    align-items: center;
+    gap: var(--gap-inline);
+    height: calc(var(--control-h) + 2 * var(--sp-3));
+    padding: 0 var(--pad-panel);
     border-top: var(--hair) solid var(--border-subtle);
   }
 
@@ -418,7 +500,7 @@
   .b-props {
     display: grid;
     grid-template-columns: auto 1fr;
-    gap: 8px 16px;
+    gap: var(--sp-2) var(--sp-4);
     margin: 0;
   }
   .b-props dt {
@@ -445,20 +527,21 @@
   /* Graduations at the stage boundaries, under the bar: the instrument feel without pixels. */
   .b-progress__ticks {
     height: var(--progress-ticks-h);
-    margin-top: calc(var(--progress-ticks-h) / 3);
+    margin-top: calc(var(--progress-ticks-h) / 3 - var(--sp-2));
     background:
-      linear-gradient(90deg, var(--border-strong) 1px, transparent 1px) right / 1px 100% no-repeat,
-      repeating-linear-gradient(90deg, var(--border-strong) 0 1px, transparent 1px calc(100% / var(--n)));
+      linear-gradient(90deg, var(--border-strong) var(--hair), transparent var(--hair)) right / var(--hair) 100% no-repeat,
+      repeating-linear-gradient(90deg, var(--border-strong) 0 var(--hair), transparent var(--hair) calc(100% / var(--n)));
   }
 
   .b-steps {
     display: grid;
     grid-template-columns: repeat(var(--n), 1fr);
-    gap: 8px;
+    gap: var(--sp-2);
     margin: 0;
     padding: 0;
     list-style: none;
     font-size: var(--fs-1);
+    line-height: var(--lh-1);
     color: var(--text-muted);
     text-align: left;
   }
@@ -466,7 +549,7 @@
     text-transform: var(--ui-case);
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--gap-icon);
   }
   .b-steps li[aria-current='step'] {
     color: var(--text);
@@ -479,15 +562,17 @@
     inset: 0;
     display: grid;
     place-items: center;
-    padding: 16px;
+    padding: var(--pad-panel);
     background: color-mix(in srgb, var(--surface) 82%, transparent);
     backdrop-filter: blur(2px);
   }
+  /* Proximity: title, then the progress group (bar, ticks, stages, file) packed at 8px,
+     then the footer apart. Three groups, three distances. */
   .b-veil__panel {
-    width: min(400px, 100%);
+    width: min(var(--w-dialog), 100%);
     display: grid;
-    gap: 14px;
-    padding: 20px;
+    gap: var(--sp-2);
+    padding: calc(var(--pad-dialog) - var(--stroke));
     border: var(--stroke) solid var(--border-strong);
     border-radius: var(--r-3);
     background: var(--surface-raised);
@@ -496,43 +581,50 @@
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    gap: 12px;
+    gap: var(--sp-3);
+    margin-bottom: var(--sp-2);
   }
   .b-veil__title {
     margin: 0;
     text-transform: var(--ui-case);
-    font: var(--display-weight) var(--fs-4) / 1.2 var(--font-display);
+    font: var(--display-weight) var(--fs-4) / var(--lh-4) var(--font-display);
     letter-spacing: var(--display-track);
   }
   .b-veil__meta {
     display: flex;
     justify-content: space-between;
-    gap: 12px;
+    gap: var(--sp-3);
     font-size: var(--fs-1);
+    line-height: var(--lh-1);
     color: var(--text-muted);
   }
   .b-veil__foot {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 12px;
+    gap: var(--sp-3);
+    margin-top: var(--sp-4);
     font-size: var(--fs-1);
+    line-height: var(--lh-1);
     color: var(--text-muted);
   }
 
   /* ---------- Playful: energy meter ---------- */
   .b-meter {
     display: grid;
-    gap: 6px;
+    gap: var(--gap-field);
   }
   .b-meter__head {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
   }
+  .b-meter__head .b-field__label {
+    margin: 0;
+  }
   .b-meter__track {
     height: var(--meter-h);
-    padding: 2px;
+    padding: var(--sp-0-5);
     border: var(--stroke) solid var(--border-strong);
     border-radius: var(--meter-radius);
     background: var(--meter-track);
@@ -540,13 +632,9 @@
   .b-meter__fill {
     height: 100%;
     width: calc(var(--value) * 1%);
-    border-radius: calc(var(--meter-radius) - 3px);
+    border-radius: max(var(--meter-radius) - var(--sp-0-5) - var(--stroke), 0px);
     background: var(--meter-fill);
-    mask: repeating-linear-gradient(
-      90deg,
-      #000 0 var(--meter-seg-on),
-      transparent var(--meter-seg-on) calc(var(--meter-seg-on) + var(--meter-seg-gap))
-    );
+    /* Always continuous: segmented "pixel" bars are out, in every layer (owner, 2026-11-19 and -20). */
     transition: width var(--dur-4) var(--ease-spring);
   }
 
@@ -554,31 +642,30 @@
   .b-badge {
     display: grid;
     place-items: center;
-    width: 56px;
-    height: 56px;
+    width: calc(var(--glyph) * 3);
+    height: calc(var(--glyph) * 3);
     border: var(--stroke) solid var(--text);
     border-radius: var(--badge-radius);
     background: var(--badge-bg);
-    font: var(--badge-weight) 22px / 1 var(--badge-font);
+    font: var(--badge-weight) var(--fs-4) / 1 var(--badge-font);
     letter-spacing: var(--badge-track);
   }
 
-  /* ---------- Playful: turn indicator ---------- */
+  /* ---------- Playful: turn indicator (a small control) ---------- */
   .b-turn {
     text-transform: var(--ui-case);
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    height: 28px;
-    padding: 0 12px 0 8px;
+    gap: var(--gap-icon);
+    height: calc(var(--control-h) - var(--size-step));
+    padding: 0 calc(var(--sp-3) - var(--stroke)) 0 calc(var(--sp-2) - var(--stroke));
     border: var(--stroke) solid var(--text);
-    border-radius: var(--r-btn);
-    font-weight: 600;
-    font-size: var(--fs-1);
+    border-radius: var(--r-1);
+    font: 600 var(--fs-1) / 1 var(--font-ui);
   }
   .b-turn__dot {
-    width: 8px;
-    height: 8px;
+    width: var(--sp-2);
+    height: var(--sp-2);
     border-radius: var(--r-dot);
     background: var(--signal);
     animation: b-pulse calc(1200ms * var(--motion-scale)) ease-in-out infinite;
@@ -599,6 +686,9 @@
     .b-turn__dot {
       animation: none;
     }
+    .b-seg__thumb {
+      transition: none;
+    }
     .b-btn:active:not(:disabled) {
       transform: none;
     }
@@ -612,7 +702,8 @@
 
 /* ===================== Round 2: the components that show a direction's identity ===================== */
 @layer beast.components {
-  /* ---------- Tabs: the selected tab carries a 2px mark, not only a colour ---------- */
+  /* ---------- Tabs: the selected tab carries a 2px mark, not only a colour ----------
+     A tab bar is a large control: one size step above the controls it sits over. */
   .b-tabs {
     display: flex;
     gap: var(--tab-gap);
@@ -620,8 +711,8 @@
   }
   .b-tab {
     position: relative;
-    height: calc(var(--control-h) + 6px);
-    padding: 0 2px;
+    height: calc(var(--control-h) + var(--size-step));
+    padding: 0;
     border: 0;
     background: none;
     color: var(--text-muted);
@@ -637,18 +728,23 @@
   .b-tab[aria-selected='true']::after {
     content: '';
     position: absolute;
-    inset: auto 0 -1px;
-    height: 2px;
+    inset: auto 0 calc(-1 * var(--hair));
+    height: var(--stroke-bold);
     background: var(--tab-mark);
   }
 
-  /* ---------- Switch ---------- */
+  /* ---------- Switch ----------
+     20px tall (a glyph plus 4px) so it sits on a 20px text line like a checkbox does.
+     The thumb is inset 2px with concentric corners, and travels the width minus the height. */
   .b-switch {
+    --sw-h: calc(var(--glyph) + var(--sp-1));
+    --sw-w: calc(var(--sw-h) * 2 - var(--sp-1));
+    --sw-thumb: calc(var(--sw-h) - 2 * var(--stroke) - 2 * var(--sp-0-5));
     appearance: none;
     position: relative;
     flex: none;
-    width: 32px;
-    height: 18px;
+    width: var(--sw-w);
+    height: var(--sw-h);
     margin: 0;
     border: var(--stroke) solid var(--border-strong);
     border-radius: var(--switch-radius);
@@ -661,11 +757,11 @@
   .b-switch::after {
     content: '';
     position: absolute;
-    top: 2px;
-    left: 2px;
-    width: calc(14px - 2 * var(--stroke));
+    top: var(--sp-0-5);
+    left: var(--sp-0-5);
+    width: var(--sw-thumb);
     aspect-ratio: 1;
-    border-radius: var(--switch-radius);
+    border-radius: max(var(--switch-radius) - var(--sp-0-5) - var(--stroke), 0px);
     background: var(--border-strong);
     transition:
       transform var(--dur-2) var(--ease-press),
@@ -676,7 +772,7 @@
     background: var(--text);
   }
   .b-switch:checked::after {
-    transform: translateX(14px);
+    transform: translateX(calc(var(--sw-w) - var(--sw-h)));
     background: var(--on-ink);
   }
 
@@ -686,8 +782,8 @@
     display: grid;
     place-items: center;
     flex: none;
-    width: 16px;
-    height: 16px;
+    width: var(--glyph);
+    height: var(--glyph);
     margin: 0;
     border: var(--stroke) solid var(--border-strong);
     border-radius: 50%;
@@ -699,27 +795,27 @@
   }
   .b-radio:checked::after {
     content: '';
-    width: 8px;
-    height: 8px;
+    width: calc(var(--glyph) / 2);
+    height: calc(var(--glyph) / 2);
     border-radius: 50%;
     background: var(--text);
   }
   .b-choice {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--gap-choice);
     cursor: pointer;
   }
   .b-choices {
     display: grid;
-    gap: 8px;
+    gap: var(--sp-2);
     margin: 0;
     padding: 0;
     border: 0;
   }
   .b-choices legend {
     padding: 0;
-    margin-bottom: 8px;
+    margin-bottom: var(--gap-field);
   }
 
   /* ---------- Slider (native range) ---------- */
@@ -727,7 +823,7 @@
     --pct: calc((var(--v) - var(--min)) / (var(--max) - var(--min)) * 100%);
     appearance: none;
     width: 100%;
-    height: 20px;
+    height: var(--badge-h);
     margin: 0;
     background: transparent;
     cursor: pointer;
@@ -748,55 +844,63 @@
   }
   .b-slider::-webkit-slider-thumb {
     appearance: none;
-    width: 16px;
-    height: 16px;
-    margin-top: calc((var(--slider-track-h) - 16px) / 2);
+    width: var(--glyph);
+    height: var(--glyph);
+    margin-top: calc((var(--slider-track-h) - var(--glyph)) / 2);
     border: var(--stroke) solid var(--text);
     border-radius: var(--slider-thumb-radius);
     background: var(--surface-raised);
   }
   .b-slider::-moz-range-thumb {
-    width: 16px;
-    height: 16px;
+    width: var(--glyph);
+    height: var(--glyph);
     border: var(--stroke) solid var(--text);
     border-radius: var(--slider-thumb-radius);
     background: var(--surface-raised);
   }
 
-  /* ---------- Select and menu: elevation by line and a ground shift, no shadow ---------- */
+  /* ---------- Select and menu: elevation by line and a ground shift, no shadow ----------
+     The menu opens at the select's width, its items are controls (same height as the select),
+     and their text starts exactly where the select's text starts: border + --pad-x. */
   .b-select {
     display: inline-flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
-    min-width: 200px;
+    gap: var(--sp-2);
+    min-width: var(--w-menu);
     height: var(--control-h);
-    padding: 0 8px 0 10px;
+    padding: 0 calc(var(--sp-2) - var(--stroke)) 0 calc(var(--pad-x) - var(--stroke));
     border: var(--stroke) solid var(--border-strong);
-    border-radius: var(--r-field);
+    border-radius: var(--r-control);
     background: var(--field-bg);
     color: var(--text);
     font: inherit;
     cursor: pointer;
   }
+  /* Like labelcamp's luk dropdown (owner, 2026-11-20): 4px all round, 1px between the items so
+     two highlighted items never merge, and the separator has 4px above and below. */
   .b-menu {
     display: grid;
-    gap: 1px;
-    min-width: 220px;
+    gap: var(--hair);
+    min-width: var(--w-menu);
     margin: 0;
-    padding: 4px;
+    /* The empty band between the border and an item is measured from the border's inner edge:
+       it is what the eye compares with the 4px around the separator. */
+    padding: var(--inset);
     list-style: none;
     background: var(--surface-raised);
     border: var(--stroke) solid var(--border-strong);
-    border-radius: var(--r-2);
+    /* concentric: the items are anchored to the control radius, the menu wraps them */
+    border-radius: calc(var(--r-control) + var(--inset) + var(--stroke));
   }
   .b-menu__item {
     display: flex;
     align-items: center;
-    gap: 8px;
-    height: calc(var(--control-h) - 2px);
-    padding: 0 8px;
-    border-radius: var(--r-1);
+    gap: var(--gap-icon);
+    height: var(--control-h);
+    /* the text still starts where the select's text starts: --pad-x from the outer edge */
+    padding: 0 calc(var(--pad-x) - var(--inset) - var(--stroke));
+    border-radius: var(--r-control);
     text-transform: var(--ui-case);
     cursor: pointer;
   }
@@ -818,28 +922,34 @@
   }
   .b-menu__sep {
     height: var(--hair);
-    margin: 4px -4px;
+    margin: calc(var(--inset) - var(--hair)) calc(-1 * var(--inset));
     background: var(--border-subtle);
   }
 
-  /* ---------- Tooltip and kbd ---------- */
+  /* ---------- Tooltip and kbd ----------
+     The tooltip is a kbd plus an inset all round, so its corners are concentric with the kbd's. */
   .b-tooltip {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 5px 8px;
-    border-radius: var(--r-1);
+    gap: var(--sp-2);
+    height: calc(var(--badge-h) + 2 * var(--inset));
+    padding: 0 var(--sp-2);
+    border-radius: calc(var(--r-1) + var(--inset));
     background: var(--text);
     color: var(--on-ink);
     font-size: var(--fs-1);
+    line-height: var(--lh-1);
     white-space: nowrap;
+  }
+  .b-tooltip:has(> .b-kbd:last-child) {
+    padding-right: var(--inset);
   }
   .b-kbd {
     display: inline-grid;
     place-items: center;
-    min-width: 20px;
-    height: 20px;
-    padding: 0 5px;
+    min-width: var(--badge-h);
+    height: var(--badge-h);
+    padding: 0 calc(var(--sp-1) - var(--hair));
     border: var(--hair) solid var(--border-strong);
     border-radius: var(--r-1);
     color: var(--text-muted);
@@ -850,22 +960,25 @@
     color: var(--on-ink);
   }
 
-  /* ---------- Toast ---------- */
+  /* ---------- Toast ----------
+     A control plus an inset: 40px in the core, corners concentric with its button. The icon on
+     the left and the button's text on the right both sit --pad-panel from the edge. */
   .b-toasts {
     position: absolute;
-    right: 16px;
-    bottom: 16px;
+    right: var(--pad-panel);
+    bottom: var(--pad-panel);
     display: grid;
-    gap: 8px;
-    width: min(360px, calc(100% - 32px));
+    gap: var(--sp-2);
+    width: min(var(--w-toast), calc(100% - 2 * var(--pad-panel)));
   }
   .b-toast {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 8px 8px 8px 14px;
+    gap: var(--gap-icon);
+    padding: calc(var(--inset) - var(--stroke)) calc(var(--inset) - var(--stroke)) calc(var(--inset) - var(--stroke))
+      calc(var(--pad-panel) - var(--stroke));
     border: var(--stroke) solid var(--border-strong);
-    border-radius: var(--r-2);
+    border-radius: calc(var(--r-control) + var(--inset));
     background: var(--surface-raised);
     animation: b-rise var(--dur-3) var(--ease-enter) backwards;
     animation-delay: calc(var(--i, 0) * 60ms);
@@ -879,17 +992,18 @@
   }
   @keyframes b-rise {
     from {
-      transform: translateY(12px);
+      transform: translateY(var(--sp-3));
       opacity: 0;
     }
   }
 
-  /* ---------- Dialog (its backdrop is the veil) ---------- */
+  /* ---------- Dialog (its backdrop is the veil) ----------
+     Title and text are one group (8px); the actions are a second one (24px). */
   .b-dialog {
     display: grid;
-    gap: 12px;
-    width: min(420px, 100%);
-    padding: 20px;
+    gap: var(--sp-2);
+    width: min(var(--w-dialog), 100%);
+    padding: calc(var(--pad-dialog) - var(--stroke));
     border: var(--stroke) solid var(--border-strong);
     border-radius: var(--r-3);
     background: var(--surface-raised);
@@ -897,19 +1011,20 @@
   }
   .b-dialog__title {
     margin: 0;
-    font: var(--display-weight) var(--fs-4) / 1.2 var(--font-display);
+    font: var(--display-weight) var(--fs-4) / var(--lh-4) var(--font-display);
     letter-spacing: var(--display-track);
     text-transform: var(--ui-case);
   }
   .b-dialog p {
+    max-width: var(--measure);
     margin: 0;
     color: var(--text-muted);
   }
   .b-dialog__actions {
     display: flex;
     justify-content: flex-end;
-    gap: 8px;
-    margin-top: 8px;
+    gap: var(--gap-inline);
+    margin-top: var(--sp-4);
   }
   @keyframes b-pop {
     from {
@@ -918,24 +1033,26 @@
     }
   }
 
-  /* ---------- Empty state ---------- */
+  /* ---------- Empty state ----------
+     Icon, then title + text as one group, then the action: 16 / 8 / 24. */
   .b-empty {
     display: grid;
     justify-items: center;
-    gap: 10px;
-    padding: 40px 20px;
+    gap: var(--sp-2);
+    padding: calc(var(--sp-12) - var(--hair)) calc(var(--sp-6) - var(--hair));
     border: var(--hair) dashed var(--border-strong);
     border-radius: var(--r-3);
     text-align: center;
   }
   .b-empty > .b-icon {
-    width: 32px;
-    height: 32px;
+    width: var(--glyph-lg);
+    height: var(--glyph-lg);
+    margin-bottom: var(--sp-2);
     color: var(--text-muted);
   }
   .b-empty__title {
     margin: 0;
-    font: var(--display-weight) var(--fs-4) / 1.2 var(--font-display);
+    font: var(--display-weight) var(--fs-4) / var(--lh-4) var(--font-display);
     letter-spacing: var(--display-track);
     text-transform: var(--ui-case);
   }
@@ -944,13 +1061,16 @@
     margin: 0;
     color: var(--text-muted);
   }
+  .b-empty > .b-btn {
+    margin-top: var(--sp-4);
+  }
 
   /* ---------- Game table (Attaque Défense) ---------- */
   .b-game {
     display: grid;
     justify-items: center;
-    gap: 24px;
-    padding: 24px 16px;
+    gap: var(--sp-6);
+    padding: calc(var(--sp-6) - var(--hair));
     border: var(--hair) solid var(--border-subtle);
     border-radius: var(--r-3);
   }
@@ -962,30 +1082,30 @@
   .b-seat {
     display: grid;
     justify-items: center;
-    gap: 8px;
+    gap: var(--sp-2);
   }
   .b-seat__name {
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: var(--fs-1);
-    font-weight: 500;
+    gap: var(--gap-icon);
+    font: 500 var(--fs-1) / var(--lh-1) var(--font-ui);
   }
   .b-pile {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: var(--sp-3);
   }
   .b-hand {
     display: flex;
-    gap: 8px;
-    padding-top: 12px;
+    gap: var(--sp-2);
+    padding-top: var(--sp-3);
   }
+  /* A card's type scales with the card, so a small and a large card look like the same object. */
   .b-card {
-    --w: 48px;
+    --w: calc(var(--glyph) * 3);
     display: grid;
     place-content: center;
-    gap: 2px;
+    gap: var(--sp-0-5);
     width: var(--w);
     aspect-ratio: 5 / 7;
     padding: 0;
@@ -993,7 +1113,7 @@
     border-radius: var(--card-radius);
     background: var(--surface-card);
     color: var(--text);
-    font: 400 20px / 1 var(--font-display);
+    font: 400 calc(var(--w) * 0.4) / 1 var(--font-display);
     text-align: center;
     transition:
       transform var(--dur-3) var(--ease-spring),
@@ -1006,16 +1126,15 @@
     border-color: color-mix(in srgb, var(--play-red) 70%, transparent);
   }
   .b-card__suit {
-    font-size: 15px;
+    font-size: 0.75em;
   }
   .b-card[data-back] {
     background:
-      repeating-linear-gradient(45deg, var(--border-subtle) 0 1px, transparent 1px 6px),
+      repeating-linear-gradient(45deg, var(--border-subtle) 0 var(--hair), transparent var(--hair) var(--sp-1-5)),
       var(--surface-card);
   }
   .b-hand .b-card {
-    --w: 60px;
-    font-size: 26px;
+    --w: calc(var(--glyph) * 4);
     cursor: pointer;
   }
   /* The picked card: lifted and outlined in full ink. Position and line, not colour. */
@@ -1026,7 +1145,7 @@
   }
   @keyframes b-deal {
     from {
-      transform: translateY(-48px) rotate(-8deg);
+      transform: translateY(calc(-1 * var(--sp-12))) rotate(-8deg);
       opacity: 0;
     }
   }

@@ -28,18 +28,60 @@
     /* Voice: casing of the interface (buttons, labels, tabs, titles), never of content */
     --ui-case: none;
 
-    /* Line */
+    /* ---------- Foundations (04-foundations.md). Components never use a raw length. ---------- */
+
+    /* Line: three widths and no others (§7) */
     --hair: 1px;
     --stroke: 1.5px;
+    --stroke-bold: 2px;
 
-    /* Radius */
-    --r-1: 4px;
-    --r-2: 8px;
-    --r-3: 12px;
-    --r-btn: 8px;
-    --r-field: 6px;
+    /* Space: one 4px grid (§2). The token number is the multiple of 4: --sp-3 = 12px.
+       Half steps (2px, 6px) are only for the inside of small controls and the icon gap. */
+    --sp-0-5: 2px;
+    --sp-1: 4px;
+    --sp-1-5: 6px;
+    --sp-2: 8px;
+    --sp-3: 12px;
+    --sp-4: 16px;
+    --sp-6: 24px;
+    --sp-8: 32px;
+    --sp-12: 48px;
+
+    /* Proximity ladder (§3): the space inside a group is always smaller than the space around it */
+    --gap-icon: var(--sp-1-5); /* a glyph and its label */
+    --gap-hint: var(--sp-1); /* a control and its hint or error */
+    --gap-field: var(--sp-2); /* a label and its control */
+    --gap-choice: var(--sp-2); /* a checkbox, radio or switch and its label */
+    --gap-inline: var(--sp-2); /* controls side by side */
+    --gap-stack: var(--sp-4); /* fields and rows inside a group */
+    --gap-group: var(--sp-6); /* groups inside a panel */
+    --gap-section: var(--sp-12); /* sections of a page */
+
+    /* Sizes (§1): one control height per density; sm and lg are one step away */
+    --control-h: 32px;
+    --size-step: 8px;
+    --pad-x: var(--sp-3); /* the text inset of every control: button, field, select, menu item */
+    --inset: var(--sp-1); /* the gap between a container and the controls nested in it */
+    --badge-h: 20px; /* tag, kbd */
+    --glyph: 16px; /* icon, checkbox, radio, status: one slot so columns line up */
+    --glyph-lg: 32px;
+    --pad-panel: var(--sp-4); /* drawer, toast, game table */
+    --pad-dialog: var(--sp-6); /* dialog, veil panel */
+
+    /* Widths of floating things, on the grid (§11). Menus open at the width of their select. */
+    --w-menu: 224px;
+    --w-toast: 360px;
+    --w-drawer: 360px;
+    --w-dialog: 400px;
+    --measure: 66ch; /* longest line of running text */
+
+    /* Radius (§4): three steps by size, plus full. Nested corners are computed, never picked. */
+    --r-1: 4px; /* things of 24px or less, and nested items */
+    --r-2: 8px; /* controls */
+    --r-3: 12px; /* panels */
+    --r-control: var(--r-2);
     --r-tag: 999px;
-    --r-check: 3px;
+    --r-check: var(--r-1);
     --r-status: 50%;
     --r-dot: 50%;
 
@@ -50,12 +92,17 @@
     --font-num: var(--font-ui);
     --display-weight: 300;
     --display-track: 0.08em;
+    /* Each size has its line height, on the 4px grid (§5) */
     --fs-0: 11px;
+    --lh-0: 16px;
     --fs-1: 12px;
+    --lh-1: 16px;
     --fs-2: 14px;
-    --fs-3: 15px;
+    --lh-2: 20px;
     --fs-4: 20px;
+    --lh-4: 28px;
     --fs-5: 32px;
+    --lh-5: 40px;
 
     --label-font: var(--font-ui);
     --label-weight: 500;
@@ -68,22 +115,20 @@
     --btn-size: var(--fs-2);
     --btn-track: 0;
     --btn-case: none;
-    --btn-pad: 14px;
 
     --tag-font: var(--font-ui);
     --tag-track: 0.02em;
     --tag-case: uppercase;
 
-    /* Density (Masterz's --row is 36px) */
-    --control-h: 32px;
+    /* Density (Masterz's --row is 36px): a row is one control plus 4px */
     --row-h: 36px;
     --row-gap: 0px;
     --row-rule: var(--border-subtle);
     --col-rule: transparent;
     --row-radius: 0px;
     --row-hover: var(--surface-raised);
-    --cell-pad: 12px;
-    --sel-edge: 2px;
+    --cell-pad: var(--sp-3);
+    --sel-edge: var(--stroke-bold);
 
     /* Drawer, progress, meter, badge */
     --drawer-inset: 0px;
@@ -94,12 +139,10 @@
     --progress-track: var(--border-subtle);
     --progress-fill: var(--text);
     --progress-ticks-h: 0px;
-    --meter-h: 14px;
+    --meter-h: 16px;
     --meter-radius: 4px;
     --meter-track: transparent;
     --meter-fill: var(--text);
-    --meter-seg-on: 10px;
-    --meter-seg-gap: 2px;
     --badge-radius: 50%;
     --badge-bg: transparent;
     --badge-font: var(--font-display);
@@ -108,10 +151,10 @@
     --switch-radius: 999px;
     --slider-track-h: 3px;
     --slider-thumb-radius: 50%;
-    --tab-gap: 20px;
+    --tab-gap: var(--sp-6);
     --tab-mark: var(--text);
     --card-radius: 8px;
-    --card-lift: 8px;
+    --card-lift: var(--sp-2);
     --deal-dur: 0ms;
 
     /* Motion: short, fades and slides only (research §6) */

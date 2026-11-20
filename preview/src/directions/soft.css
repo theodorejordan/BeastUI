@@ -20,8 +20,7 @@
     --r-1: 6px;
     --r-2: 12px;
     --r-3: 20px;
-    --r-btn: 999px;
-    --r-field: 12px;
+    --r-control: 999px;
     --r-tag: 999px;
     --r-check: 6px;
 
@@ -33,7 +32,7 @@
     --fs-5: 36px;
 
     --btn-weight: 600;
-    --btn-pad: 18px;
+    --pad-x: 18px;
     --tag-case: none;
     --tag-track: 0;
 
@@ -55,8 +54,6 @@
     --meter-radius: 999px;
     --meter-track: var(--surface-raised);
     --meter-fill: var(--signal);
-    --meter-seg-on: 100%;
-    --meter-seg-gap: 0px;
     --badge-radius: 50% 50% 46% 46% / 34% 34% 66% 66%;
     --badge-bg: var(--tint-sun);
     --badge-weight: 500;

@@ -15,8 +15,7 @@
     --r-1: 2px;
     --r-2: 3px;
     --r-3: 4px;
-    --r-btn: 3px;
-    --r-field: 3px;
+    --r-control: 3px;
     --r-tag: 2px;
     --r-check: 2px;
     --switch-radius: 3px;
@@ -45,8 +44,6 @@
     --tab-mark: var(--signal);
     --meter-radius: 3px;
     --meter-fill: var(--signal);
-    --meter-seg-on: 100%;
-    --meter-seg-gap: 0px;
     --badge-radius: 4px;
     --badge-font: var(--font-mono);
     --badge-weight: 500;

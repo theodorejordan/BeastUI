@@ -12,9 +12,8 @@
     --r-1: calc(4px * var(--radius-factor));
     --r-2: calc(8px * var(--radius-factor));
     --r-3: calc(12px * var(--radius-factor));
-    --r-btn: var(--r-2);
-    --r-field: calc(6px * var(--radius-factor));
-    --r-check: calc(3px * var(--radius-factor));
+    --r-control: var(--r-2);
+    --r-check: var(--r-1);
   }
 
   /* Theme "tool": functional → squarer, denser, mono numerals, one signal colour. Masterz, Transcribz. */
@@ -40,7 +39,7 @@
 
     --control-h: 28px;
     --row-h: 32px;
-    --cell-pad: 10px;
+    --cell-pad: var(--sp-2);
     --col-rule: var(--border-subtle); /* taken from Instrument (owner, 02-proposals §11) */
 
     /* v1 had a segmented "pixel" bar (owner: ugly). Now a thin continuous bar + stage graduations. */
@@ -50,10 +49,8 @@
     --switch-radius: var(--r-2);
     --slider-thumb-radius: var(--r-1);
     --meter-fill: var(--signal);
-    --meter-seg-on: 100%;
-    --meter-seg-gap: 0px;
-    --meter-radius: calc(4px * var(--radius-factor));
-    --badge-radius: var(--r-1);
+    --meter-radius: var(--r-1);
+    --badge-radius: var(--r-2);
     --badge-font: var(--font-mono);
     --badge-weight: 500;
 
@@ -73,19 +70,19 @@
 
     --fs-4: 22px;
     --fs-5: 40px;
+    --lh-5: 48px;
 
-    --control-h: 36px;
+    --control-h: 40px; /* touch first: AD is played on phones */
+    --row-h: 44px;
+    --pad-x: var(--sp-4); /* 40px controls get a 16px inset (Primer, Carbon) */
     --progress-h: 6px;
     --progress-radius: 3px;
     --progress-fill: var(--play-green);
-    --meter-h: 16px;
-    --meter-radius: calc(5px * var(--radius-factor));
+    --meter-radius: var(--r-1);
     --meter-fill: var(--play-green);
-    --meter-seg-on: 100%;
-    --meter-seg-gap: 0px;
     --badge-bg: color-mix(in srgb, var(--play-gold) 22%, transparent);
     --card-radius: calc(8px * var(--radius-factor));
-    --card-lift: 14px;
+    --card-lift: var(--sp-4);
     --deal-dur: 520ms;
 
     --motion-scale: 1.5;

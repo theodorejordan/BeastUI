@@ -7,8 +7,8 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 12px 20px;
-    padding: 12px 20px;
+    gap: var(--sp-3) var(--sp-6);
+    padding: var(--sp-3) var(--sp-6);
     background: var(--surface);
     border-bottom: var(--hair) solid var(--border-subtle);
   }
@@ -19,21 +19,22 @@
   .pv-controls {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: var(--gap-inline);
     margin-left: auto;
   }
   .pv-main {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr));
-    gap: 20px;
-    padding: 20px;
+    /* sections are far apart, a heading is close to its content: proximity at page scale */
+    gap: var(--gap-section) var(--sp-6);
+    padding: var(--sp-6);
     max-width: 1440px;
     margin: 0 auto;
   }
   .pv-card {
     display: grid;
     align-content: start;
-    gap: 16px;
+    gap: var(--sp-3);
     min-width: 0;
   }
   .pv-card h2 {
@@ -44,18 +45,18 @@
   }
   .pv-stack {
     display: grid;
-    gap: 16px;
+    gap: var(--gap-stack);
   }
   .pv-row {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 8px 12px;
+    gap: var(--gap-inline);
   }
   .pv-grid2 {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 16px;
+    gap: var(--gap-stack);
   }
   .pv-scroll {
     overflow-x: auto;
@@ -72,18 +73,18 @@
   }
   .pv-float__menu {
     position: absolute;
-    top: 20px;
-    left: 20px;
+    top: var(--pad-panel);
+    left: var(--pad-panel);
     display: grid;
-    gap: 6px;
+    gap: var(--sp-1);
     justify-items: start;
   }
   .pv-float__tip {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: var(--pad-panel);
+    right: var(--pad-panel);
     display: grid;
-    gap: 8px;
+    gap: var(--sp-2);
     justify-items: end;
   }
   .pv-short {
@@ -94,7 +95,7 @@
     font-size: var(--fs-1);
   }
   .pv-contrast td {
-    padding: 4px 16px 4px 0;
+    padding: var(--sp-1) var(--sp-4) var(--sp-1) 0;
     border-bottom: var(--hair) solid var(--border-subtle);
   }
   .pv-contrast tr[data-ok='false'] {
