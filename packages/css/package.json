@@ -33,5 +33,8 @@
     "@beastui/tokens": "workspace:*",
     "browserslist": "^4.29.6",
     "lightningcss": "^1.33.0"
+  },
+  "volta": {
+    "extends": "../../package.json"
   }
 }

@@ -27,5 +27,8 @@
     "@terrazzo/plugin-css": "^2.10.0",
     "@terrazzo/plugin-js": "^2.10.0",
     "@terrazzo/token-tools": "2.10.0"
+  },
+  "volta": {
+    "extends": "../../package.json"
   }
 }

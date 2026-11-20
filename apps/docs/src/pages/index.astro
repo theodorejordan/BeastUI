@@ -1,0 +1,13 @@
+---
+import Docs from '../layouts/Docs.astro';
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+---
+
+<Docs title="BeastUI" description="A calm, outlined UI system.">
+  <h1>BeastUI</h1>
+  <p class="docs-lead">A calm, outlined UI system. Tokens, plain CSS classes, and thin Preact components.</p>
+  <h2>Components</h2>
+  <ul>
+    <li><a href={`${base}components/button/`}>Button</a></li>
+  </ul>
+</Docs>

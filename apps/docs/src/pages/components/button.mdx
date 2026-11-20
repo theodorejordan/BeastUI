@@ -1,0 +1,97 @@
+---
+layout: ../../layouts/Docs.astro
+title: Button
+description: An action the user takes. Four variants, an icon-only square, and two ways to be unavailable.
+---
+import Demo from '../../components/Demo.astro';
+import PendingDemo from '../../components/PendingDemo';
+
+# Button
+
+<p class="docs-lead">An action the user takes. Four variants, an icon-only square, and two ways to be unavailable.</p>
+
+## Variants
+
+`secondary` is the default: an outline, the everyday button. Keep `primary` for the one main action of a view.
+
+<Demo html={`
+<button class="b-btn" data-variant="primary" type="button">Master 3</button>
+<button class="b-btn" data-variant="secondary" type="button">Analyse all</button>
+<button class="b-btn" data-variant="quiet" type="button">Clear</button>
+<button class="b-btn" data-variant="danger" type="button">Replace</button>
+`} />
+
+## With an icon
+
+An icon before the label gets a slightly smaller inset, so it looks as evenly padded as text. An icon-only button becomes a square of the control height, and **must** have an `aria-label`: without it, a screen reader only says "button".
+
+<Demo html={`
+<button class="b-btn" data-variant="secondary" type="button">
+  <svg class="b-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>
+  Filters
+</button>
+<button class="b-btn" data-variant="secondary" data-icon type="button" aria-label="Settings">
+  <svg class="b-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>
+</button>
+`} />
+
+## Disabled and pending
+
+Two different states, two different looks.
+
+- **Disabled**: the action is not available. The whole button fades and stops reacting to hover. The native `disabled` attribute takes it out of the tab order; `aria-disabled="true"` looks the same but keeps it focusable, for example to explain with a tooltip why it is off.
+- **Pending**: the action is running. The button keeps its variant and its width, and a spinner takes the place of its content. It refuses clicks but **keeps the focus**, so a keyboard user doesn't lose their place when the action starts. It uses `aria-disabled="true"` and `data-pending`; the page must ignore its clicks, which the Preact component does for you.
+
+<Demo html={`
+<button class="b-btn" data-variant="primary" type="button" disabled>Save</button>
+<button class="b-btn" data-variant="secondary" type="button" disabled>Undo</button>
+<button class="b-btn" data-variant="primary" type="button" aria-disabled="true" data-pending>Save</button>
+<button class="b-btn" data-variant="secondary" type="button" aria-disabled="true" data-pending>Analyse all</button>
+`} />
+
+Try it: the save below takes two seconds.
+
+<figure class="docs-demo">
+  <div class="docs-demo__stage"><PendingDemo client:visible /></div>
+</figure>
+
+## In Preact
+
+```tsx
+import { Button } from '@beastui/preact';
+
+<Button variant="primary" onClick={save}>Save</Button>
+<Button iconOnly aria-label="Settings"><svg class="b-icon">…</svg></Button>
+<Button disabled>Undo</Button>
+<Button pending={saving}>Save</Button>
+```
+
+| Prop | Type | Default | |
+|---|---|---|---|
+| `variant` | `'primary' \| 'secondary' \| 'quiet' \| 'danger'` | `'secondary'` | How loud the button is. |
+| `iconOnly` | `boolean` | `false` | A square with no label. TypeScript then requires `aria-label`. |
+| `pending` | `boolean` | `false` | An action is running: a spinner replaces the content; refuses clicks, keeps the focus. |
+| `type` | `'button' \| 'submit' \| 'reset'` | `'button'` | The native default is `submit`, which sends a form by surprise. |
+| `class` | `string` | | Extra classes, after `b-btn`. |
+
+Every other prop goes to the native `<button>`, `ref` included.
+
+## The CSS contract
+
+For apps without Preact. Nothing else is needed than `@beastui/css`.
+
+| Markup | Effect |
+|---|---|
+| `class="b-btn"` | The button. |
+| `data-variant="primary \| secondary \| quiet \| danger"` | The variant. |
+| `data-icon` | Icon only: a square. |
+| `disabled` | Unavailable: the button fades. |
+| `aria-disabled="true"` | The same look, but still focusable. |
+| `data-pending` | With `aria-disabled`: an action is running. A spinner replaces the content, the variant stays. |
+
+## Accessibility
+
+- It is a native `<button>`: Enter and Space work, and it is in the tab order.
+- The focus ring is 2 px, 2 px away from the edge, in every theme.
+- Disabled and pending are announced as unavailable (`disabled` or `aria-disabled`). While pending, the content is only made transparent, so the button keeps its name: a screen reader still says "Save".
+- Under "reduce motion", the playful theme's press movement is turned off, and the spinner turns three times slower instead of stopping: a still spinner would no longer say "running".

@@ -1,0 +1,134 @@
+/*
+ * The docs' own chrome. It sits in @layer docs, declared after BeastUI's layers (beastui.css is
+ * imported first), which is the rule the install page will give apps.
+ * Every length is a token, as in the components (04-foundations.md).
+ */
+@layer docs {
+  body {
+    margin: 0;
+    background: var(--b-color-surface);
+    color: var(--b-color-text);
+    font: var(--b-font-weight-regular) var(--b-font-size-2) / var(--b-font-line-height-2) var(--b-font-family-ui);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- Top bar ---------- */
+  .docs-bar {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--b-gap-inline) var(--b-gap-group);
+    padding: var(--b-space-3) var(--b-space-6);
+    background: var(--b-color-surface);
+    border-bottom: var(--b-line-hair) solid var(--b-color-border-subtle);
+  }
+  .docs-mark {
+    margin-inline-end: auto;
+    color: inherit;
+    font: var(--b-font-weight-display) var(--b-font-size-4) / var(--b-font-line-height-4) var(--b-font-family-display);
+    text-decoration: none;
+  }
+  .docs-switch {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--b-gap-group);
+  }
+  .docs-switch__group {
+    display: flex;
+    gap: var(--b-space-1);
+  }
+
+  /* ---------- Page ---------- */
+  .docs-main {
+    /* A reading measure: 45 to 75 characters a line is the usual range (Bringhurst). */
+    max-width: 72ch;
+    margin: 0 auto;
+    padding: var(--b-space-12) var(--b-space-6);
+  }
+  .docs-main > * {
+    margin-block: 0;
+  }
+  .docs-main > * + * {
+    margin-block-start: var(--b-gap-stack);
+  }
+  .docs-main > h2 {
+    margin-block-start: var(--b-gap-section);
+  }
+  .docs-main > h3 {
+    margin-block-start: var(--b-gap-group);
+  }
+  h1 {
+    font: var(--b-font-weight-display) var(--b-font-size-5) / var(--b-font-line-height-5) var(--b-font-family-display);
+  }
+  h2 {
+    font: var(--b-font-weight-medium) var(--b-font-size-4) / var(--b-font-line-height-4) var(--b-font-family-ui);
+  }
+  h3 {
+    font: var(--b-font-weight-medium) var(--b-font-size-2) / var(--b-font-line-height-2) var(--b-font-family-ui);
+  }
+  .docs-lead {
+    color: var(--b-color-text-muted);
+  }
+  a {
+    color: inherit;
+    text-underline-offset: var(--b-space-0-5);
+  }
+  ul {
+    padding-inline-start: var(--b-space-6);
+  }
+
+  /* ---------- Code ---------- */
+  code {
+    font-family: var(--b-font-family-mono);
+    font-size: var(--b-font-size-1);
+  }
+  pre {
+    overflow-x: auto;
+    padding: var(--b-inset-panel);
+    border: var(--b-line-hair) solid var(--b-color-border-subtle);
+    border-radius: var(--b-radius-3);
+    background: var(--b-color-surface-card);
+    line-height: var(--b-font-line-height-1);
+  }
+
+  /* ---------- Demo: the live example above, its source below, one frame ---------- */
+  .docs-demo {
+    margin-inline: 0;
+    border: var(--b-line-hair) solid var(--b-color-border-subtle);
+    border-radius: var(--b-radius-3);
+    overflow: hidden;
+  }
+  .docs-demo__stage {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--b-gap-inline);
+    padding: var(--b-space-8) var(--b-inset-panel);
+  }
+  .docs-demo pre {
+    margin: 0;
+    border: 0;
+    border-block-start: var(--b-line-hair) solid var(--b-color-border-subtle);
+    border-radius: 0;
+  }
+
+  /* ---------- Tables ---------- */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th,
+  td {
+    padding: var(--b-space-2) var(--b-space-3) var(--b-space-2) 0;
+    border-bottom: var(--b-line-hair) solid var(--b-color-border-subtle);
+    text-align: start;
+    vertical-align: top;
+  }
+  th {
+    color: var(--b-color-text-muted);
+    font-weight: var(--b-font-weight-medium);
+  }
+}

@@ -1,0 +1,15 @@
+---
+/**
+ * A live example and its source, from one string: they can't drift apart.
+ * The HTML is plain @beastui/css markup, so every demo also documents the CSS-only path.
+ */
+interface Props {
+  html: string;
+}
+const html = Astro.props.html.trim();
+---
+
+<figure class="docs-demo">
+  <div class="docs-demo__stage" set:html={html} />
+  <pre><code>{html}</code></pre>
+</figure>

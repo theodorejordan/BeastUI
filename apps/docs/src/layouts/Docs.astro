@@ -1,0 +1,48 @@
+---
+// BeastUI first, then the docs' own layer: the order an app follows (03-architecture §7).
+import '@beastui/css/beastui.css';
+import '../styles/docs.css';
+// Fonts are loaded by the app, not by @beastui/css: only the weights the tokens use.
+import '@fontsource/inter-tight/latin-400.css';
+import '@fontsource/inter-tight/latin-500.css';
+import '@fontsource/outfit/latin-300.css';
+import '@fontsource/ibm-plex-mono/latin-400.css';
+import ThemeSwitcher from '../components/ThemeSwitcher';
+
+interface Props {
+  title?: string;
+  description?: string;
+  // MDX pages that name this layout pass their frontmatter instead.
+  frontmatter?: { title: string; description?: string };
+}
+const title = Astro.props.frontmatter?.title ?? Astro.props.title ?? 'BeastUI';
+const description = Astro.props.frontmatter?.description ?? Astro.props.description;
+const home = import.meta.env.BASE_URL;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title === 'BeastUI' ? title : `${title} · BeastUI`}</title>
+    {description && <meta name="description" content={description} />}
+    <script is:inline>
+      // Apply the remembered theme before the first paint (key shared with ThemeSwitcher.tsx).
+      try {
+        const saved = JSON.parse(localStorage.getItem('beastui-docs') ?? 'null');
+        if (saved?.theme && saved.theme !== 'core') document.documentElement.dataset.theme = saved.theme;
+        if (saved?.mode && saved.mode !== 'system') document.documentElement.dataset.mode = saved.mode;
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <header class="docs-bar">
+      <a class="docs-mark" href={home}>BeastUI</a>
+      <ThemeSwitcher client:load />
+    </header>
+    <main class="docs-main">
+      <slot />
+    </main>
+  </body>
+</html>

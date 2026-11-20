@@ -1,0 +1,31 @@
+{
+  "name": "docs",
+  "version": "0.0.0",
+  "private": true,
+  "description": "The BeastUI docs site, built with BeastUI itself (decision 0008). Not published to npm.",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "typecheck": "astro sync && tsc --noEmit"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^8.1.6",
+    "@astrojs/preact": "^6.1.6",
+    "@beastui/css": "workspace:*",
+    "@beastui/preact": "workspace:*",
+    "@beastui/tokens": "workspace:*",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/inter-tight": "^5.3.0",
+    "@fontsource/outfit": "^5.3.0",
+    "astro": "^7.4.12",
+    "preact": "^11.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  },
+  "volta": {
+    "extends": "../../package.json"
+  }
+}
