@@ -16,8 +16,9 @@ type CommonProps = NativeProps & {
   /** How loud the button is. `secondary` (an outline) by default; one `primary` per view. */
   variant?: ButtonVariant;
   /**
-   * An action is running. The button looks disabled and refuses clicks, but keeps the focus:
-   * a native `disabled` would drop it, and a keyboard user would lose their place.
+   * An action is running. A spinner takes the place of the content (same width, same variant,
+   * same accessible name) and the button refuses clicks, but keeps the focus: a native
+   * `disabled` would drop it, and a keyboard user would lose their place.
    * Use `disabled` instead when the action is not available at all.
    */
   pending?: boolean;

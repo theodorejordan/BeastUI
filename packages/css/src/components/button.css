@@ -3,9 +3,9 @@
  *
  * <button class="b-btn" data-variant="primary | secondary | quiet | danger" type="button">Save</button>
  * Icon only: add data-icon and an aria-label; the button becomes a square.
- * Unavailable: the native disabled attribute.
- * Action running: aria-disabled="true" data-pending. It looks disabled but keeps the focus; the
- * page must ignore its clicks (@beastui/preact does).
+ * Unavailable: the native disabled attribute. aria-disabled="true" looks the same but keeps the focus.
+ * Action running: aria-disabled="true" data-pending. A spinner takes the place of the content;
+ * the page must ignore its clicks (@beastui/preact does).
  *
  * Foundations (04-foundations.md): the height is the control size, the text sits the control
  * inset from the outer edge (the padding gives back the border), corners are the control radius.
@@ -20,6 +20,10 @@
     --b-btn-weight: var(--b-font-weight-medium);
     --b-btn-size: var(--b-font-size-2);
     --b-btn-track: 0;
+    /* The content colour of the variant. The spinner draws with it while the content is hidden. */
+    --b-btn-fg: var(--b-color-text);
+    /* One turn of the spinner. A loop, not a transition: the duration tokens don't apply. */
+    --b-btn-spin: 800ms;
 
     display: inline-flex;
     align-items: center;
@@ -30,7 +34,7 @@
     border: var(--b-line-stroke) solid transparent;
     border-radius: var(--b-radius-control);
     background: transparent;
-    color: var(--b-color-text);
+    color: var(--b-btn-fg);
     font: var(--b-btn-weight) var(--b-btn-size) / 1 var(--b-btn-font);
     letter-spacing: var(--b-btn-track);
     text-transform: var(--b-case);
@@ -51,8 +55,8 @@
     }
 
     &[data-variant='primary'] {
+      --b-btn-fg: var(--b-color-on-ink);
       background: var(--b-color-text);
-      color: var(--b-color-on-ink);
     }
     &[data-variant='primary']:hover:not(:disabled, [aria-disabled='true']) {
       background: color-mix(in srgb, var(--b-color-text) 84%, var(--b-color-surface));
@@ -64,8 +68,8 @@
       background: var(--b-color-surface-raised);
     }
     &[data-variant='danger'] {
+      --b-btn-fg: var(--b-color-danger);
       border-color: var(--b-color-danger);
-      color: var(--b-color-danger);
     }
     &[data-variant='danger']:hover:not(:disabled, [aria-disabled='true']) {
       background: color-mix(in srgb, var(--b-color-danger) 10%, transparent);
@@ -77,25 +81,50 @@
       padding: 0;
     }
 
-    /* Disabled: a dashed outline as well as muted text, never opacity alone (research §7).
-       aria-disabled gets the same look: unavailable for now, but still focusable. */
-    &:is(:disabled, [aria-disabled='true']) {
-      background: transparent;
-      border-color: var(--b-color-border-subtle);
-      border-style: dashed;
-      color: var(--b-color-text-muted);
+    /* Unavailable: the whole button fades, its variant still recognisable (owner, Phase 5).
+       No hover and no press either (the :not() above). */
+    &:is(:disabled, [aria-disabled='true']):not([data-pending]) {
+      opacity: var(--b-opacity-disabled);
       cursor: not-allowed;
     }
-    /* Waiting for the action to finish, not refused. */
+
+    /* Running: the variant stays, a spinner takes the place of the content. The content turns
+       transparent rather than hidden, so the button keeps its width and its accessible name
+       (visibility: hidden would take the label out of what a screen reader says). */
     &[data-pending] {
+      position: relative;
+      color: transparent;
       cursor: progress;
+    }
+    &[data-pending]::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      width: var(--b-size-glyph);
+      height: var(--b-size-glyph);
+      margin: auto;
+      /* A quarter arc on a faint ring, drawn with the UI stroke. */
+      border: var(--b-line-stroke) solid color-mix(in srgb, var(--b-btn-fg) 25%, transparent);
+      border-block-start-color: var(--b-btn-fg);
+      border-radius: 50%;
+      animation: b-spin var(--b-btn-spin) linear infinite;
     }
   }
 
-  /* Reduce, don't remove (research §6): no press movement. */
+  @keyframes b-spin {
+    to {
+      transform: rotate(1turn);
+    }
+  }
+
+  /* Reduce, don't remove (research §6): no press movement; the spinner slows down but keeps
+     turning, because a still spinner would no longer say "running". */
   @media (prefers-reduced-motion: reduce) {
     .b-btn:active:not(:disabled, [aria-disabled='true']) {
       transform: none;
+    }
+    .b-btn[data-pending]::after {
+      animation-duration: calc(var(--b-btn-spin) * 3);
     }
   }
 }

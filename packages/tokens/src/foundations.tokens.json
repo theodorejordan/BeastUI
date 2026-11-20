@@ -386,5 +386,12 @@
     "press": {
       "$value": 1
     }
+  },
+  "opacity": {
+    "$type": "number",
+    "$description": "A whole control that is not available: faded, its variant still recognisable (owner, Phase 5). Shared by every control that can be disabled.",
+    "disabled": {
+      "$value": 0.4
+    }
   }
 }

@@ -308,7 +308,7 @@ A checklist every data component's docs page fills in:
   - `status` (polite) for stage changes, `alert` for failures.
   - Announce thresholds, not every second (audit §7: the Masterz veil re-announces every second).
 - [ ] **Reduced-motion behaviour** documented.
-- [ ] **Disabled text** never relies on opacity alone.
+- [ ] **Disabled controls** fade as a whole (`--b-opacity-disabled`), and lose hover and press. The owner chose this in Phase 5 (2026-11-20) over a greyed fill and a dashed outline; it replaces "never relies on opacity alone". WCAG 1.4.3 exempts inactive controls from contrast.
 - [ ] **Selected and current** (a row, the current transcript line, the active player) carry a cue that is not colour alone.
 
 ## 8. The docs site (audit §13.4)
