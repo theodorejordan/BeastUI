@@ -71,8 +71,10 @@
       --b-btn-fg: var(--b-color-danger);
       border-color: var(--b-color-danger);
     }
+    /* The raised surface, like the other hovers, tinted red. Over the plain surface the label
+       fell to 4.2:1 in light mode (caught by test/contrast.test.ts). */
     &[data-variant='danger']:hover:not(:disabled, [aria-disabled='true']) {
-      background: color-mix(in srgb, var(--b-color-danger) 10%, transparent);
+      background: color-mix(in srgb, var(--b-color-danger) 10%, var(--b-color-surface-raised));
     }
 
     /* Icon only: a square of the control height (Radix, Atlassian). */

@@ -1,0 +1,10 @@
+---
+/**
+ * Every code block of an MDX page (`export const components = { pre: Pre }`).
+ * Code blocks scroll sideways, so a keyboard user must be able to focus them to scroll
+ * (axe: scrollable-region-focusable, WCAG 2.1.1).
+ */
+const props = Astro.props;
+---
+
+<pre tabindex="0" {...props}><slot /></pre>
