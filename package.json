@@ -12,5 +12,12 @@
     "dev:docs": "pnpm --filter docs dev",
     "typecheck": "pnpm --recursive run typecheck",
     "test": "pnpm --recursive run test"
-  }
+  },
+  "browserslist": [
+    "safari >= 17.5",
+    "ios_saf >= 17.5",
+    "chrome >= 125",
+    "edge >= 125",
+    "firefox >= 126"
+  ]
 }

@@ -1,0 +1,24 @@
+/*
+ * Icon: an inline SVG drawn with the UI stroke, in screen pixels (research §6, Raycast).
+ * 16px next to 14px text (Carbon, Atlassian): the same slot as a checkbox or a status glyph.
+ *
+ * <svg class="b-icon" viewBox="0 0 24 24" aria-hidden="true">…</svg>
+ */
+@import '../layers.css';
+
+@layer beast.components {
+  .b-icon {
+    width: var(--b-size-glyph);
+    height: var(--b-size-glyph);
+    flex: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: var(--b-line-stroke);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+  }
+  .b-icon * {
+    vector-effect: non-scaling-stroke;
+  }
+}

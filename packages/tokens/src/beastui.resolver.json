@@ -1,7 +1,7 @@
 {
   "name": "BeastUI",
   "version": "2025.10",
-  "description": "BeastUI tokens: foundations, then the colour mode, then the layer. Layers only change values (decision 0002).",
+  "description": "BeastUI tokens: foundations, then the colour mode, then the theme. Themes only change values (decision 0002).",
   "sets": {
     "foundations": {
       "sources": [
@@ -28,19 +28,19 @@
         ]
       }
     },
-    "layer": {
-      "description": "The app's layer: core (default), tool for desk apps, playful for the game.",
+    "theme": {
+      "description": "The app's theme: core (default), tool for desk apps, playful for the game.",
       "default": "core",
       "contexts": {
         "core": [],
         "tool": [
           {
-            "$ref": "layer.tool.tokens.json"
+            "$ref": "theme.tool.tokens.json"
           }
         ],
         "playful": [
           {
-            "$ref": "layer.playful.tokens.json"
+            "$ref": "theme.playful.tokens.json"
           }
         ]
       }
@@ -54,7 +54,7 @@
       "$ref": "#/modifiers/mode"
     },
     {
-      "$ref": "#/modifiers/layer"
+      "$ref": "#/modifiers/theme"
     }
   ]
 }

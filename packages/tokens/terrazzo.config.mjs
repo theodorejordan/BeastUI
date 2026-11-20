@@ -6,7 +6,7 @@
 //  1. light-dark(). The owner chose colour modes through `color-scheme` + light-dark() (research
 //     §4, option A; decision 0005). Terrazzo writes one block per mode. So the dark permutation
 //     runs first, emits nothing, and records each colour; the light one then writes the pair.
-//  2. Layers as small overrides. A layer block lists only the tokens its file changes, not the
+//  2. Themes as small overrides. A theme block lists only the tokens its file changes, not the
 //     whole set again.
 import { readFileSync } from 'node:fs';
 import { defineConfig } from '@terrazzo/cli';
@@ -14,7 +14,7 @@ import css from '@terrazzo/plugin-css';
 import js from '@terrazzo/plugin-js';
 import { transformCSSValue } from '@terrazzo/token-tools/css';
 
-/** Every token ID a DTCG file defines (keys that hold a $value), to scope a layer's block. */
+/** Every token ID a DTCG file defines (keys that hold a $value), to scope a theme's block. */
 function tokenIds(file) {
   const ids = [];
   const walk = (node, path) => {
@@ -30,7 +30,7 @@ function tokenIds(file) {
   return ids;
 }
 
-// Variables share the class prefix: layers isolate rules, not variable names.
+// Variables share the class prefix: cascade layers isolate rules, not variable names.
 const variableName = (token) => `--b-${token.id.replaceAll('.', '-')}`;
 
 const darkColors = new Map();
@@ -53,7 +53,7 @@ export default defineConfig({
       permutations: [
         {
           // 1. Dark: recorded, not printed.
-          input: { mode: 'dark', layer: 'core' },
+          input: { mode: 'dark', theme: 'core' },
           transform(token, options) {
             if (isOwnColor(token)) darkColors.set(token.id, cssValue(token, options));
             return undefined; // Terrazzo's default; this block is not printed anyway
@@ -62,7 +62,7 @@ export default defineConfig({
         },
         {
           // 2. Light: every token, colours as light-dark(light, dark).
-          input: { mode: 'light', layer: 'core' },
+          input: { mode: 'light', theme: 'core' },
           transform(token, options) {
             if (!isOwnColor(token)) return undefined;
             const light = cssValue(token, options);
@@ -76,14 +76,14 @@ export default defineConfig({
             `  :root[data-mode='dark'] {\n    color-scheme: dark;\n  }\n}`,
         },
         {
-          input: { mode: 'light', layer: 'tool' },
-          include: tokenIds('layer.tool.tokens.json'),
-          prepare: (contents) => `@layer beast.tokens {\n  :root[data-layer='tool'] {\n    ${contents}\n  }\n}`,
+          input: { mode: 'light', theme: 'tool' },
+          include: tokenIds('theme.tool.tokens.json'),
+          prepare: (contents) => `@layer beast.tokens {\n  :root[data-theme='tool'] {\n    ${contents}\n  }\n}`,
         },
         {
-          input: { mode: 'light', layer: 'playful' },
-          include: tokenIds('layer.playful.tokens.json'),
-          prepare: (contents) => `@layer beast.tokens {\n  :root[data-layer='playful'] {\n    ${contents}\n  }\n}`,
+          input: { mode: 'light', theme: 'playful' },
+          include: tokenIds('theme.playful.tokens.json'),
+          prepare: (contents) => `@layer beast.tokens {\n  :root[data-theme='playful'] {\n    ${contents}\n  }\n}`,
         },
       ],
     }),

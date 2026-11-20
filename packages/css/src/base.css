@@ -1,0 +1,49 @@
+/*
+ * What every component assumes: border-box sizing, the interface case, the focus ring.
+ */
+@import './layers.css';
+
+@layer beast.reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+}
+
+/* Interface case (02-proposals §11): it follows the app. Core and playful keep an initial
+ * capital; the tool theme renders lowercase. data-case on <html> forces either.
+ * Copy is always written with an initial capital: lowercase is only a rendering choice.
+ * Never user content, units or proper nouns: those carry .b-keep (below). */
+@layer beast.voice {
+  :root {
+    --b-case: none;
+  }
+  :root[data-theme='tool'] {
+    --b-case: lowercase;
+  }
+  /* After the theme rule, same specificity: an explicit choice wins. */
+  :root[data-case='sentence'] {
+    --b-case: none;
+  }
+  :root[data-case='lower'] {
+    --b-case: lowercase;
+  }
+}
+
+@layer beast.base {
+  /* Focus: 2px outline, offset 2px, in every theme (research §10, constraint 3).
+     An outline follows border-radius, so the ring's corners stay concentric with the control. */
+  :focus-visible {
+    outline: var(--b-line-bold) solid var(--b-color-focus);
+    outline-offset: var(--b-space-0-5);
+  }
+}
+
+/* Protected from the lowercase voice: units, acronyms, proper nouns, user content.
+   In beast.utilities, the last layer, so it beats any component whatever its specificity. */
+@layer beast.utilities {
+  .b-keep {
+    text-transform: none;
+  }
+}

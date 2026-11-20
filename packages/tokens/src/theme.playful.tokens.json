@@ -1,5 +1,5 @@
 {
-  "$description": "Playful layer v2 (Attaque Défense): the core's shapes, novelty spent on colour and motion. Values only.",
+  "$description": "Playful theme v2 (Attaque Défense): the core's shapes, novelty spent on colour and motion. Values only.",
   "size": {
     "$type": "dimension",
     "control": {
@@ -93,6 +93,12 @@
         "value": 600,
         "unit": "ms"
       }
+    }
+  },
+  "scale": {
+    "$type": "number",
+    "press": {
+      "$value": 0.97
     }
   }
 }

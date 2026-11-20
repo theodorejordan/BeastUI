@@ -1,0 +1,24 @@
+/*
+ * The tokens grain: everything token-like, nothing that styles an element.
+ * The DTCG tokens come from @beastui/tokens. A few values DTCG 2025.10 can't describe are added
+ * here, in beast.themes.
+ */
+@import './layers.css';
+@import '@beastui/tokens/tokens.css';
+
+@layer beast.themes {
+  :root {
+    /* A spring as a CSS linear() easing, from the Phase 3 preview. DTCG only types cubic
+       Béziers, so it can't live in @beastui/tokens. */
+    --b-easing-spring: linear(
+      0, 0.009, 0.035 2.1%, 0.141 4.4%, 0.723 12.9%, 0.938 16.7%, 1.017 19.4%, 1.067, 1.099 24.3%,
+      1.104 26.4%, 1.098 28.5%, 1.056 33.4%, 0.996 40.5%, 0.978 44.5%, 0.976 48.5%, 0.997 59.8%,
+      1.002 66.2%, 1
+    );
+    /* The curve of a press (--b-scale-press). The playful theme springs back. */
+    --b-easing-press: var(--b-easing-move);
+  }
+  :root[data-theme='playful'] {
+    --b-easing-press: var(--b-easing-spring);
+  }
+}

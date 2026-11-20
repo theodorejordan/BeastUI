@@ -1,0 +1,7 @@
+/*
+ * BeastUI's cascade order (03-architecture §7). Every published file starts with this statement:
+ * the first file that names a layer fixes its place, so an app importing a single component
+ * still gets this order. Restating an order that already exists changes nothing.
+ * App CSS outside any layer beats every layer here: that is the CSS spec, on purpose.
+ */
+@layer beast.reset, beast.tokens, beast.themes, beast.voice, beast.base, beast.components, beast.utilities;

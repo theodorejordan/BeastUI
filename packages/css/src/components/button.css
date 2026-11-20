@@ -1,0 +1,93 @@
+/*
+ * Button.
+ *
+ * <button class="b-btn" data-variant="primary | secondary | quiet | danger" type="button">Save</button>
+ * Icon only: add data-icon and an aria-label; the button becomes a square.
+ *
+ * Foundations (04-foundations.md): the height is the control size, the text sits the control
+ * inset from the outer edge (the padding gives back the border), corners are the control radius.
+ */
+@import '../layers.css';
+
+@layer beast.components {
+  .b-btn {
+    /* The button's own type. No theme changes it, so these are not tokens (decision in Phase 5,
+       step 3); an app can still override them on .b-btn. */
+    --b-btn-font: var(--b-font-family-ui);
+    --b-btn-weight: var(--b-font-weight-medium);
+    --b-btn-size: var(--b-font-size-2);
+    --b-btn-track: 0;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--b-gap-icon);
+    height: var(--b-size-control);
+    padding: 0 calc(var(--b-inset-control) - var(--b-line-stroke));
+    border: var(--b-line-stroke) solid transparent;
+    border-radius: var(--b-radius-control);
+    background: transparent;
+    color: var(--b-color-text);
+    font: var(--b-btn-weight) var(--b-btn-size) / 1 var(--b-btn-font);
+    letter-spacing: var(--b-btn-track);
+    text-transform: var(--b-case);
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+      background-color var(--b-duration-1) var(--b-easing-move),
+      border-color var(--b-duration-1) var(--b-easing-move),
+      transform var(--b-duration-2) var(--b-easing-press);
+
+    /* Optical inset: an icon's drawing sits inside its box, so a leading icon needs less room
+       than a letter to look evenly padded. */
+    &:not([data-icon]):has(> .b-icon:first-child) {
+      padding-inline-start: calc(var(--b-inset-control) - var(--b-space-1) - var(--b-line-stroke));
+    }
+    &:active:not(:disabled) {
+      transform: scale(var(--b-scale-press));
+    }
+
+    &[data-variant='primary'] {
+      background: var(--b-color-text);
+      color: var(--b-color-on-ink);
+    }
+    &[data-variant='primary']:hover:not(:disabled) {
+      background: color-mix(in srgb, var(--b-color-text) 84%, var(--b-color-surface));
+    }
+    &[data-variant='secondary'] {
+      border-color: var(--b-color-border-strong);
+    }
+    &:is([data-variant='secondary'], [data-variant='quiet']):hover:not(:disabled) {
+      background: var(--b-color-surface-raised);
+    }
+    &[data-variant='danger'] {
+      border-color: var(--b-color-danger);
+      color: var(--b-color-danger);
+    }
+    &[data-variant='danger']:hover:not(:disabled) {
+      background: color-mix(in srgb, var(--b-color-danger) 10%, transparent);
+    }
+
+    /* Icon only: a square of the control height (Radix, Atlassian). */
+    &[data-icon] {
+      width: var(--b-size-control);
+      padding: 0;
+    }
+
+    /* Disabled: a dashed outline as well as muted text, never opacity alone (research §7). */
+    &:disabled {
+      background: transparent;
+      border-color: var(--b-color-border-subtle);
+      border-style: dashed;
+      color: var(--b-color-text-muted);
+      cursor: not-allowed;
+    }
+  }
+
+  /* Reduce, don't remove (research §6): no press movement. */
+  @media (prefers-reduced-motion: reduce) {
+    .b-btn:active:not(:disabled) {
+      transform: none;
+    }
+  }
+}

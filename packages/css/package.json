@@ -1,0 +1,37 @@
+{
+  "name": "@beastui/css",
+  "version": "0.0.0",
+  "description": "BeastUI components as plain CSS classes, zero JS, inside BeastUI's cascade layers.",
+  "type": "module",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "*.css"
+  ],
+  "exports": {
+    "./beastui.css": "./src/beastui.css",
+    "./tokens.css": "./src/tokens.css",
+    "./base.css": "./src/base.css",
+    "./components/*.css": "./src/components/*.css",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "exports": {
+      "./beastui.css": "./dist/beastui.css",
+      "./tokens.css": "./dist/tokens.css",
+      "./base.css": "./dist/base.css",
+      "./components/*.css": "./dist/components/*.css",
+      "./package.json": "./package.json"
+    }
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs"
+  },
+  "devDependencies": {
+    "@beastui/tokens": "workspace:*",
+    "browserslist": "^4.29.6",
+    "lightningcss": "^1.33.0"
+  }
+}

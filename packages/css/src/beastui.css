@@ -1,0 +1,9 @@
+/*
+ * The whole of BeastUI in one file: tokens, base, every component.
+ * Apps that count bytes import tokens.css, base.css and the components they use instead.
+ */
+@import './layers.css';
+@import './tokens.css';
+@import './base.css';
+@import './components/icon.css';
+@import './components/button.css';

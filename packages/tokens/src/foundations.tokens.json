@@ -379,5 +379,12 @@
         1
       ]
     }
+  },
+  "scale": {
+    "$type": "number",
+    "$description": "How much a control shrinks while pressed. 1 = no movement (core, tool); the playful theme presses in.",
+    "press": {
+      "$value": 1
+    }
   }
 }
