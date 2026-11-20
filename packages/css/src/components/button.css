@@ -3,6 +3,9 @@
  *
  * <button class="b-btn" data-variant="primary | secondary | quiet | danger" type="button">Save</button>
  * Icon only: add data-icon and an aria-label; the button becomes a square.
+ * Unavailable: the native disabled attribute.
+ * Action running: aria-disabled="true" data-pending. It looks disabled but keeps the focus; the
+ * page must ignore its clicks (@beastui/preact does).
  *
  * Foundations (04-foundations.md): the height is the control size, the text sits the control
  * inset from the outer edge (the padding gives back the border), corners are the control radius.
@@ -43,7 +46,7 @@
     &:not([data-icon]):has(> .b-icon:first-child) {
       padding-inline-start: calc(var(--b-inset-control) - var(--b-space-1) - var(--b-line-stroke));
     }
-    &:active:not(:disabled) {
+    &:active:not(:disabled, [aria-disabled='true']) {
       transform: scale(var(--b-scale-press));
     }
 
@@ -51,20 +54,20 @@
       background: var(--b-color-text);
       color: var(--b-color-on-ink);
     }
-    &[data-variant='primary']:hover:not(:disabled) {
+    &[data-variant='primary']:hover:not(:disabled, [aria-disabled='true']) {
       background: color-mix(in srgb, var(--b-color-text) 84%, var(--b-color-surface));
     }
     &[data-variant='secondary'] {
       border-color: var(--b-color-border-strong);
     }
-    &:is([data-variant='secondary'], [data-variant='quiet']):hover:not(:disabled) {
+    &:is([data-variant='secondary'], [data-variant='quiet']):hover:not(:disabled, [aria-disabled='true']) {
       background: var(--b-color-surface-raised);
     }
     &[data-variant='danger'] {
       border-color: var(--b-color-danger);
       color: var(--b-color-danger);
     }
-    &[data-variant='danger']:hover:not(:disabled) {
+    &[data-variant='danger']:hover:not(:disabled, [aria-disabled='true']) {
       background: color-mix(in srgb, var(--b-color-danger) 10%, transparent);
     }
 
@@ -74,19 +77,24 @@
       padding: 0;
     }
 
-    /* Disabled: a dashed outline as well as muted text, never opacity alone (research §7). */
-    &:disabled {
+    /* Disabled: a dashed outline as well as muted text, never opacity alone (research §7).
+       aria-disabled gets the same look: unavailable for now, but still focusable. */
+    &:is(:disabled, [aria-disabled='true']) {
       background: transparent;
       border-color: var(--b-color-border-subtle);
       border-style: dashed;
       color: var(--b-color-text-muted);
       cursor: not-allowed;
     }
+    /* Waiting for the action to finish, not refused. */
+    &[data-pending] {
+      cursor: progress;
+    }
   }
 
   /* Reduce, don't remove (research §6): no press movement. */
   @media (prefers-reduced-motion: reduce) {
-    .b-btn:active:not(:disabled) {
+    .b-btn:active:not(:disabled, [aria-disabled='true']) {
       transform: none;
     }
   }
