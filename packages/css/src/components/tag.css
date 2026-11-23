@@ -1,0 +1,41 @@
+/*
+ * Tag: a short label on a thing (a crate, a flag, a count). Read only: nothing to click.
+ *
+ * <span class="b-tag">House</span>
+ * <span class="b-tag" data-variant="warn">Clipping</span>
+ * <span class="b-tag" title="Disco, Edits, Live">+3</span>
+ *
+ * Filled, never outlined: across BeastUI an outline means "you can act on this" (buttons,
+ * inputs, the segmented control). Clickable tags (a filter, a popover) would be the outlined
+ * <button> version, not built yet (owner, 2026-11-23).
+ *
+ * Foundations (04-foundations.md): the badge height (20px), so a tag fits a 32px control or a
+ * 36px row; the full radius, reserved for tags. Figures are tabular, so counts line up.
+ */
+@import '../layers.css';
+
+@layer beast.components {
+  .b-tag {
+    display: inline-flex;
+    align-items: center;
+    height: var(--b-size-badge);
+    padding: 0 var(--b-space-2);
+    border-radius: var(--b-radius-tag);
+    /* A tint of the ink over whatever is under it, so the tag shows on the page, a hovered row
+       and a card alike. A raised fill vanished on a hovered row (owner review). */
+    background: color-mix(in srgb, var(--b-color-text) 8%, transparent);
+    /* Full ink: muted text on the tint falls to 4.4:1 in light mode. */
+    color: var(--b-color-text);
+    font: var(--b-font-weight-medium) var(--b-font-size-0) / 1 var(--b-font-family-ui);
+    font-variant-numeric: tabular-nums;
+    text-transform: var(--b-case);
+    white-space: nowrap;
+
+    /* Something to look at, not an error: a solid yellow, far from the danger red. Solid, not a
+       tint: yellow over the dark ground turns olive. The word carries the meaning. */
+    &[data-variant='warn'] {
+      background: var(--b-color-warning);
+      color: var(--b-color-on-warning);
+    }
+  }
+}

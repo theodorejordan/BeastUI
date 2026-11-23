@@ -1,0 +1,110 @@
+/*
+ * Checkbox: a native <input type="checkbox">, drawn by BeastUI.
+ *
+ * <label class="b-check">
+ *   <input class="b-checkbox" type="checkbox" />
+ *   <span>Turn louder tracks down to the target</span>
+ * </label>
+ *
+ * Alone, in a table cell, the box needs a name: <input class="b-checkbox" type="checkbox"
+ * aria-label="Select Intro.wav" />.
+ *
+ * appearance: none keeps the native element (keyboard, form value, :checked, :indeterminate,
+ * the "checked" / "mixed" announcement) and drops only the browser's drawing, which no token
+ * could reach (MDN, appearance). "Some but not all" is the indeterminate state: a DOM property
+ * with no HTML attribute, set by script (@beastui/preact's Checkbox does it).
+ *
+ * Foundations (04-foundations.md): the box takes the 16px glyph slot, radius --b-radius-check,
+ * and sits centred on the 20px line of its label, --b-gap-choice from it. In a form the whole
+ * label is the target; in a 36px table row the box alone is.
+ */
+@import '../layers.css';
+
+@layer beast.components {
+  .b-check {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: var(--b-gap-choice);
+    color: var(--b-color-text);
+    font: var(--b-font-weight-regular) var(--b-font-size-2) / var(--b-font-line-height-2) var(--b-font-family-ui);
+    text-transform: var(--b-case);
+    cursor: pointer;
+
+    /* Centred on the first line, so a label that wraps keeps its box at the top. */
+    & > .b-checkbox {
+      margin-block-start: calc((var(--b-font-line-height-2) - var(--b-size-glyph)) / 2);
+    }
+
+    &:has(> :disabled) {
+      opacity: var(--b-opacity-disabled);
+      cursor: not-allowed;
+    }
+  }
+
+  .b-checkbox {
+    /* The mark: a tick, or a dash for "some". Drawn in the ink of the ground under the box. */
+    --b-check-tick: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.5 2.5L12 5.5' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    --b-check-dash: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 8h7' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+
+    flex: none;
+    display: inline-grid;
+    place-content: center;
+    width: var(--b-size-glyph);
+    height: var(--b-size-glyph);
+    margin: 0;
+    border: var(--b-line-stroke) solid var(--b-color-border-strong);
+    border-radius: var(--b-radius-check);
+    background: var(--b-color-surface-card);
+    appearance: none;
+    cursor: inherit;
+    transition:
+      background-color var(--b-duration-1) var(--b-easing-move),
+      border-color var(--b-duration-1) var(--b-easing-move);
+
+    /* Standalone (in a table), the pointer is set here; in a label, the label sets it. */
+    :not(.b-check) > & {
+      cursor: pointer;
+    }
+
+    &::before {
+      content: '';
+      width: var(--b-size-glyph);
+      height: var(--b-size-glyph);
+      background: var(--b-color-on-ink);
+      mask: var(--b-check-tick) center / 100% no-repeat;
+      scale: 0;
+      transition: scale var(--b-duration-1) var(--b-easing-move);
+    }
+
+    &:hover:not(:disabled),
+    .b-check:hover > &:not(:disabled) {
+      border-color: var(--b-color-text);
+    }
+
+    /* On: a filled ink box, not only a tick, so the state reads at a glance and in a column. */
+    &:is(:checked, :indeterminate) {
+      border-color: var(--b-color-text);
+      background: var(--b-color-text);
+
+      &::before {
+        scale: 1;
+      }
+    }
+    &:indeterminate::before {
+      mask-image: var(--b-check-dash);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+    }
+    :not(.b-check) > &:disabled {
+      opacity: var(--b-opacity-disabled);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .b-checkbox::before {
+      transition: none;
+    }
+  }
+}

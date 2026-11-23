@@ -1,0 +1,134 @@
+/*
+ * Field: a label, one control, then an optional hint and error. The input is the box itself.
+ *
+ * <div class="b-field">
+ *   <label class="b-field__label" for="target">Target loudness</label>
+ *   <span class="b-input">
+ *     <input id="target" type="number" step="0.5" aria-describedby="target-unit target-hint" />
+ *     <span class="b-input__unit" id="target-unit">LUFS</span>
+ *   </span>
+ *   <p class="b-field__hint" id="target-hint">Streaming services play at −14.</p>
+ * </div>
+ *
+ * Without a unit, the input carries the class itself: <input class="b-input" />.
+ * The hint and the error are tied to the input with aria-describedby, so a screen reader reads
+ * them after the label (@beastui/preact's Field does the wiring).
+ *
+ * Foundations (04-foundations.md): the box is the control height, radius and inset, like a
+ * button, so mixed controls line up in a row. The label sits --b-gap-field above it, the hint
+ * --b-gap-hint below. Focus has no ring (owner, §9): the border itself turns 2px and full ink,
+ * and the padding gives back the extra width so the text doesn't move.
+ */
+@import '../layers.css';
+
+@layer beast.components {
+  .b-field {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .b-field__label {
+    margin-block-end: var(--b-gap-field);
+    color: var(--b-color-text);
+    font: var(--b-font-weight-medium) var(--b-font-size-1) / var(--b-font-line-height-1) var(--b-font-family-ui);
+    text-transform: var(--b-case);
+  }
+
+  .b-field__hint,
+  .b-field__error {
+    margin: var(--b-gap-hint) 0 0;
+    font: var(--b-font-weight-regular) var(--b-font-size-1) / var(--b-font-line-height-1) var(--b-font-family-ui);
+  }
+  .b-field__hint {
+    color: var(--b-color-text-muted);
+  }
+  .b-field__error {
+    color: var(--b-color-danger);
+  }
+
+  .b-input {
+    /* The border width; focus raises it to --b-line-bold. */
+    --b-input-line: var(--b-line-stroke);
+    /* A number rarely needs the whole row: four control heights fit "−14.5 LUFS" with room. */
+    --b-input-width: 100%;
+
+    display: inline-flex;
+    align-items: center;
+    gap: var(--b-gap-inline);
+    width: var(--b-input-width);
+    height: var(--b-size-control);
+    padding: 0 calc(var(--b-inset-control) - var(--b-input-line));
+    border: var(--b-input-line) solid var(--b-color-border-strong);
+    border-radius: var(--b-radius-control);
+    background: var(--b-color-surface-card);
+    color: var(--b-color-text);
+    font: var(--b-font-weight-regular) var(--b-font-size-2) / var(--b-font-line-height-2) var(--b-font-family-ui);
+    transition: border-color var(--b-duration-1) var(--b-easing-move);
+
+    &:is(input[type='number'], :has(> input[type='number'])) {
+      --b-input-width: calc(var(--b-size-control) * 4);
+    }
+
+    &:hover:not(:is(:disabled, :has(> :disabled))) {
+      border-color: var(--b-color-text);
+    }
+
+    /* A field has no ring (owner): its border is the focus mark. */
+    &:is(:focus-visible, :focus-within) {
+      --b-input-line: var(--b-line-bold);
+      border-color: var(--b-color-text);
+      outline: none;
+    }
+
+    &:is([aria-invalid='true'], :has(> [aria-invalid='true'])) {
+      border-color: var(--b-color-danger);
+    }
+
+    &:is(:disabled, :has(> :disabled)) {
+      opacity: var(--b-opacity-disabled);
+      cursor: not-allowed;
+    }
+
+    &::placeholder,
+    & > input::placeholder {
+      color: var(--b-color-text-muted);
+      opacity: 1;
+    }
+  }
+
+  /* The input inside a frame: the frame draws, the input only holds the text. */
+  .b-input > input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    outline: none;
+  }
+
+  /* Numbers: tabular figures (foundations, type rule 5) and no spin buttons. The browsers draw
+     them differently and they are too small to aim at; the arrow keys still step. */
+  .b-input:is(input[type='number']),
+  .b-input > input[type='number'] {
+    font-variant-numeric: tabular-nums;
+    appearance: textfield;
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      appearance: none;
+      margin: 0;
+    }
+  }
+
+  /* A unit is written as is: "dB", "LUFS" are never lowercased by the voice. */
+  .b-input__unit {
+    flex: none;
+    color: var(--b-color-text-muted);
+    text-transform: none;
+    user-select: none;
+  }
+}

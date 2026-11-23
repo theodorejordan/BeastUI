@@ -2,7 +2,14 @@ import { expect, type Page } from '@playwright/test';
 
 export const THEMES = ['core', 'tool', 'playful'] as const;
 export const MODES = ['light', 'dark'] as const;
-export const PAGES = ['/', '/components/button/', '/components/segmented-control/'] as const;
+export const PAGES = [
+  '/',
+  '/components/button/',
+  '/components/segmented-control/',
+  '/components/field/',
+  '/components/checkbox/',
+  '/components/tag/',
+] as const;
 
 /** Opens a page in a theme and mode, the way the docs remember a visitor's choice. */
 export async function open(page: Page, path: string, theme: string, mode: string): Promise<void> {

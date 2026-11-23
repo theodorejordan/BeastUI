@@ -34,6 +34,18 @@ const PAIRS: Pair[] = [
   },
   { what: 'Interactive border', fg: v('border-strong'), bg: v('surface'), min: 3 },
   { what: 'Interactive border on raised', fg: v('border-strong'), bg: v('surface-raised'), min: 3 },
+  { what: 'Field border on a card ground', fg: v('border-strong'), bg: v('surface-card'), min: 3 },
+  { what: 'Field text and placeholder', fg: v('text-muted'), bg: v('surface-card'), min: 4.5 },
+  { what: 'Field error', fg: v('danger'), bg: v('surface-card'), min: 4.5 },
+  { what: 'Checkbox mark', fg: v('on-ink'), bg: v('text'), min: 3 },
+  // Tags: ink on a tint, over each ground a row can have.
+  ...(['surface', 'surface-raised', 'surface-card'] as const).map((ground) => ({
+    what: `Tag on ${ground}`,
+    fg: v('text'),
+    bg: `color-mix(in srgb, ${v('text')} 8%, ${v(ground)})`,
+    min: 4.5,
+  })),
+  { what: 'Warn tag label', fg: v('on-warning'), bg: v('warning'), min: 4.5 },
   { what: 'Focus ring', fg: v('focus'), bg: v('surface'), min: 3 },
   { what: 'Red card rank on a card', fg: v('play-red'), bg: v('surface-card'), min: 4.5 },
 ];

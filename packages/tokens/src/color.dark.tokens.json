@@ -120,6 +120,30 @@
         "hex": "#e0786c"
       }
     },
+    "warning": {
+      "$description": "A warning fill: a warn tag. Yellow, far from the danger red. Solid in both modes (a yellow tint over the dark ground turns olive). A fill, not a text colour: text on it is on-warning.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.851,
+          0.7059,
+          0.251
+        ],
+        "hex": "#d9b440"
+      }
+    },
+    "on-warning": {
+      "$description": "Text on the warning fill: dark in both modes. A value, not an alias: the build merges light and dark aliases into one.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.102,
+          0.0941,
+          0.0784
+        ],
+        "hex": "#1a1814"
+      }
+    },
     "signal": {
       "$value": "{color.text}"
     },

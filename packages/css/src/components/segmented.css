@@ -51,7 +51,9 @@
       text-transform: var(--b-case);
       white-space: nowrap;
       cursor: pointer;
-      transition: color var(--b-duration-1) var(--b-easing-move);
+      transition:
+        color var(--b-duration-1) var(--b-easing-move),
+        background-color var(--b-duration-1) var(--b-easing-move);
     }
 
     /* The radio covers its label: clicks land on it, and it stays focusable (display: none or
@@ -65,8 +67,11 @@
       cursor: inherit;
     }
 
+    /* Same fill as a Button hover, on every option, picked one included (owner review,
+       2026-11-23). */
     & > label:hover:not(:has(:disabled)) {
       color: var(--b-color-text);
+      background: var(--b-color-surface-raised);
     }
     /* Picked: full-ink text and an outline at 3:1, not only a tint (research §3). No fill. */
     & > label:has(:checked) {

@@ -1,0 +1,58 @@
+---
+layout: ../../layouts/Docs.astro
+title: Tag
+description: "A short label on a thing: a crate, a flag, a count."
+---
+import Demo from '../../components/Demo.astro';
+import Pre from '../../components/Pre.astro';
+
+export const components = { pre: Pre };
+
+# Tag
+
+<p class="docs-lead">A short label on a thing: a crate, a flag, a count.</p>
+
+## When to use it
+
+To show what something is or what it has, in a row or a card. A tag is read only: nothing happens on click.
+
+A tag is filled, never outlined: in BeastUI an outline means "you can act on this".
+
+- An action: use a button.
+- A filter the user turns on and off: use a checkbox or a segmented control.
+
+## Neutral and warn
+
+<Demo html={`
+<span class="b-tag">House</span>
+<span class="b-tag">Edits</span>
+<span class="b-tag" title="Disco, Live, Promo">+3</span>
+<span class="b-tag" data-variant="warn">Clipping</span>
+`} />
+
+## In a table
+
+The tint is of the ink over whatever is under it: a tag stays visible on a hovered or selected row.
+
+<Demo html={`
+<div style="display:grid;width:100%">
+  <div style="display:flex;gap:6px;align-items:center;height:36px;padding:0 12px">Intro.wav <span class="b-tag">House</span> <span class="b-tag">+3</span></div>
+  <div style="display:flex;gap:6px;align-items:center;height:36px;padding:0 12px;background:var(--b-color-surface-raised)">Night drive.wav <span class="b-tag">Edits</span> <span class="b-tag" data-variant="warn">Clipping</span></div>
+  <div style="display:flex;gap:6px;align-items:center;height:36px;padding:0 12px">Outro.wav <span class="b-tag">Live</span> <span class="b-tag" data-variant="warn">Too quiet</span></div>
+  <div style="display:flex;gap:6px;align-items:center;height:36px;padding:0 12px;background:var(--b-color-surface-raised)">Encore.wav <span class="b-tag">House</span></div>
+</div>
+`} />
+
+## The CSS contract
+
+No Preact component: a tag has no behaviour.
+
+| Markup | Effect |
+|---|---|
+| `<span class="b-tag">` | An ink tint, ink text, 20px high. |
+| `data-variant="warn"` | A solid yellow (`--b-color-warning`), dark text (`--b-color-on-warning`). |
+
+## Accessibility
+
+- A count tag ("+3") hides names: give it a `title`, or list them somewhere a keyboard can reach.
+- Warn is written out, never colour alone. Every tag passes 4.5:1 on every ground, theme and mode (`packages/css/test/contrast.test.ts`).

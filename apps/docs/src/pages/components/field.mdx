@@ -1,0 +1,120 @@
+---
+layout: ../../layouts/Docs.astro
+title: Field
+description: "A label, a box to type into, and an optional unit, hint and error."
+---
+import Demo from '../../components/Demo.astro';
+import FieldDemo from '../../components/FieldDemo';
+import Pre from '../../components/Pre.astro';
+
+export const components = { pre: Pre };
+
+# Field
+
+<p class="docs-lead">A label, a box to type into, and an optional unit, hint and error.</p>
+
+## When to use it
+
+For a value the user types: a name, a number, a path. The label stays visible above the box; a placeholder is never the label, since it goes away as you type.
+
+- A choice from a known list: use a segmented control (2–5 options) or a select.
+- On or off: use a checkbox.
+
+## Live
+
+Type a value above 8 in the second field to see the error.
+
+<figure class="docs-demo">
+  <div class="docs-demo__stage"><FieldDemo client:visible /></div>
+</figure>
+
+## Text
+
+<Demo html={`
+<div class="b-field">
+  <label class="b-field__label" for="crate">Crate name</label>
+  <input class="b-input" id="crate" placeholder="Friday set" />
+</div>
+`} />
+
+## Number with a unit
+
+The box is narrower for a number, the figures are tabular, and the spin buttons are gone: the arrow keys step by `step`. The unit sits inside the box and is read after the label.
+
+<Demo html={`
+<div class="b-field">
+  <label class="b-field__label" for="target">Target loudness</label>
+  <span class="b-input">
+    <input id="target" type="number" step="0.5" value="-14" aria-describedby="target-unit target-hint" />
+    <span class="b-input__unit" id="target-unit">LUFS</span>
+  </span>
+  <p class="b-field__hint" id="target-hint">Streaming services play at −14.</p>
+</div>
+`} />
+
+## Error
+
+<Demo html={`
+<div class="b-field">
+  <label class="b-field__label" for="budget">Most limiting</label>
+  <span class="b-input">
+    <input id="budget" type="number" value="12" aria-invalid="true" aria-describedby="budget-unit budget-error" />
+    <span class="b-input__unit" id="budget-unit">dB</span>
+  </span>
+  <p class="b-field__error" id="budget-error">Between 0 and 8 dB.</p>
+</div>
+`} />
+
+## Disabled
+
+<Demo html={`
+<div class="b-field">
+  <label class="b-field__label" for="backup">Backups</label>
+  <input class="b-input" id="backup" value="~/Music/Backups" disabled />
+</div>
+`} />
+
+## In Preact
+
+`Field` writes the ids and the `aria-*` links; `Input` picks them up from it.
+
+```tsx
+import { Field, Input } from '@beastui/preact';
+
+<Field label="Target loudness" hint="Streaming services play at −14." error={error}>
+  <Input type="number" step={0.5} unit="LUFS" value={target} onInput={(e) => setTarget(+e.currentTarget.value)} />
+</Field>
+```
+
+| Field prop | Type | Default | |
+|---|---|---|---|
+| `label` | `ComponentChildren` | required | What to enter. Always visible. |
+| `hint` | `ComponentChildren` | | Help under the box: a range, a format, an example. |
+| `error` | `ComponentChildren` | | What is wrong. Marks the input invalid. |
+| `class` | `string` | | Extra classes, after `b-field`. |
+
+| Input prop | Type | Default | |
+|---|---|---|---|
+| `type` | `'text' \| 'number' \| 'email' \| 'password' \| 'search' \| 'tel' \| 'url'` | `'text'` | |
+| `unit` | `string` | | Shown inside the box, after the value. |
+| `class` | `string` | | Extra classes, on the box. |
+| …the native `<input>` props | | | `value`, `onInput`, `step`, `min`, `max`, `disabled`… |
+
+## The CSS contract
+
+| Markup | Effect |
+|---|---|
+| `class="b-field"` | Stacks the label, the box, the hint and the error. |
+| `class="b-field__label"`, `<label for="…">` | The label, 8px above the box. |
+| `class="b-input"` on an `<input>` | The box. |
+| `class="b-input"` on a `<span>` around an `<input>` + `class="b-input__unit"` | A box with a unit. |
+| `class="b-field__hint"` / `class="b-field__error"` | 4px under the box, muted or red. |
+| `aria-invalid="true"` on the input | Red border. |
+| `--b-input-width` on the box | Its width: the whole row, or four control heights for a number. |
+
+## Accessibility
+
+- The label is a real `<label for>`: clicking it focuses the box, and a screen reader says it.
+- The unit, hint and error are linked with `aria-describedby` ([MDN](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-describedby)), so they are read after the label. `aria-invalid` says the value is wrong ([MDN](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-invalid)).
+- An error is red **and** written out, never colour alone.
+- Focus has no ring: the border turns 2px and full ink, and the text doesn't move.
