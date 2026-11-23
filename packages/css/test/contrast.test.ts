@@ -26,12 +26,6 @@ const PAIRS: Pair[] = [
   },
   { what: 'Danger text', fg: v('danger'), bg: v('surface'), min: 4.5 },
   { what: 'Danger text on raised', fg: v('danger'), bg: v('surface-raised'), min: 4.5 },
-  {
-    what: 'Danger button label, hovered',
-    fg: v('danger'),
-    bg: `color-mix(in srgb, ${v('danger')} 10%, ${v('surface-raised')})`,
-    min: 4.5,
-  },
   { what: 'Interactive border', fg: v('border-strong'), bg: v('surface'), min: 3 },
   { what: 'Interactive border on raised', fg: v('border-strong'), bg: v('surface-raised'), min: 3 },
   { what: 'Field border on a card ground', fg: v('border-strong'), bg: v('surface-card'), min: 3 },
@@ -45,6 +39,22 @@ const PAIRS: Pair[] = [
     bg: `color-mix(in srgb, ${v('text')} 8%, ${v(ground)})`,
     min: 4.5,
   })),
+  // Hover tint (--b-color-hover), once and stacked twice (a control hovered on a hovered row).
+  // A hovered control shows full ink; muted text only sits on the single tint (a hovered row).
+  // The danger hover is the same tint in red.
+  ...(['surface', 'surface-raised', 'surface-card'] as const).flatMap((ground) => {
+    const once = `color-mix(in srgb, ${v('text')} 6%, ${v(ground)})`;
+    const twice = `color-mix(in srgb, ${v('text')} 6%, ${once})`;
+    const red = (under: string): string => `color-mix(in srgb, ${v('danger')} 8%, ${under})`;
+    return [
+      { what: `Muted text on a hovered row, ${ground}`, fg: v('text-muted'), bg: once, min: 4.5 },
+      { what: `Hovered control on a hovered row, ${ground}`, fg: v('text'), bg: twice, min: 4.5 },
+      { what: `Selected row edge, ${ground}`, fg: v('text'), bg: once, min: 3 },
+      { what: `Danger text on a hovered row, ${ground}`, fg: v('danger'), bg: once, min: 4.5 },
+      { what: `Danger button label, hovered, ${ground}`, fg: v('danger'), bg: red(v(ground)), min: 4.5 },
+      { what: `Danger button, hovered on a hovered row, ${ground}`, fg: v('danger'), bg: red(once), min: 4.5 },
+    ];
+  }),
   { what: 'Warn tag label', fg: v('on-warning'), bg: v('warning'), min: 4.5 },
   { what: 'Focus ring', fg: v('focus'), bg: v('surface'), min: 3 },
   { what: 'Red card rank on a card', fg: v('play-red'), bg: v('surface-card'), min: 4.5 },

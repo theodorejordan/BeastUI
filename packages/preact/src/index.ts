@@ -6,3 +6,5 @@ export { Field, Input } from './field';
 export type { FieldProps, InputProps, InputType } from './field';
 export { Checkbox } from './checkbox';
 export type { CheckboxProps } from './checkbox';
+export { SortHeader, compareText, useSelection, useSort } from './table';
+export type { Selection, Sort, SortDirection, SortHeaderProps, SortState } from './table';

@@ -110,14 +110,15 @@
       "$value": "{color.text}"
     },
     "danger": {
+      "$description": "Danger text and outlines. Its OKLCH lightness is set so it keeps 4.5:1 on every ground, on a hovered row, and under its own 8% hover tint (owner, 2026-11-23).",
       "$value": {
         "colorSpace": "srgb",
         "components": [
-          0.6392,
-          0.1882,
-          0.1647
+          0.5796,
+          0.1263,
+          0.1134
         ],
-        "hex": "#a3302a"
+        "hex": "#94201d"
       }
     },
     "warning": {

@@ -1,0 +1,224 @@
+/*
+ * Table: a native <table>, so a screen reader can move by row and column and read each cell
+ * with its header. Sorting and selection add behaviour, not a new element: a <button> in the
+ * header cell with aria-sort on the <th>, and a checkbox in the first cell (WAI-ARIA APG,
+ * sortable table). No arrow-key navigation between cells: that is the grid pattern, not built.
+ *
+ * <table class="b-table">
+ *   <thead><tr>
+ *     <th data-select><input class="b-checkbox" type="checkbox" aria-label="Select all"></th>
+ *     <th data-grow aria-sort="ascending"><button class="b-table-sort" type="button">Title <svg …></button></th>
+ *     <th data-align="end">BPM</th>
+ *   </tr></thead>
+ *   <tbody>
+ *     <tr data-selected>…</tr>
+ *   </tbody>
+ * </table>
+ *
+ * The table fits its box: one column (data-grow) takes the room left and shrinks first, with
+ * an ellipsis; every other cell keeps its content on one line. So rows keep their height and
+ * the last column (actions) stays in view. From Masterz's track table.
+ *
+ * Foundations (04-foundations.md): rows are --b-size-row (the control height plus 4px), the
+ * header is the control height; 8px between columns (--b-gap-inline), the control inset at
+ * the two edges; tabular figures; hairline dividers; the selected row edge is the bold line.
+ */
+@import '../layers.css';
+
+@layer beast.components {
+  .b-table {
+    /* The header sticks over the rows, so it needs an opaque fill: the ground the table sits
+       on. On a card, set it to var(--b-color-surface-card). */
+    --b-table-ground: var(--b-color-surface);
+
+    width: 100%;
+    /* separate, not collapse: a collapsed border scrolls away from a sticky header cell. */
+    border-collapse: separate;
+    border-spacing: 0;
+    color: var(--b-color-text);
+    /* The UI body size; the header and in-row buttons one step down, like Masterz (12px). */
+    font: var(--b-font-weight-regular) var(--b-font-size-2) / var(--b-font-line-height-2)
+      var(--b-font-family-ui);
+    font-variant-numeric: tabular-nums;
+
+    & :is(th, td) {
+      height: var(--b-size-row);
+      padding: 0 calc(var(--b-gap-inline) / 2);
+      border-bottom: var(--b-line-hair) solid var(--b-color-border-subtle);
+      text-align: start;
+      vertical-align: middle;
+      /* One line per cell: a row never grows. Only the data-grow column gives way. */
+      white-space: nowrap;
+    }
+    & :is(th, td):first-child {
+      padding-inline-start: var(--b-inset-control);
+    }
+    & :is(th, td):last-child {
+      padding-inline-end: var(--b-inset-control);
+    }
+
+    & th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      height: var(--b-size-control);
+      background: var(--b-table-ground);
+      border-bottom-color: var(--b-color-border-strong);
+      color: var(--b-color-text-muted);
+      font-size: var(--b-font-size-1);
+      font-weight: var(--b-font-weight-medium);
+      text-transform: var(--b-case);
+    }
+
+    /* The column that takes the room left (a title) and shrinks first. max-width: 0 lets it
+       go narrower than its text, so the ellipsis can show (Masterz .col-name). */
+    & [data-grow] {
+      width: 100%;
+      max-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Numbers and durations: right-aligned, so units and decimals line up. */
+    & [data-align='end'] {
+      text-align: end;
+    }
+    /* Short values of one width (a BPM, a duration): centred under their header (owner review).
+       Long or mixed numbers stay right-aligned, where digits line up by place. */
+    & [data-align='center'] {
+      text-align: center;
+    }
+    /* Side room the width of the sort arrow and its gap: the arrow hangs into it (below), and a
+       centred column doesn't crowd the next one. */
+    & :is(th, td)[data-align='center'] {
+      padding-inline: calc(var(--b-font-size-1) + var(--b-space-1));
+    }
+
+    /* A little more air before a cell of buttons, so actions don't read as data. */
+    & td:has(> .b-btn) {
+      padding-inline-start: var(--b-space-3);
+    }
+
+    /* The checkbox column: as narrow as the box. The whole cell is the target (useSelection),
+       so a near miss still ticks the box. */
+    & [data-select] {
+      width: var(--b-size-glyph);
+      line-height: 0;
+    }
+    & td[data-select] {
+      cursor: pointer;
+    }
+
+    & tbody tr {
+      /* Shift+click and Cmd+click select rows, not the page's text. */
+      user-select: none;
+    }
+    /* A row the app opens on click (useSelection's row(id, onOpen)). */
+    & tbody tr[data-clickable] {
+      cursor: pointer;
+    }
+
+    /* The hover tint, see-through, so a hovered button in the row still shows one step darker. */
+    & tbody tr:hover {
+      background: var(--b-color-hover);
+    }
+    /* Selected: the same tint, kept without the pointer, plus the bold edge. Not a darker tint:
+       muted text drops under 4.5:1 past one step in light mode (test/contrast.test.ts). The
+       edge and the ticked box tell selected from hovered. */
+    & tbody tr[data-selected] {
+      background: var(--b-color-hover);
+
+      & > :first-child {
+        box-shadow: inset var(--b-line-bold) 0 0 var(--b-color-text);
+      }
+    }
+
+    /* Buttons in a row are the small control (the control height less one --b-size-step: 24px,
+       20 in tool), so the row keeps air above and below them and a hover fill doesn't touch
+       the row lines (owner review). Smaller text, and the smaller radius (radius grows with
+       size). Masterz's row button is the same idea. */
+    & td .b-btn {
+      --b-btn-size: var(--b-font-size-1);
+      height: calc(var(--b-size-control) - var(--b-size-step));
+      padding-inline: calc(var(--b-space-2) - var(--b-line-stroke));
+      border-radius: var(--b-radius-1);
+
+      &[data-icon] {
+        width: calc(var(--b-size-control) - var(--b-size-step));
+        padding: 0;
+      }
+    }
+
+    /* A sortable header: the button fills the cell, so the whole header is the target. */
+    & th:has(> .b-table-sort) {
+      padding-block: 0;
+    }
+  }
+
+  .b-table-sort {
+    all: unset;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--b-space-1);
+    max-width: 100%;
+    /* The header's height less its bottom line, so the button fills it without growing it. */
+    height: calc(var(--b-size-control) - var(--b-line-hair));
+    cursor: pointer;
+    color: inherit;
+    font: inherit;
+    text-transform: inherit;
+
+    & > span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    [data-align='end'] > & {
+      flex-direction: row-reverse;
+    }
+
+    &:hover,
+    [aria-sort] > & {
+      color: var(--b-color-text);
+    }
+    /* Inside the header: a sticky cell would clip a ring drawn outside it. */
+    &:focus-visible {
+      outline-offset: calc(-1 * var(--b-line-bold));
+      border-radius: var(--b-radius-1);
+    }
+
+    /* The arrow always takes its slot, so a header never shifts when sorted. It shows on the
+       sorted column, and as a hint on hover and focus. */
+    & .b-icon {
+      width: var(--b-font-size-1);
+      height: var(--b-font-size-1);
+      opacity: 0;
+      transition:
+        opacity var(--b-duration-1) var(--b-easing-move),
+        rotate var(--b-duration-2) var(--b-easing-move);
+    }
+    &:is(:hover, :focus-visible) .b-icon {
+      opacity: 1;
+      color: var(--b-color-text-muted);
+    }
+    [aria-sort] > & .b-icon {
+      opacity: 1;
+      color: var(--b-color-text);
+    }
+    [aria-sort='descending'] > & .b-icon {
+      rotate: 180deg;
+    }
+    /* Centred: the arrow hangs past the label, so the label itself sits over the centred values. */
+    [data-align='center'] > & .b-icon {
+      margin-inline-end: calc(-1 * (var(--b-font-size-1) + var(--b-space-1)));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .b-table-sort .b-icon {
+      transition: none;
+    }
+  }
+}

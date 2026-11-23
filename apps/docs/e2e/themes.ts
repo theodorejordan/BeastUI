@@ -9,6 +9,7 @@ export const PAGES = [
   '/components/field/',
   '/components/checkbox/',
   '/components/tag/',
+  '/components/table/',
 ] as const;
 
 /** Opens a page in a theme and mode, the way the docs remember a visitor's choice. */

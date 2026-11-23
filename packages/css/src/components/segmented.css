@@ -71,7 +71,7 @@
        2026-11-23). */
     & > label:hover:not(:has(:disabled)) {
       color: var(--b-color-text);
-      background: var(--b-color-surface-raised);
+      background: var(--b-color-hover);
     }
     /* Picked: full-ink text and an outline at 3:1, not only a tint (research §3). No fill. */
     & > label:has(:checked) {

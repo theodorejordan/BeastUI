@@ -17,6 +17,10 @@
     );
     /* The curve of a press (--b-scale-press). The playful theme springs back. */
     --b-easing-press: var(--b-easing-move);
+    /* The hover fill: a see-through tint of the ink, not an opaque surface, so it shows over
+       any ground and stacks (a button hovered on a hovered row is one step darker). Same idea
+       as Radix's alpha scales. DTCG can't mix two tokens, so it lives here. */
+    --b-color-hover: color-mix(in srgb, var(--b-color-text) 6%, transparent);
   }
   :root[data-theme='playful'] {
     --b-easing-press: var(--b-easing-spring);

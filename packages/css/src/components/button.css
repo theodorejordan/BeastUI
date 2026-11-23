@@ -65,16 +65,17 @@
       border-color: var(--b-color-border-strong);
     }
     &:is([data-variant='secondary'], [data-variant='quiet']):hover:not(:disabled, [aria-disabled='true']) {
-      background: var(--b-color-surface-raised);
+      background: var(--b-color-hover);
     }
     &[data-variant='danger'] {
       --b-btn-fg: var(--b-color-danger);
       border-color: var(--b-color-danger);
     }
-    /* The raised surface, like the other hovers, tinted red. Over the plain surface the label
-       fell to 4.2:1 in light mode (caught by test/contrast.test.ts). */
+    /* The same see-through hover as the others, in red: it shows over any ground and stacks on
+       a hovered row. The danger token is set to keep 4.5:1 over this tint on a hovered row
+       (test/contrast.test.ts). */
     &[data-variant='danger']:hover:not(:disabled, [aria-disabled='true']) {
-      background: color-mix(in srgb, var(--b-color-danger) 10%, var(--b-color-surface-raised));
+      background: color-mix(in srgb, var(--b-color-danger) 8%, transparent);
     }
 
     /* Icon only: a square of the control height (Radix, Atlassian). */

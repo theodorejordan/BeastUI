@@ -111,19 +111,20 @@
     border-radius: 0;
   }
 
-  /* ---------- Tables ---------- */
-  table {
+  /* ---------- Tables ----------
+     The docs' prop tables only. This layer beats beast.components, so a bare `td` here would
+     restyle the .b-table demos. */
+  table:not(.b-table) {
     width: 100%;
     border-collapse: collapse;
   }
-  th,
-  td {
+  table:not(.b-table) :is(th, td) {
     padding: var(--b-space-2) var(--b-space-3) var(--b-space-2) 0;
     border-bottom: var(--b-line-hair) solid var(--b-color-border-subtle);
     text-align: start;
     vertical-align: top;
   }
-  th {
+  table:not(.b-table) th {
     color: var(--b-color-text-muted);
     font-weight: var(--b-font-weight-medium);
   }
