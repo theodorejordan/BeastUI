@@ -36,10 +36,6 @@
     flex-wrap: wrap;
     gap: var(--b-gap-group);
   }
-  .docs-switch__group {
-    display: flex;
-    gap: var(--b-space-1);
-  }
 
   /* ---------- Page ---------- */
   .docs-main {

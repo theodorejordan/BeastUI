@@ -3,7 +3,7 @@
  * The choice is remembered in localStorage; an inline script in the layout applies it before the
  * first paint, so the page never flashes the default theme.
  */
-import { Button } from '@beastui/preact';
+import { SegmentedControl } from '@beastui/preact';
 import type { JSX } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 
@@ -11,6 +11,10 @@ const themes = ['core', 'tool', 'playful'] as const;
 const modes = ['system', 'light', 'dark'] as const;
 type Theme = (typeof themes)[number];
 type Mode = (typeof modes)[number];
+
+const title = (word: string): string => word[0]!.toUpperCase() + word.slice(1);
+const themeOptions = themes.map((value) => ({ value, label: title(value) }));
+const modeOptions = modes.map((value) => ({ value, label: title(value) }));
 
 // Also read by the inline script in layouts/Docs.astro.
 const STORAGE_KEY = 'beastui-docs';
@@ -49,20 +53,8 @@ export default function ThemeSwitcher(): JSX.Element {
 
   return (
     <div class="docs-switch">
-      <div class="docs-switch__group" role="group" aria-label="Theme">
-        {themes.map((t) => (
-          <Button variant={t === theme ? 'primary' : 'quiet'} aria-pressed={t === theme} onClick={() => pick({ theme: t })}>
-            {t[0]?.toUpperCase() + t.slice(1)}
-          </Button>
-        ))}
-      </div>
-      <div class="docs-switch__group" role="group" aria-label="Mode">
-        {modes.map((m) => (
-          <Button variant={m === mode ? 'primary' : 'quiet'} aria-pressed={m === mode} onClick={() => pick({ mode: m })}>
-            {m[0]?.toUpperCase() + m.slice(1)}
-          </Button>
-        ))}
-      </div>
+      <SegmentedControl label="Theme" options={themeOptions} value={theme} onChange={(t) => pick({ theme: t })} />
+      <SegmentedControl label="Mode" options={modeOptions} value={mode} onChange={(m) => pick({ mode: m })} />
     </div>
   );
 }

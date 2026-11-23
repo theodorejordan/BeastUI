@@ -1,0 +1,95 @@
+---
+layout: ../../layouts/Docs.astro
+title: Segmented control
+description: Pick one of 2–5 options, shown side by side. The outline slides to the picked one.
+---
+import Demo from '../../components/Demo.astro';
+import SegmentedDemo from '../../components/SegmentedDemo';
+import Pre from '../../components/Pre.astro';
+
+export const components = { pre: Pre };
+
+# Segmented control
+
+<p class="docs-lead">Pick one of 2–5 options, shown side by side. The outline slides to the picked one.</p>
+
+## When to use it
+
+For a short, exclusive choice whose effect shows at once: a sort order, a view, a version. All options stay visible, so the user sees what else there is.
+
+- More than five options, or long labels: use a select.
+- Several options can be on at once: use checkboxes.
+- The choice switches between whole panels of content: use tabs.
+
+## Live
+
+<figure class="docs-demo">
+  <div class="docs-demo__stage"><SegmentedDemo client:visible /></div>
+</figure>
+
+## Without JavaScript
+
+The CSS alone gives a working control: the picked option draws its own outline. The Preact component adds the sliding outline (`b-seg__thumb`).
+
+<Demo html={`
+<div class="b-seg" role="radiogroup" aria-label="Show">
+  <label><input type="radio" name="show" value="all" checked /><span>All</span></label>
+  <label><input type="radio" name="show" value="flagged" /><span>Flagged</span></label>
+  <label><input type="radio" name="show" value="done" /><span>Done</span></label>
+</div>
+`} />
+
+## Disabled option
+
+An option that can't be picked right now fades and is skipped by the arrow keys.
+
+<Demo html={`
+<div class="b-seg" role="radiogroup" aria-label="Version">
+  <label><input type="radio" name="version" value="original" checked /><span>Original</span></label>
+  <label><input type="radio" name="version" value="master" disabled /><span>Master</span></label>
+</div>
+`} />
+
+## In Preact
+
+```tsx
+import { SegmentedControl } from '@beastui/preact';
+
+const [sort, setSort] = useState<'name' | 'date'>('name');
+
+<SegmentedControl
+  label="Sort tracks"
+  options={[
+    { value: 'name', label: 'Name' },
+    { value: 'date', label: 'Date added' },
+  ]}
+  value={sort}
+  onChange={setSort}
+/>
+```
+
+| Prop | Type | Default | |
+|---|---|---|---|
+| `label` | `string` | required | What is being chosen, for a screen reader. The options alone don't say it. |
+| `options` | `{ value, label, disabled? }[]` | required | 2 to 5 options. `value` is a string; TypeScript checks `value` and `onChange` against it. |
+| `value` | `string` | required | The picked option. The component is controlled. |
+| `onChange` | `(value) => void` | required | Called on click and on arrow keys. |
+| `name` | `string` | generated | The radios' form name. |
+| `class` | `string` | | Extra classes, after `b-seg`. |
+
+## The CSS contract
+
+| Markup | Effect |
+|---|---|
+| `class="b-seg" role="radiogroup" aria-label="…"` | The frame and its name. |
+| `<label><input type="radio" name="…" /><span>…</span></label>` | One option. The radio is invisible and covers its label. |
+| `checked` | The picked option: ink text and an outline. |
+| `disabled` on the radio | The option fades. |
+| `<span class="b-seg__thumb" aria-hidden="true">` + `data-thumb` + `--b-seg-x`, `--b-seg-w` on the frame | The sliding outline, placed by script. Without `data-thumb`, it stays hidden. |
+
+## Accessibility
+
+- Native radio buttons ([WAI-ARIA radio group pattern](https://www.w3.org/WAI/ARIA/apg/patterns/radio/)): a screen reader says "Sort tracks, radio group, Name, 1 of 3".
+- One tab stop for the whole group; the arrow keys move and pick. The focus ring shows on the label, since the radio itself is invisible.
+- The picked option has no fill: it is marked by ink text **and** an outline at 3:1, never by colour alone.
+- Under "reduce motion", the outline jumps instead of sliding.

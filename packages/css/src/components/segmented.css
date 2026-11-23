@@ -1,0 +1,116 @@
+/*
+ * Segmented control: pick one of 2–5 options, side by side.
+ *
+ * <div class="b-seg" role="radiogroup" aria-label="Sort">
+ *   <label><input type="radio" name="sort" value="name" checked /><span>Name</span></label>
+ *   <label><input type="radio" name="sort" value="date" /><span>Date</span></label>
+ *   <span class="b-seg__thumb" aria-hidden="true"></span>
+ * </div>
+ *
+ * Native radios, visually hidden but focusable: arrow keys, one tab stop, form values and the
+ * "1 of 3" announcement come from the browser (WAI-ARIA APG, radio group).
+ * The picked option has no fill: one outline (the thumb) slides between options. Its place comes
+ * from @beastui/preact, which sets --b-seg-x, --b-seg-w and data-thumb, and data-jump when the
+ * value changed without the user (no slide then). Without JS the picked
+ * option draws its own outline, so the control still works server-rendered.
+ *
+ * Foundations (04-foundations.md): the height is the control size; options sit --b-seg-gap from
+ * the border's inner edge; their radius is concentric with it; the text sits the control inset
+ * from the outer edge.
+ */
+@import '../layers.css';
+
+@layer beast.components {
+  .b-seg {
+    /* The band between the frame and an option. 2px, not the 4px nested inset of a menu: here an
+       outline sits inside an outline, and at 4px the two read as a loose double border, with
+       inner corners almost square (owner review, 2026-11-23). No theme changes it: not a token. */
+    --b-seg-gap: var(--b-space-0-5);
+    /* The options' corners: concentric with the frame's inner edge. */
+    --b-seg-radius: max(var(--b-radius-control) - var(--b-line-hair) - var(--b-seg-gap), 0px);
+
+    position: relative;
+    display: inline-flex;
+    width: fit-content;
+    height: var(--b-size-control);
+    gap: var(--b-seg-gap);
+    padding: var(--b-seg-gap);
+    border: var(--b-line-hair) solid var(--b-color-border-subtle);
+    border-radius: var(--b-radius-control);
+
+    & > label {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      height: 100%;
+      padding: 0 calc(var(--b-inset-control) - var(--b-seg-gap) - var(--b-line-hair) - var(--b-line-stroke));
+      border: var(--b-line-stroke) solid transparent;
+      border-radius: var(--b-seg-radius);
+      color: var(--b-color-text-muted);
+      font: var(--b-font-weight-medium) var(--b-font-size-1) / 1 var(--b-font-family-ui);
+      text-transform: var(--b-case);
+      white-space: nowrap;
+      cursor: pointer;
+      transition: color var(--b-duration-1) var(--b-easing-move);
+    }
+
+    /* The radio covers its label: clicks land on it, and it stays focusable (display: none or
+       visibility: hidden would take it out of the keyboard order). */
+    & > label > input {
+      position: absolute;
+      inset: 0;
+      margin: 0;
+      appearance: none;
+      opacity: 0;
+      cursor: inherit;
+    }
+
+    & > label:hover:not(:has(:disabled)) {
+      color: var(--b-color-text);
+    }
+    /* Picked: full-ink text and an outline at 3:1, not only a tint (research §3). No fill. */
+    & > label:has(:checked) {
+      color: var(--b-color-text);
+    }
+    &:not([data-thumb]) > label:has(:checked) {
+      border-color: var(--b-color-border-strong);
+    }
+    /* The radio is invisible, so its label carries the focus ring (base.css values). */
+    & > label:has(:focus-visible) {
+      outline: var(--b-line-bold) solid var(--b-color-focus);
+      outline-offset: var(--b-space-0-5);
+    }
+    & > label:has(:disabled) {
+      opacity: var(--b-opacity-disabled);
+      cursor: default;
+    }
+  }
+
+  .b-seg__thumb {
+    position: absolute;
+    top: var(--b-seg-gap);
+    bottom: var(--b-seg-gap);
+    left: 0;
+    width: var(--b-seg-w, 0px);
+    transform: translateX(var(--b-seg-x, 0px));
+    border: var(--b-line-stroke) solid var(--b-color-border-strong);
+    border-radius: var(--b-seg-radius);
+    pointer-events: none;
+    transition:
+      transform var(--b-duration-3) var(--b-easing-move),
+      width var(--b-duration-3) var(--b-easing-move);
+
+    .b-seg:not([data-thumb]) > & {
+      display: none;
+    }
+    .b-seg[data-jump] > & {
+      transition: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .b-seg__thumb {
+      transition: none;
+    }
+  }
+}

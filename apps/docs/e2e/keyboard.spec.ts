@@ -33,12 +33,18 @@ test('pending: Enter starts the save, further presses are refused, focus stays',
 
 test('the theme switcher works from the keyboard and is remembered', async ({ page }) => {
   await open(page, '/components/button/', 'core', 'light');
-  const tool = page.getByRole('group', { name: 'Theme' }).getByRole('button', { name: 'Tool' });
+  const theme = page.getByRole('radiogroup', { name: 'Theme' });
   await hydrated(page, '.docs-switch');
-  await tool.focus();
-  await page.keyboard.press('Enter');
+  await theme.getByRole('radio', { name: 'Core' }).focus();
+  await page.keyboard.press('ArrowRight');
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'tool');
-  await expect(tool).toHaveAttribute('aria-pressed', 'true');
+  await expect(theme.getByRole('radio', { name: 'Tool' })).toBeChecked();
   await page.reload();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'tool');
+  // After the reload the switcher starts on the saved choice: no slide from the default.
+  await hydrated(page, '.docs-switch');
+  await expect(theme.getByRole('radio', { name: 'Tool' })).toBeChecked();
+  const thumb = await theme.evaluate((group) => getComputedStyle(group.querySelector('.b-seg__thumb')!).transform);
+  const tool = await theme.getByText('Tool').evaluate((span) => (span.parentElement as HTMLElement).offsetLeft);
+  expect(thumb).toBe(`matrix(1, 0, 0, 1, ${tool}, 0)`);
 });
