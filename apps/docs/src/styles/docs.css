@@ -38,11 +38,43 @@
   }
 
   /* ---------- Page ---------- */
+  /* The page: an 880px column for demos, code and tables, centred on the screen, and "On this
+     page" in the right margin from 1200px (owner, 2026-11-23, after Tailwind's docs). The column
+     stays centred: the eye comes back to the middle of the screen, not left of it. */
+  .docs-page {
+    --docs-toc-w: 200px;
+    /* .docs-bar's height: its padding, the theme switcher (a control, the tallest thing in it)
+       and its bottom line. 57px in core, measured. */
+    --docs-bar-h: calc(2 * var(--b-space-3) + var(--b-size-control) + var(--b-line-hair));
+    display: grid;
+    grid-template-columns: minmax(0, 880px);
+    justify-content: center;
+    column-gap: var(--b-space-12);
+    padding-inline: var(--b-space-6);
+  }
+  /* Two equal margins, each wide enough for the menu and its gap: the column shrinks between
+     1200 and about 1400px rather than moving off centre. */
+  @media (min-width: 1200px) {
+    .docs-page {
+      grid-template-columns:
+        minmax(calc(var(--docs-toc-w) + var(--b-space-12)), 1fr)
+        minmax(0, 880px)
+        minmax(calc(var(--docs-toc-w) + var(--b-space-12)), 1fr);
+      column-gap: 0;
+      padding-inline: var(--b-space-6);
+    }
+    .docs-main {
+      grid-column: 2;
+    }
+    .docs-toc {
+      grid-column: 3;
+      width: var(--docs-toc-w);
+      margin-inline-start: var(--b-space-12);
+    }
+  }
   .docs-main {
-    /* A reading measure: 45 to 75 characters a line is the usual range (Bringhurst). */
-    max-width: 72ch;
-    margin: 0 auto;
-    padding: var(--b-space-12) var(--b-space-6);
+    min-width: 0;
+    padding-block: var(--b-space-12);
   }
   .docs-main > * {
     margin-block: 0;
@@ -50,11 +82,80 @@
   .docs-main > * + * {
     margin-block-start: var(--b-gap-stack);
   }
+  /* Running text keeps a reading measure: 45 to 75 characters a line (Bringhurst). Demos, code
+     and tables take the full column. */
+  .docs-main > :is(p, ul, ol) {
+    max-width: 72ch;
+  }
+  /* A chapter: a line above it and the section gap, so it reads as a new start. */
   .docs-main > h2 {
     margin-block-start: var(--b-gap-section);
+    padding-block-start: var(--b-gap-group);
+    border-block-start: var(--b-line-hair) solid var(--b-color-border-subtle);
   }
   .docs-main > h3 {
     margin-block-start: var(--b-gap-group);
+  }
+  .docs-main > :is(h2, h3) + * {
+    margin-block-start: var(--b-gap-field);
+  }
+  /* A jump from "On this page" lands below the sticky bar, not under it. */
+  .docs-main :is(h2, h3) {
+    scroll-margin-block-start: calc(var(--docs-bar-h) + var(--b-space-6));
+  }
+  :is(h2, h3) code {
+    font-size: 0.9em;
+  }
+
+  /* ---------- On this page ---------- */
+  .docs-toc {
+    display: none;
+  }
+  @media (min-width: 1200px) {
+    .docs-toc {
+      display: block;
+      position: sticky;
+      top: var(--docs-bar-h);
+      align-self: start;
+      max-height: calc(100vh - var(--docs-bar-h));
+      overflow-y: auto;
+      padding-block: var(--b-space-12);
+      font-size: var(--b-font-size-1);
+      line-height: var(--b-font-line-height-1);
+    }
+  }
+  .docs-toc__title {
+    margin: 0 0 var(--b-gap-field);
+    color: var(--b-color-text);
+    font-weight: var(--b-font-weight-medium);
+  }
+  .docs-toc ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    /* The rail the marked link's bar sits on. */
+    border-inline-start: var(--b-line-hair) solid var(--b-color-border-subtle);
+  }
+  .docs-toc a {
+    display: block;
+    margin-inline-start: calc(-1 * var(--b-line-hair));
+    padding: var(--b-space-1) 0 var(--b-space-1) var(--b-space-3);
+    border-inline-start: var(--b-line-bold) solid transparent;
+    color: var(--b-color-text-muted);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--b-color-text);
+    }
+    /* The section being read: full ink and the bold edge, the selected-row mark. */
+    &[aria-current] {
+      border-inline-start-color: var(--b-color-text);
+      color: var(--b-color-text);
+      font-weight: var(--b-font-weight-medium);
+    }
+  }
+  .docs-toc li[data-depth='3'] a {
+    padding-inline-start: var(--b-space-6);
   }
   h1 {
     font: var(--b-font-weight-display) var(--b-font-size-5) / var(--b-font-line-height-5) var(--b-font-family-display);
@@ -63,7 +164,7 @@
     font: var(--b-font-weight-medium) var(--b-font-size-4) / var(--b-font-line-height-4) var(--b-font-family-ui);
   }
   h3 {
-    font: var(--b-font-weight-medium) var(--b-font-size-2) / var(--b-font-line-height-2) var(--b-font-family-ui);
+    font: var(--b-font-weight-medium) var(--b-font-size-3) / var(--b-font-line-height-3) var(--b-font-family-ui);
   }
   .docs-lead {
     color: var(--b-color-text-muted);

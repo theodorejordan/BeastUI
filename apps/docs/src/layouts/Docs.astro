@@ -12,12 +12,15 @@ import ThemeSwitcher from '../components/ThemeSwitcher';
 interface Props {
   title?: string;
   description?: string;
-  // MDX pages that name this layout pass their frontmatter instead.
+  // MDX pages that name this layout pass their frontmatter instead, and their headings.
   frontmatter?: { title: string; description?: string };
+  headings?: { depth: number; slug: string; text: string }[];
 }
 const title = Astro.props.frontmatter?.title ?? Astro.props.title ?? 'BeastUI';
 const description = Astro.props.frontmatter?.description ?? Astro.props.description;
 const home = import.meta.env.BASE_URL;
+// "On this page": the chapters (h2) and their sections (h3).
+const toc = (Astro.props.headings ?? []).filter((h) => h.depth === 2 || h.depth === 3);
 ---
 
 <!doctype html>
@@ -41,8 +44,75 @@ const home = import.meta.env.BASE_URL;
       <a class="docs-mark" href={home}>BeastUI</a>
       <ThemeSwitcher client:load />
     </header>
-    <main class="docs-main">
-      <slot />
-    </main>
+    <div class="docs-page">
+      <main class="docs-main">
+        <slot />
+      </main>
+      {
+        toc.length > 0 && (
+          <aside class="docs-toc">
+            <nav aria-label="On this page">
+              <p class="docs-toc__title">On this page</p>
+              <ul>
+                {toc.map((h) => (
+                  <li data-depth={h.depth}>
+                    <a href={`#${h.slug}`}>{h.text}</a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </aside>
+        )
+      }
+    </div>
+    <script>
+      // Marks the section being read in "On this page" (aria-current), from the last heading
+      // that scrolled past the top third of the screen.
+      const links = [...document.querySelectorAll<HTMLAnchorElement>('.docs-toc a')];
+      const headings = links
+        .map((a) => document.getElementById(decodeURIComponent(a.hash.slice(1))))
+        .filter((h): h is HTMLElement => h !== null);
+      const mark = (): void => {
+        const line = window.innerHeight / 3;
+        let current = headings[0];
+        for (const h of headings) if (h.getBoundingClientRect().top <= line) current = h;
+        // At the very bottom, the last section is the one being read, however short.
+        if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) {
+          current = headings[headings.length - 1];
+        }
+        for (const a of links) {
+          const on = current !== undefined && a.hash === `#${current.id}`;
+          if (on) a.setAttribute('aria-current', 'location');
+          else a.removeAttribute('aria-current');
+        }
+        // Keeps the marked link in view when the menu is longer than the screen. Scrolls the
+        // menu only: scrollIntoView() would move the page too.
+        const menu = document.querySelector<HTMLElement>('.docs-toc');
+        const link = links.find((a) => a.hasAttribute('aria-current'));
+        if (menu && link) {
+          const top = link.getBoundingClientRect().top - menu.getBoundingClientRect().top + menu.scrollTop;
+          if (top < menu.scrollTop) menu.scrollTop = top;
+          else if (top + link.offsetHeight > menu.scrollTop + menu.clientHeight) {
+            menu.scrollTop = top + link.offsetHeight - menu.clientHeight;
+          }
+        }
+      };
+      if (headings.length) {
+        let queued = false;
+        addEventListener(
+          'scroll',
+          () => {
+            if (queued) return;
+            queued = true;
+            requestAnimationFrame(() => {
+              queued = false;
+              mark();
+            });
+          },
+          { passive: true },
+        );
+        mark();
+      }
+    </script>
   </body>
 </html>
