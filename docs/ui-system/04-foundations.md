@@ -144,10 +144,11 @@ When the inset is larger than the radius (a dialog's 24 px padding around 8 px b
 | `--fs-0` / `--lh-0` | 11 | 16 | tags, kbd |
 | `--fs-1` / `--lh-1` | 12 | 16 | labels, hints, meta |
 | `--fs-2` / `--lh-2` | 14 (`tool`: 13) | 20 | body, controls |
+| `--fs-3` / `--lh-3` | 16 | 24 | section headings (docs h3) |
 | `--fs-4` / `--lh-4` | 20 (playful: 22) | 28 | panel titles |
 | `--fs-5` / `--lh-5` | 32 (playful: 40) | 40 (48) | display |
 
-`--fs-3` (15 px) was used nowhere and is removed. Inside controls, text is set with `line-height: 1` and centred by flex, so the control's height does the work.
+`--fs-3` (15 px) was used nowhere and was removed. It came back at 16 px on a 24 px line (owner, 2026-11-23): a section heading at the body size read as body text, and 14 to 20 left no step between them. Inside controls, text is set with `line-height: 1` and centred by flex, so the control's height does the work.
 
 **Sources**
 - Atlassian: every line height is a multiple of 4 (12/16, 14/20, 16/24…) ([typography](https://atlassian.design/foundations/typography)).
