@@ -1,6 +1,6 @@
 {
   "name": "@beastui/preact",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "BeastUI for Preact: thin components that add behaviour to @beastui/css. No visual rule lives in JS.",
   "type": "module",
   "license": "MIT",
