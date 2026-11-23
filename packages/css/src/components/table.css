@@ -20,8 +20,8 @@
  * the last column (actions) stays in view. From Masterz's track table.
  *
  * Foundations (04-foundations.md): rows are --b-size-row (the control height plus 4px), the
- * header is the control height; 8px between columns (--b-gap-inline), the control inset at
- * the two edges; tabular figures; hairline dividers; the selected row edge is the bold line.
+ * header is the control height; one 16px gap between all columns (--b-table-gap), the
+ * control inset at the two edges; tabular figures; hairline dividers; the selected row edge is the bold line.
  */
 @import '../layers.css';
 
@@ -30,6 +30,8 @@
     /* The header sticks over the rows, so it needs an opaque fill: the ground the table sits
        on. On a card, set it to var(--b-color-surface-card). */
     --b-table-ground: var(--b-color-surface);
+    /* The gap between two columns, the same everywhere: the checkbox and the title too. */
+    --b-table-gap: var(--b-space-4);
 
     width: 100%;
     /* separate, not collapse: a collapsed border scrolls away from a sticky header cell. */
@@ -43,7 +45,8 @@
 
     & :is(th, td) {
       height: var(--b-size-row);
-      padding: 0 calc(var(--b-gap-inline) / 2);
+      /* Half the column gap on each side: one even gap between all columns (owner review). */
+      padding: 0 calc(var(--b-table-gap) / 2);
       border-bottom: var(--b-line-hair) solid var(--b-color-border-subtle);
       text-align: start;
       vertical-align: middle;
@@ -88,15 +91,10 @@
     & [data-align='center'] {
       text-align: center;
     }
-    /* Side room the width of the sort arrow and its gap: the arrow hangs into it (below), and a
-       centred column doesn't crowd the next one. */
-    & :is(th, td)[data-align='center'] {
-      padding-inline: calc(var(--b-font-size-1) + var(--b-space-1));
-    }
 
-    /* A little more air before a cell of buttons, so actions don't read as data. */
-    & td:has(> .b-btn) {
-      padding-inline-start: var(--b-space-3);
+    /* Several tags in one cell: the gap of a glyph and its label, as in the tag docs. */
+    & td > .b-tag + .b-tag {
+      margin-inline-start: var(--b-gap-icon);
     }
 
     /* The checkbox column: as narrow as the box. The whole cell is the target (useSelection),
@@ -210,9 +208,12 @@
     [aria-sort='descending'] > & .b-icon {
       rotate: 180deg;
     }
-    /* Centred: the arrow hangs past the label, so the label itself sits over the centred values. */
-    [data-align='center'] > & .b-icon {
-      margin-inline-end: calc(-1 * (var(--b-font-size-1) + var(--b-space-1)));
+    /* Centred: an empty slot the arrow's size on the other side, so the label itself sits over
+       the centred values. */
+    [data-align='center'] > &::before {
+      content: '';
+      flex: none;
+      width: var(--b-font-size-1);
     }
   }
 

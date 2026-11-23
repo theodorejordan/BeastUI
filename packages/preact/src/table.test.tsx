@@ -211,6 +211,17 @@ describe('Table foundations', () => {
     expect(root.querySelector('thead tr')!.getBoundingClientRect().height).toBe(px('--b-size-control'));
   });
 
+  it('has one even gap between all columns, and the control inset at the edges', () => {
+    render(<Tracks />, root);
+    const cells = [...root.querySelector('tbody tr')!.children].map((c) => getComputedStyle(c));
+    const gap = px('--b-space-4');
+    const inset = px('--b-inset-control');
+    cells.forEach((c, i) => {
+      expect(parseFloat(c.paddingLeft)).toBe(i === 0 ? inset : gap / 2);
+      expect(parseFloat(c.paddingRight)).toBe(i === cells.length - 1 ? inset : gap / 2);
+    });
+  });
+
   it('a button in a row is the small control, with air above and below', () => {
     render(<Tracks />, root);
     const button = root.querySelector('tbody .b-btn')!.getBoundingClientRect();
@@ -218,10 +229,10 @@ describe('Table foundations', () => {
   });
 
   it('fits a narrow box: the grow column truncates, rows keep their height', () => {
-    root.style.width = '170px';
+    root.style.width = '200px';
     render(<Tracks />, root);
     const table = root.querySelector('table')!;
-    expect(table.getBoundingClientRect().width).toBeLessThanOrEqual(170);
+    expect(table.getBoundingClientRect().width).toBeLessThanOrEqual(200);
     const title = root.querySelector<HTMLElement>('tbody td[data-grow]')!;
     // The text is laid out wider than its cell: cut, with an ellipsis.
     const text = document.createRange();

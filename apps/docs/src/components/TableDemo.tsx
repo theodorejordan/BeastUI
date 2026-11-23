@@ -20,7 +20,6 @@ const duration = (s: number): string => `${Math.floor(s / 60)}:${String(s % 60).
 export default function TableDemo(): JSX.Element {
   const sort = useSort(TRACKS, {
     title: (a, b) => compareText(a.title, b.title),
-    genre: (a, b) => compareText(a.genre, b.genre),
     bpm: (a, b) => a.bpm - b.bpm,
     length: (a, b) => a.seconds - b.seconds,
   });
@@ -42,10 +41,7 @@ export default function TableDemo(): JSX.Element {
             <SortHeader column="title" sort={sort} grow>
               Title
             </SortHeader>
-            <th>Status</th>
-            <SortHeader column="genre" sort={sort}>
-              Genre
-            </SortHeader>
+            <th>Tags</th>
             <SortHeader column="bpm" sort={sort} align="center">
               BPM
             </SortHeader>
@@ -65,14 +61,12 @@ export default function TableDemo(): JSX.Element {
                 {t.title}
               </td>
               <td>
+                <span class="b-tag">{t.genre}</span>
                 {t.clipping && (
                   <span class="b-tag" data-variant="warn">
                     Clipping
                   </span>
                 )}
-              </td>
-              <td>
-                <span class="b-tag">{t.genre}</span>
               </td>
               <td data-align="center">{t.bpm}</td>
               <td data-align="center">{duration(t.seconds)}</td>
