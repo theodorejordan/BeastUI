@@ -38,9 +38,10 @@
   }
 
   /* ---------- Page ---------- */
-  /* The page: an 880px column for demos, code and tables, centred on the screen, and "On this
-     page" in the right margin from 1200px (owner, 2026-11-23, after Tailwind's docs). The column
-     stays centred: the eye comes back to the middle of the screen, not left of it. */
+  /* The page: an 880px column for demos, code and tables, centred on the screen, the menu in the
+     left margin and "On this page" in the right one from 1200px (owner, 2026-11-23, after
+     Tailwind's docs). The column stays centred: the eye comes back to the middle of the screen,
+     not left of it. 1024–1199px: menu and column. Below: the menu opens in a drawer. */
   .docs-page {
     --docs-toc-w: 200px;
     /* .docs-bar's height: its padding, the theme switcher (a control, the tallest thing in it)
@@ -52,7 +53,19 @@
     column-gap: var(--b-space-12);
     padding-inline: var(--b-space-6);
   }
-  /* Two equal margins, each wide enough for the menu and its gap: the column shrinks between
+  @media (min-width: 1024px) {
+    .docs-page {
+      grid-template-columns: calc(var(--docs-toc-w) + var(--b-space-12)) minmax(0, 880px);
+      justify-content: start;
+    }
+    .docs-nav {
+      grid-column: 1;
+    }
+    .docs-main {
+      grid-column: 2;
+    }
+  }
+  /* Two equal margins, each wide enough for a menu and its gap: the column shrinks between
      1200 and about 1400px rather than moving off centre. */
   @media (min-width: 1200px) {
     .docs-page {
@@ -60,11 +73,9 @@
         minmax(calc(var(--docs-toc-w) + var(--b-space-12)), 1fr)
         minmax(0, 880px)
         minmax(calc(var(--docs-toc-w) + var(--b-space-12)), 1fr);
+      justify-content: center;
       column-gap: 0;
       padding-inline: var(--b-space-6);
-    }
-    .docs-main {
-      grid-column: 2;
     }
     .docs-toc {
       grid-column: 3;
@@ -107,36 +118,54 @@
     font-size: 0.9em;
   }
 
-  /* ---------- On this page ---------- */
+  /* ---------- Menus: the docs menu (left) and On this page (right) ---------- */
+  .docs-nav,
   .docs-toc {
     display: none;
+    width: var(--docs-toc-w);
+    font-size: var(--b-font-size-1);
+    line-height: var(--b-font-line-height-1);
+  }
+  @media (min-width: 1024px) {
+    .docs-menu-open {
+      display: none;
+    }
+    .docs-nav {
+      display: block;
+    }
   }
   @media (min-width: 1200px) {
     .docs-toc {
       display: block;
+    }
+  }
+  @media (min-width: 1024px) {
+    .docs-nav,
+    .docs-toc {
       position: sticky;
       top: var(--docs-bar-h);
       align-self: start;
       max-height: calc(100vh - var(--docs-bar-h));
       overflow-y: auto;
       padding-block: var(--b-space-12);
-      font-size: var(--b-font-size-1);
-      line-height: var(--b-font-line-height-1);
     }
   }
-  .docs-toc__title {
+  .docs-nav__group + .docs-nav__group {
+    margin-block-start: var(--b-space-6);
+  }
+  :is(.docs-nav__title, .docs-toc__title) {
     margin: 0 0 var(--b-gap-field);
     color: var(--b-color-text);
     font-weight: var(--b-font-weight-medium);
   }
-  .docs-toc ul {
+  :is(.docs-nav, .docs-nav__list, .docs-toc) ul {
     margin: 0;
     padding: 0;
     list-style: none;
     /* The rail the marked link's bar sits on. */
     border-inline-start: var(--b-line-hair) solid var(--b-color-border-subtle);
   }
-  .docs-toc a {
+  :is(.docs-nav, .docs-nav__list, .docs-toc) a {
     display: block;
     margin-inline-start: calc(-1 * var(--b-line-hair));
     padding: var(--b-space-1) 0 var(--b-space-1) var(--b-space-3);
@@ -147,7 +176,7 @@
     &:hover {
       color: var(--b-color-text);
     }
-    /* The section being read: full ink and the bold edge, the selected-row mark. */
+    /* The page or section being read: full ink and the bold edge, the selected-row mark. */
     &[aria-current] {
       border-inline-start-color: var(--b-color-text);
       color: var(--b-color-text);
@@ -156,6 +185,37 @@
   }
   .docs-toc li[data-depth='3'] a {
     padding-inline-start: var(--b-space-6);
+  }
+
+  /* ---------- Drawer: the menu on small screens ---------- */
+  /* A modal <dialog> on the left edge. Its body fills it, so a click on the dialog itself is a
+     click on the backdrop (Docs.astro closes it then). */
+  .docs-drawer {
+    margin: 0;
+    width: min(280px, 85vw);
+    height: 100dvh;
+    max-height: none;
+    padding: 0;
+    border: 0;
+    border-inline-end: var(--b-line-hair) solid var(--b-color-border-subtle);
+    background: var(--b-color-surface);
+    color: inherit;
+
+    &::backdrop {
+      background: rgb(0 0 0 / 0.3);
+    }
+  }
+  .docs-drawer__body {
+    box-sizing: border-box;
+    min-height: 100%;
+    padding: var(--b-space-3) var(--b-space-6) var(--b-space-12);
+    font-size: var(--b-font-size-1);
+    line-height: var(--b-font-line-height-1);
+  }
+  .docs-drawer__head {
+    display: flex;
+    align-items: center;
+    margin-block-end: var(--b-space-6);
   }
   h1 {
     font: var(--b-font-weight-display) var(--b-font-size-5) / var(--b-font-line-height-5) var(--b-font-family-display);

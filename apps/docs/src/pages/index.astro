@@ -1,19 +1,46 @@
 ---
 import Docs from '../layouts/Docs.astro';
-const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 ---
 
 <Docs title="BeastUI" description="A calm, outlined UI system.">
   <h1>BeastUI</h1>
   <p class="docs-lead">A calm, outlined UI system. Tokens, plain CSS classes, and thin Preact components.</p>
-  <h2>Components</h2>
+
+  <h2>Why I built it</h2>
+  <p>
+    I make my own apps: Masterz, an audio mastering tool, and Attaque Défense, a game played on phones. Each one
+    grew its own buttons, tables and colours, and each one solved the same problems a little differently. BeastUI is
+    the one system they all share, so a fix made once lands everywhere, and a new app starts finished instead of
+    from scratch.
+  </p>
+
+  <h2>The intention</h2>
+  <p>
+    A product, not a components folder. BeastUI has its own repo, its own versions on npm and these docs. It is
+    built in three layers so any app can take what it needs:
+  </p>
   <ul>
-    <li><a href={`${base}components/button/`}>Button</a></li>
-    <li><a href={`${base}components/segmented-control/`}>Segmented control</a></li>
-    <li><a href={`${base}components/field/`}>Field</a></li>
-    <li><a href={`${base}components/checkbox/`}>Checkbox</a></li>
-    <li><a href={`${base}components/tag/`}>Tag</a></li>
-    <li><a href={`${base}components/table/`}>Table</a></li>
-    <li><a href={`${base}components/tree/`}>Tree</a></li>
+    <li><strong>Tokens</strong>: colours, type, spacing and lines as CSS custom properties, for any stack.</li>
+    <li><strong>CSS</strong>: every component as plain classes that work with zero JavaScript.</li>
+    <li><strong>Preact</strong>: thin wrappers that add behaviour, keyboard support and accessibility.</li>
   </ul>
+  <p>
+    An app that is not written in Preact still gets most of the system from the first two layers.
+  </p>
+
+  <h2>The style</h2>
+  <p>
+    Clear, abstract and outlined: paper and ink. Line and shape do the work, not heavy fills or shadows. Colour is
+    rare, so it means something when it shows up. Motion is there only when it explains what happened.
+  </p>
+  <p>
+    Calm by default, because a mastering tool needs to stay out of the way. The game opts into a playful layer with
+    more colour and life, and still looks like the same family.
+  </p>
+
+  <h2>The bar</h2>
+  <p>
+    Light and dark from day one, AA contrast, a visible focus ring, everything usable from the keyboard, and respect
+    for reduced motion. A smaller system that is finished beats a big one that is not.
+  </p>
 </Docs>

@@ -1,0 +1,26 @@
+---
+// The docs menu, drawn twice by Docs.astro: in the left column on wide screens and in the
+// drawer on small ones. Same look as "On this page": one style for every docs menu.
+interface Props {
+  groups: { title: string; links: { title: string; url: string }[] }[];
+  here: string;
+}
+const { groups, here } = Astro.props;
+---
+
+{
+  groups.map((group) => (
+    <div class="docs-nav__group">
+      <p class="docs-nav__title">{group.title}</p>
+      <ul>
+        {group.links.map((l) => (
+          <li>
+            <a href={l.url} aria-current={l.url === here ? 'page' : undefined}>
+              {l.title}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  ))
+}
