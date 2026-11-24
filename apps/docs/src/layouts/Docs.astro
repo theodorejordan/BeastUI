@@ -106,6 +106,9 @@ const menu = [
       drawer?.addEventListener('click', (e) => {
         if (e.target === drawer) drawer.close();
       });
+      // The layout slides between widths only once the page is drawn (docs.css, Motion): not
+      // on load, where the menus would slide in on every page.
+      requestAnimationFrame(() => requestAnimationFrame(() => (document.documentElement.dataset.motion = '')));
       // Back to a wide screen with the drawer open: the left column takes over.
       matchMedia('(min-width: 1024px)').addEventListener('change', (e) => {
         if (e.matches) drawer?.close();

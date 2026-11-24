@@ -47,40 +47,43 @@
     /* .docs-bar's height: its padding, the theme switcher (a control, the tallest thing in it)
        and its bottom line. 57px in core, measured. */
     --docs-bar-h: calc(2 * var(--b-space-3) + var(--b-size-control) + var(--b-line-hair));
+    /* One margin: room for a menu and its gap. */
+    --docs-side: calc(var(--docs-toc-w) + var(--b-space-12));
+    /* Always three columns of plain lengths (margin, column, margin), so the browser can slide
+       from one layout to the next: grid-template-columns only animates between track lists of
+       the same length made of lengths, not fr or minmax (MDN, grid-template-columns). */
+    --docs-left: max(0px, (100% - 880px) / 2);
+    --docs-right: max(0px, (100% - 880px) / 2);
     display: grid;
-    grid-template-columns: minmax(0, 880px);
-    justify-content: center;
-    column-gap: var(--b-space-12);
+    grid-template-columns: var(--docs-left) minmax(0, 880px) var(--docs-right);
     padding-inline: var(--b-space-6);
   }
+  .docs-nav {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .docs-main {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .docs-toc {
+    grid-column: 3;
+    grid-row: 1;
+    margin-inline-start: var(--b-space-12);
+  }
+  /* 1024–1199px: the menu and the column. */
   @media (min-width: 1024px) {
     .docs-page {
-      grid-template-columns: calc(var(--docs-toc-w) + var(--b-space-12)) minmax(0, 880px);
-      justify-content: start;
-    }
-    .docs-nav {
-      grid-column: 1;
-    }
-    .docs-main {
-      grid-column: 2;
+      --docs-left: var(--docs-side);
+      --docs-right: 0px;
     }
   }
-  /* Two equal margins, each wide enough for a menu and its gap: the column shrinks between
-     1200 and about 1400px rather than moving off centre. */
+  /* Two equal margins, each at least a menu wide: the column shrinks between 1200 and about
+     1400px rather than moving off centre. */
   @media (min-width: 1200px) {
     .docs-page {
-      grid-template-columns:
-        minmax(calc(var(--docs-toc-w) + var(--b-space-12)), 1fr)
-        minmax(0, 880px)
-        minmax(calc(var(--docs-toc-w) + var(--b-space-12)), 1fr);
-      justify-content: center;
-      column-gap: 0;
-      padding-inline: var(--b-space-6);
-    }
-    .docs-toc {
-      grid-column: 3;
-      width: var(--docs-toc-w);
-      margin-inline-start: var(--b-space-12);
+      --docs-left: max(var(--docs-side), (100% - 880px) / 2);
+      --docs-right: var(--docs-left);
     }
   }
   .docs-main {
@@ -122,9 +125,23 @@
   .docs-nav,
   .docs-toc {
     display: none;
+    position: sticky;
+    top: var(--docs-bar-h);
+    align-self: start;
     width: var(--docs-toc-w);
+    max-height: calc(100vh - var(--docs-bar-h));
+    overflow-y: auto;
+    padding-block: var(--b-space-12);
     font-size: var(--b-font-size-2);
     line-height: var(--b-font-line-height-2);
+    /* Hidden, each menu waits a step off towards its own edge, see-through. */
+    opacity: 0;
+  }
+  .docs-nav {
+    translate: calc(-1 * var(--b-space-4)) 0;
+  }
+  .docs-toc {
+    translate: var(--b-space-4) 0;
   }
   @media (min-width: 1024px) {
     .docs-menu-open {
@@ -132,22 +149,15 @@
     }
     .docs-nav {
       display: block;
+      opacity: 1;
+      translate: 0 0;
     }
   }
   @media (min-width: 1200px) {
     .docs-toc {
       display: block;
-    }
-  }
-  @media (min-width: 1024px) {
-    .docs-nav,
-    .docs-toc {
-      position: sticky;
-      top: var(--docs-bar-h);
-      align-self: start;
-      max-height: calc(100vh - var(--docs-bar-h));
-      overflow-y: auto;
-      padding-block: var(--b-space-12);
+      opacity: 1;
+      translate: 0 0;
     }
   }
   .docs-nav__group + .docs-nav__group {
@@ -216,6 +226,67 @@
     display: flex;
     align-items: center;
     margin-block-end: var(--b-space-6);
+  }
+
+  /* ---------- Motion ---------- */
+  /* The layout slides from one width to the next, and the drawer slides in from its edge, so
+     the eye can follow where the menu went. Off when the reader asks for less motion.
+     - @starting-style: where an element starts when it appears (it had no style before).
+     - allow-discrete: keeps display (and the dialog's top layer, overlay) as it was until the
+       slide out ends, instead of hiding at once. MDN, @starting-style, transition-behavior.
+     The layout's motion waits for [data-motion] (set by Docs.astro after the first paint):
+     @starting-style also runs on a page's first render, and the menus would slide in on every
+     page load. */
+  @media (prefers-reduced-motion: no-preference) {
+    [data-motion] .docs-page {
+      transition: grid-template-columns var(--b-duration-3) ease-out;
+    }
+    [data-motion] :is(.docs-nav, .docs-toc) {
+      transition:
+        opacity var(--b-duration-3) ease-out,
+        translate var(--b-duration-3) ease-out,
+        display var(--b-duration-3) allow-discrete;
+    }
+    @starting-style {
+      [data-motion] :is(.docs-nav, .docs-toc) {
+        opacity: 0;
+      }
+      [data-motion] .docs-nav {
+        translate: calc(-1 * var(--b-space-4)) 0;
+      }
+      [data-motion] .docs-toc {
+        translate: var(--b-space-4) 0;
+      }
+    }
+    .docs-drawer {
+      translate: -100% 0;
+      transition:
+        translate var(--b-duration-3) ease-out,
+        display var(--b-duration-3) allow-discrete,
+        overlay var(--b-duration-3) allow-discrete;
+
+      &[open] {
+        translate: 0 0;
+      }
+      &::backdrop {
+        opacity: 0;
+        transition:
+          opacity var(--b-duration-3) ease-out,
+          display var(--b-duration-3) allow-discrete,
+          overlay var(--b-duration-3) allow-discrete;
+      }
+      &[open]::backdrop {
+        opacity: 1;
+      }
+    }
+    @starting-style {
+      .docs-drawer[open] {
+        translate: -100% 0;
+      }
+      .docs-drawer[open]::backdrop {
+        opacity: 0;
+      }
+    }
   }
   h1 {
     font: var(--b-font-weight-display) var(--b-font-size-5) / var(--b-font-line-height-5) var(--b-font-family-display);
