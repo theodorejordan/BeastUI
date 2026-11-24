@@ -28,3 +28,7 @@ The docs live in `apps/docs`, built with **Astro 7** and MDX, with Preact island
 - **Starlight:** faster to start, but its own look would compete with BeastUI's.
 - **Next.js** (7 of 11 surveyed libraries): powerful, but a React framework for a Preact system.
 - **Cloudflare Workers static assets:** free now, private repos included, but one more account and service.
+
+## Update (2026-11-24)
+
+The repo went public at 0.0.2, before v0.1: the packages are already public on npm, so keeping the source private hid nothing, and a public docs site helps the Masterz rewrite. `.github/workflows/docs.yml` deploys the docs on every push to main, at https://theodorejordan.github.io/BeastUI/. The site follows main, not npm. A secret scan of the whole history (gitleaks) found nothing before the switch.
