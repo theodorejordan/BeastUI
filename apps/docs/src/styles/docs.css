@@ -123,8 +123,8 @@
   .docs-toc {
     display: none;
     width: var(--docs-toc-w);
-    font-size: var(--b-font-size-1);
-    line-height: var(--b-font-line-height-1);
+    font-size: var(--b-font-size-2);
+    line-height: var(--b-font-line-height-2);
   }
   @media (min-width: 1024px) {
     .docs-menu-open {
@@ -162,12 +162,12 @@
     margin: 0;
     padding: 0;
     list-style: none;
-    /* The rail the marked link's bar sits on. */
-    border-inline-start: var(--b-line-hair) solid var(--b-color-border-subtle);
+    /* The rail the marked link's bar sits on, exactly: same width, so the mark covers it. */
+    border-inline-start: var(--b-line-bold) solid var(--b-color-border-subtle);
   }
   :is(.docs-nav, .docs-nav__list, .docs-toc) a {
     display: block;
-    margin-inline-start: calc(-1 * var(--b-line-hair));
+    margin-inline-start: calc(-1 * var(--b-line-bold));
     padding: var(--b-space-1) 0 var(--b-space-1) var(--b-space-3);
     border-inline-start: var(--b-line-bold) solid transparent;
     color: var(--b-color-text-muted);
@@ -209,8 +209,8 @@
     box-sizing: border-box;
     min-height: 100%;
     padding: var(--b-space-3) var(--b-space-6) var(--b-space-12);
-    font-size: var(--b-font-size-1);
-    line-height: var(--b-font-line-height-1);
+    font-size: var(--b-font-size-2);
+    line-height: var(--b-font-line-height-2);
   }
   .docs-drawer__head {
     display: flex;
@@ -263,10 +263,25 @@
   .docs-demo__stage .b-table {
     --b-table-ground: var(--b-color-surface-raised);
   }
+  /* A component with no edge of its own (a tree) sits on a panel, as it would in an app's
+     sidebar: its row tints end at a line you can see (owner review, after React Aria). A step
+     smaller radius than the stage around it. */
+  .docs-panel {
+    box-sizing: border-box;
+    width: 280px;
+    max-width: 100%;
+    padding: var(--b-inset-nested);
+    background: var(--b-color-surface-card);
+    border: var(--b-line-hair) solid var(--b-color-border-subtle);
+    border-radius: var(--b-radius-2);
+  }
+  /* What's shown sits in the middle of the stage, on display (Ark, React Aria, Radix). A wide
+     component (table, field) still takes the full width. */
   .docs-demo__stage {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    justify-content: center;
     gap: var(--b-gap-inline);
     padding: var(--b-space-8) var(--b-inset-panel);
     background: var(--b-color-surface-raised);

@@ -30,7 +30,7 @@ const CRATES: TreeItem[] = [
 export default function TreeDemo(): JSX.Element {
   const [selected, setSelected] = useState<string | null>('house/deep');
   return (
-    <div style={{ width: '280px', maxWidth: '100%' }}>
+    <div class="docs-panel">
       <Tree
         items={CRATES}
         aria-label="Crates"

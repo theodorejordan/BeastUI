@@ -28,7 +28,7 @@ const MENU: TreeItem[] = [
 export default function TreeGroupDemo(): JSX.Element {
   const [selected, setSelected] = useState<string | null>('tree');
   return (
-    <div style={{ width: '280px', maxWidth: '100%' }}>
+    <div class="docs-panel">
       <Tree
         items={MENU}
         aria-label="Menu"

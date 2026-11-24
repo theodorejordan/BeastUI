@@ -5,11 +5,22 @@
  */
 interface Props {
   html: string;
+  /** Shows the example on a .docs-panel (for components with no edge of their own). The panel
+   * is the docs' staging, so it stays out of the code. */
+  panel?: boolean;
 }
 const html = Astro.props.html.trim();
 ---
 
 <figure class="docs-demo">
-  <div class="docs-demo__stage" set:html={html} />
+  {
+    Astro.props.panel ? (
+      <div class="docs-demo__stage">
+        <div class="docs-panel" set:html={html} />
+      </div>
+    ) : (
+      <div class="docs-demo__stage" set:html={html} />
+    )
+  }
   <pre tabindex="0"><code>{html}</code></pre>
 </figure>
