@@ -38,6 +38,10 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
+      # tokens.css is generated: the docs need the packages built first, as in ci.yml.
+      - name: Build the packages
+        run: pnpm build
+
       # Gives the site's origin and path (https://theodorejordan.github.io, /BeastUI).
       - id: pages
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
