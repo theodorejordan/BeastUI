@@ -34,7 +34,18 @@ Fonts are not bundled: load Inter Tight, Outfit and IBM Plex Mono the way your a
 
 ## Components
 
-- Button: `b-btn`, with `data-variant` (`primary`, `secondary`, `quiet`, `danger`) and `data-icon` for an icon-only square.
+| Component | Classes |
+|---|---|
+| Button | `b-btn`, with `data-variant` (`primary`, `secondary`, `quiet`, `danger`) and `data-icon` for an icon-only square |
+| Checkbox | `b-checkbox` on the input, `b-check` on its label |
+| Field | `b-field`, `b-input` |
+| Progress | `b-progress` with `role="progressbar"`, `data-size="thin"` |
+| Segmented control | `b-seg` |
+| Table | `b-table`, with `data-grow` and `data-align` on cells |
+| Tag | `b-tag`, `data-variant="warn"` |
+| Tree | `b-tree` |
+
+Each component's markup and states: [the docs](https://theodorejordan.github.io/BeastUI/).
 
 For Preact, [`@beastui/preact`](https://www.npmjs.com/package/@beastui/preact) adds the behaviour on top of these classes.
 
