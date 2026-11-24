@@ -173,7 +173,8 @@
     color: inherit;
     text-underline-offset: var(--b-space-0-5);
   }
-  ul {
+  /* :where keeps the weight of a plain ul, so .docs-toc ul still wins. */
+  ul:where(:not(.b-tree, .b-tree ul)) {
     padding-inline-start: var(--b-space-6);
   }
 

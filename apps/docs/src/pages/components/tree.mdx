@@ -1,0 +1,163 @@
+---
+layout: ../../layouts/Docs.astro
+title: Tree
+description: "Nested items that fold, like crates and their subcrates: open a branch, choose an item."
+---
+import Demo from '../../components/Demo.astro';
+import TreeDemo from '../../components/TreeDemo';
+import TreeGroupDemo from '../../components/TreeGroupDemo';
+import Pre from '../../components/Pre.astro';
+
+export const components = { pre: Pre };
+
+# Tree
+
+<p class="docs-lead">Nested items that fold, like crates and their subcrates: open a branch, choose an item.</p>
+
+## When to use it
+
+For things that hold other things, where people pick one: crates, folders, sections.
+
+- Rows with the same fields to compare: use a [table](../table/).
+- A flat list of pages: use plain links.
+
+## Live
+
+- **Fold:** click the arrow to open or close a branch.
+- **Choose:** click anywhere else on the row. The chosen row keeps the tint and a bold edge; its parents keep the tint, so the way to it shows even when they are closed.
+- **Keyboard:** Tab moves from an arrow to its name, then to the next row. Enter or Space acts.
+
+<figure class="docs-demo">
+  <div class="docs-demo__stage"><TreeDemo client:visible /></div>
+</figure>
+
+## Parent: item or group
+
+A parent is one of two things, set per item:
+
+| | Item (default) | Group (`group: true`) |
+|---|---|---|
+| What it is | A thing in itself: a crate holds tracks of its own. | Only a heading for its children: a section of pages. |
+| Row click | Chooses it. | Opens or closes it. |
+| Arrow | Its own button: opens or closes it. | Part of the row. |
+| Buttons | Two: the arrow, the name. | One: the whole row, with `aria-expanded`. |
+
+Ask: does choosing the parent show something? Crates in Masterz do (all the tracks under them), so they are items. A "Components" heading in a docs menu shows nothing on its own, so it is a group.
+
+A menu of groups: click a heading anywhere to fold it.
+
+<figure class="docs-demo">
+  <div class="docs-demo__stage"><TreeGroupDemo client:visible /></div>
+</figure>
+
+## Plain
+
+Nested lists and two buttons per row. Each row says its depth with `--b-tree-level`. A leaf has no arrow: its name stays in line with its siblings'.
+
+<Demo html={`
+<ul class="b-tree" aria-label="Crates" style="width: 280px">
+  <li>
+    <div class="b-tree-row" style="--b-tree-level: 0">
+      <button class="b-tree-toggle" type="button" aria-expanded="true" aria-label="Expand House">
+        <svg class="b-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+      <button class="b-tree-name" type="button">House</button>
+      <span class="b-tree-count">128</span>
+    </div>
+    <ul>
+      <li>
+        <div class="b-tree-row" style="--b-tree-level: 1">
+          <button class="b-tree-name" type="button" aria-current="true">Deep</button>
+          <span class="b-tree-count">54</span>
+        </div>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <div class="b-tree-row" style="--b-tree-level: 0">
+      <button class="b-tree-name" type="button">Techno</button>
+      <span class="b-tree-count">87</span>
+    </div>
+  </li>
+  <li>
+    <div class="b-tree-row" style="--b-tree-level: 0">
+      <button class="b-tree-toggle" type="button" data-group aria-expanded="false">
+        <svg class="b-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+        <span>Sets</span>
+      </button>
+    </div>
+  </li>
+</ul>
+`} />
+
+In plain HTML the arrow does nothing on its own: set `aria-expanded` and show or hide the `<ul>` (`hidden`) with a few lines of script, or use the Preact component.
+
+## In Preact
+
+`Tree` draws the rows from data and keeps which branches are open. The chosen item is yours.
+
+```tsx
+import { Tree } from '@beastui/preact';
+
+const [selected, setSelected] = useState<string | null>(null);
+
+<Tree
+  aria-label="Crates"
+  items={[
+    { id: 'house', label: 'House', count: 128, children: [{ id: 'house/deep', label: 'Deep', count: 54 }] },
+    { id: 'techno', label: 'Techno', count: 87 },
+  ]}
+  selected={selected}
+  onSelect={setSelected}
+/>
+```
+
+To remember the open branches between visits, keep them yourself:
+
+```tsx
+const [open, setOpen] = useState(() => new Set<string>(JSON.parse(localStorage.getItem('open') ?? '[]')));
+
+<Tree
+  items={crates}
+  open={open}
+  onOpenChange={(next) => {
+    setOpen(next);
+    localStorage.setItem('open', JSON.stringify([...next]));
+  }}
+/>
+```
+
+## API
+
+| Prop | Type | Default | |
+|---|---|---|---|
+| `items` | `TreeItem[]` | required | `{ id, label, count?, title?, group?, children? }`. Ids are unique in the whole tree. `group: true` makes a parent a group. |
+| `selected` | `string \| null` | `null` | The chosen item: `aria-current`, tint and edge. |
+| `onSelect` | `(id) => void` | | A click on the row. |
+| `defaultOpen` | `Iterable<string>` | none | The branches open at first, when the tree keeps them. |
+| `open` | `ReadonlySet<string>` | | The open branches, when you keep them. |
+| `onOpenChange` | `(open: Set<string>) => void` | | Every fold, with the new set. |
+| `toggleLabel` | `(item) => string` | `Expand {label}` | The arrow's name for a screen reader. |
+| `aria-label` | `string` | | Names the list: "Crates". |
+
+## The CSS contract
+
+| Markup | Effect |
+|---|---|
+| `<ul class="b-tree">`, nested `<ul>` | No bullets, no indent: rows indent themselves. |
+| `<div class="b-tree-row">` | 36px row (32 in `tool`), hover tint. |
+| `--b-tree-level` on a row | Its depth: half an arrow box more indent per level (12px, 10 in `tool`), so a child arrow sits under its parent's first letter. |
+| `<button class="b-tree-toggle" aria-expanded>` | The arrow, a 24px box (20 in `tool`) after the selected edge's width, so it sits as far from that edge as from the name. Hover turns it full ink. Turns down when `true`. |
+| `<button class="b-tree-name">` | The name, cut with an ellipsis. Its target is the whole row. |
+| `<button class="b-tree-toggle" data-group>` with the arrow and a `<span>` label | A group: the whole row folds it, its label in line with the names. |
+| `aria-current="true"` on the name | Chosen: the tint, kept, and a bold edge on the left. |
+| `data-trail` on a row | A parent of the chosen item, open or closed: keeps the tint, without the edge. `Tree` sets it. |
+| `<span class="b-tree-count">` | A muted number on the right, tabular figures. |
+
+## Accessibility
+
+- Built as [disclosure navigation (WAI-ARIA APG)](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/): every arrow is a `<button>` with `aria-expanded`, every name a `<button>`. Tab reaches them all.
+- The chosen item carries [`aria-current`](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-current), so a screen reader says "current".
+- The arrow's name stays the same; `aria-expanded` says whether it is open.
+- Chosen is an edge **and** a tint, never colour alone.
+- Not the [ARIA treeview](https://www.w3.org/WAI/ARIA/apg/patterns/treeview/) (arrow keys, one Tab stop): worth it for very long lists, and it can come later with the same look.

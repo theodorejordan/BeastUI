@@ -1,0 +1,192 @@
+/*
+ * Tree: nested items that fold, like crates and their subcrates. Built as disclosure
+ * navigation (WAI-ARIA APG): nested lists, a <button aria-expanded> folds a branch, a second
+ * <button> chooses the item, Tab moves between them. Not the ARIA treeview (role="tree",
+ * arrow keys): worth it only for very long lists, and it can come later with the same look.
+ *
+ * <ul class="b-tree">
+ *   <li>
+ *     <div class="b-tree-row" style="--b-tree-level: 0">
+ *       <button class="b-tree-toggle" type="button" aria-expanded="true" aria-label="Expand House">
+ *         <svg class="b-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+ *       </button>
+ *       <button class="b-tree-name" type="button" aria-current="true">House</button>
+ *       <span class="b-tree-count">42</span>
+ *     </div>
+ *     <ul>…the same rows, --b-tree-level: 1…</ul>
+ *   </li>
+ * </ul>
+ *
+ * The whole row chooses the item: the name button stretches over it (its ::after), and the
+ * toggle sits above that. A leaf has no toggle; its name keeps the toggle's column, so names
+ * line up at each level. A closed branch doesn't render its <ul> (or gives it `hidden`).
+ *
+ * A parent that is only a group (never chosen) has one button, the whole row, that folds it:
+ *   <button class="b-tree-toggle" type="button" data-group aria-expanded="false">
+ *     <svg class="b-icon" …/><span>Playlists</span>
+ *   </button>
+ *
+ * Foundations (04-foundations.md): rows are --b-size-row, like the table; the toggle is the
+ * small control (24px, 20 in tool), flush with the row's edge; one half-toggle indent per level
+ * (12px, 10 in tool); the control inset on the right; tabular counts; the selected row edge
+ * is the bold line.
+ */
+@import '../layers.css';
+
+@layer beast.components {
+  .b-tree {
+    /* The toggle: the small control, as in a table row. */
+    --b-tree-toggle: calc(var(--b-size-control) - var(--b-size-step));
+
+    color: var(--b-color-text);
+    font: var(--b-font-weight-regular) var(--b-font-size-2) / var(--b-font-line-height-2)
+      var(--b-font-family-ui);
+    font-variant-numeric: tabular-nums;
+
+    &,
+    & ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+  }
+
+  .b-tree-row {
+    --b-tree-level: 0;
+
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--b-tree-toggle) minmax(0, 1fr) auto;
+    align-items: center;
+    height: var(--b-size-row);
+    /* The arrow's box starts after the selected edge's width and the name right after it: the
+       arrow, centred in its box, sits as far from the edge's inner side as from the text (owner
+       review). Every row keeps that width, so choosing a row never moves it. One step per level
+       is half the box, so a child's arrow sits under its parent's first letter. */
+    padding-inline: calc(var(--b-line-bold) + var(--b-tree-level) * var(--b-tree-toggle) / 2)
+      var(--b-inset-control);
+    /* Shift+click and double clicks choose, not select the page's text. */
+    user-select: none;
+
+    /* See-through, like the table. A parent of the chosen item (data-trail) keeps the tint,
+       open or closed, so the way to the choice shows (owner review). */
+    &:hover,
+    &[data-trail] {
+      background: var(--b-color-hover);
+    }
+    /* Selected: the tint, kept, plus the bold edge. Not colour alone, and not a darker tint
+       (muted counts would drop under 4.5:1, see the table). */
+    &:has(> .b-tree-name[aria-current]:not([aria-current='false'])) {
+      background: var(--b-color-hover);
+      box-shadow: inset var(--b-line-bold) 0 0 var(--b-color-text);
+    }
+  }
+
+  .b-tree-toggle {
+    all: unset;
+    box-sizing: border-box;
+    position: relative;
+    /* Above the name's stretched target, so it folds instead of choosing. */
+    z-index: 1;
+    display: inline-grid;
+    place-items: center;
+    width: var(--b-tree-toggle);
+    height: var(--b-tree-toggle);
+    /* The ring's shape: the box shows only on focus. */
+    border-radius: var(--b-radius-1);
+    color: var(--b-color-text-muted);
+    cursor: pointer;
+
+    /* Ink only: a grey square around a small arrow looked heavy (owner review). The row's
+       tint already says the pointer is on it. */
+    &:hover {
+      color: var(--b-color-text);
+    }
+
+    & .b-icon {
+      width: var(--b-font-size-1);
+      height: var(--b-font-size-1);
+      transition: rotate var(--b-duration-2) var(--b-easing-move);
+    }
+    &[aria-expanded='true'] .b-icon {
+      rotate: 90deg;
+    }
+  }
+
+  /* A group: a parent that only holds (a heading for pages). The whole row is its toggle,
+     named by its label, and it is never chosen. Same columns as an item row, so labels line up. */
+  .b-tree-toggle[data-group] {
+    position: static;
+    grid-column: 1 / 3;
+    grid-template-columns: var(--b-tree-toggle) minmax(0, 1fr);
+    justify-items: start;
+    width: auto;
+    height: 100%;
+    border-radius: 0;
+    color: var(--b-color-text);
+
+    & .b-icon {
+      justify-self: center;
+      color: var(--b-color-text-muted);
+    }
+    & > span {
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    /* The whole row is the target, the count included. */
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+    }
+    &:focus-visible {
+      outline: none;
+    }
+    &:focus-visible::after {
+      outline: var(--b-line-bold) solid var(--b-color-focus);
+      outline-offset: calc(-1 * var(--b-line-bold));
+    }
+  }
+
+  .b-tree-name {
+    all: unset;
+    box-sizing: border-box;
+    /* A leaf has no toggle: the name stays in its own column, under its siblings' names. */
+    grid-column: 2;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+
+    /* The whole row is the target: the stretched-link pattern. */
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+    }
+    /* The ring goes round the row, the button's real target. */
+    &:focus-visible {
+      outline: none;
+    }
+    &:focus-visible::after {
+      outline: var(--b-line-bold) solid var(--b-color-focus);
+      outline-offset: calc(-1 * var(--b-line-bold));
+    }
+  }
+
+  .b-tree-count {
+    grid-column: 3;
+    padding-inline-start: var(--b-space-2);
+    color: var(--b-color-text-muted);
+    text-align: end;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .b-tree-toggle .b-icon {
+      transition: none;
+    }
+  }
+}

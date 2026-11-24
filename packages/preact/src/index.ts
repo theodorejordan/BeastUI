@@ -8,3 +8,5 @@ export { Checkbox } from './checkbox';
 export type { CheckboxProps } from './checkbox';
 export { SortHeader, compareText, useSelection, useSort } from './table';
 export type { Selection, Sort, SortDirection, SortHeaderProps, SortState } from './table';
+export { Tree } from './tree';
+export type { TreeItem, TreeProps } from './tree';
