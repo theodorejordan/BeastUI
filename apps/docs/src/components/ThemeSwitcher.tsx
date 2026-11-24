@@ -48,7 +48,12 @@ export default function ThemeSwitcher(): JSX.Element {
     const m = next.mode ?? mode;
     setTheme(t);
     setMode(m);
-    apply(t, m);
+    // A crossfade instead of a jump: the page's sizes change with the theme (owner). The
+    // browser shoots the old page, applies the new theme, and fades one into the other (MDN,
+    // View Transition API). No fade without the API, or when the visitor asks for less motion.
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (document.startViewTransition && !still) document.startViewTransition(() => apply(t, m));
+    else apply(t, m);
   };
 
   return (

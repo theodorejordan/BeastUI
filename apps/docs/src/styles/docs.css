@@ -13,6 +13,12 @@
   }
 
   /* ---------- Top bar ---------- */
+  /* Its height on one line, the same in every theme: a 32px control (pinned in .docs-bar) with
+     12px above and below, and its bottom line. On :root, so the page under it can read it too. */
+  :root {
+    --docs-bar-h: calc(2 * var(--b-space-3) + 32px + var(--b-line-hair));
+  }
+
   .docs-bar {
     position: sticky;
     top: 0;
@@ -21,6 +27,15 @@
     flex-wrap: wrap;
     align-items: center;
     gap: var(--b-gap-inline) var(--b-gap-group);
+    /* The same height in every theme: the switchers are controls, whose size changes with the
+       theme (28px in tool, 40 in playful), and the page must not jump when the visitor picks one
+       (owner). The bar is the docs' frame, not a demo: it keeps core's size, width and
+       case. */
+    --b-size-control: 32px;
+    --b-inset-control: var(--b-space-3);
+    --b-font-size-2: 14px;
+    --b-case: none;
+    --b-line-stroke: 1.5px;
     padding: var(--b-space-3) var(--b-space-6);
     background: var(--b-color-surface);
     border-bottom: var(--b-line-hair) solid var(--b-color-border-subtle);
@@ -28,7 +43,8 @@
   .docs-mark {
     margin-inline-end: auto;
     color: inherit;
-    font: var(--b-font-weight-display) var(--b-font-size-4) / var(--b-font-line-height-4) var(--b-font-family-display);
+    /* The mark never changes with the theme (owner): core's display face, at fixed values. */
+    font: 300 20px / 28px 'Outfit', system-ui, sans-serif;
     text-decoration: none;
   }
   .docs-switch {
@@ -44,9 +60,6 @@
      not left of it. 1024–1199px: menu and column. Below: the menu opens in a drawer. */
   .docs-page {
     --docs-toc-w: 200px;
-    /* .docs-bar's height: its padding, the theme switcher (a control, the tallest thing in it)
-       and its bottom line. 57px in core, measured. */
-    --docs-bar-h: calc(2 * var(--b-space-3) + var(--b-size-control) + var(--b-line-hair));
     /* One margin: room for a menu and its gap. */
     --docs-side: calc(var(--docs-toc-w) + var(--b-space-12));
     /* Always three columns of plain lengths (margin, column, margin), so the browser can slide
@@ -388,4 +401,12 @@
     color: var(--b-color-text-muted);
     font-weight: var(--b-font-weight-medium);
   }
+}
+
+/* The theme switch's crossfade (ThemeSwitcher): short, on BeastUI's own timing. Outside the
+   layers: the view transition pseudo-elements live on the document, not in a component. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--b-duration-3);
+  animation-timing-function: var(--b-easing-move);
 }
