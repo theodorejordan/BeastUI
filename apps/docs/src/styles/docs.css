@@ -186,18 +186,22 @@
   pre {
     overflow-x: auto;
     padding: var(--b-inset-panel);
-    border: var(--b-line-hair) solid var(--b-color-border-subtle);
     border-radius: var(--b-radius-3);
     background: var(--b-color-surface-card);
     line-height: var(--b-font-line-height-1);
   }
 
-  /* ---------- Demo: the live example above, its source below, one frame ---------- */
+  /* ---------- Demo: the live example above, its source below, one block ----------
+     Told apart by fills, not lines (owner review, after Radix): the stage on the felt, the
+     code on the card. No frame drawn around components that have their own edges. */
   .docs-demo {
     margin-inline: 0;
-    border: var(--b-line-hair) solid var(--b-color-border-subtle);
     border-radius: var(--b-radius-3);
     overflow: hidden;
+  }
+  /* A table's sticky header takes the stage's fill. On the table: .b-table sets it itself. */
+  .docs-demo__stage .b-table {
+    --b-table-ground: var(--b-color-surface-raised);
   }
   .docs-demo__stage {
     display: flex;
@@ -205,11 +209,10 @@
     align-items: center;
     gap: var(--b-gap-inline);
     padding: var(--b-space-8) var(--b-inset-panel);
+    background: var(--b-color-surface-raised);
   }
   .docs-demo pre {
     margin: 0;
-    border: 0;
-    border-block-start: var(--b-line-hair) solid var(--b-color-border-subtle);
     border-radius: 0;
   }
 
