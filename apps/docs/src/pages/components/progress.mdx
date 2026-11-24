@@ -1,0 +1,80 @@
+---
+layout: ../../layouts/Docs.astro
+title: Progress
+description: "How far a job has gone, or that one is running when its length is unknown."
+---
+import Demo from '../../components/Demo.astro';
+import Pre from '../../components/Pre.astro';
+
+export const components = { pre: Pre };
+
+# Progress
+
+<p class="docs-lead">How far a job has gone, or that one is running when its length is unknown.</p>
+
+## When to use it
+
+For a task that takes more than a second or two: an upload, an export, a sync.
+
+- An action on one button: use the button's `pending` state.
+- A few named steps (1 of 3): write the step, a bar adds nothing.
+
+## Value
+
+How far the task has gone. When the value changes, the fill moves to it.
+
+<Demo html={`
+<div class="b-progress" role="progressbar" aria-label="Uploading" aria-valuemin="0" aria-valuemax="12" aria-valuenow="3" aria-valuetext="3 of 12 files" style="--b-progress-value: 25"></div>
+`} />
+
+## Thin
+
+2px (`data-size="thin"`), beside other content: under a list row, along the edge of a bar. 4px is for a task the user waits for.
+
+<Demo html={`
+<div class="b-progress" data-size="thin" role="progressbar" aria-label="Exporting" aria-valuemin="0" aria-valuemax="100" aria-valuenow="64" style="--b-progress-value: 64"></div>
+`} />
+
+## Unknown length
+
+Leave out `aria-valuenow`: a segment goes back and forth. With reduced motion, it waits in the middle.
+
+<Demo html={`
+<div class="b-progress" role="progressbar" aria-label="Syncing"></div>
+`} />
+
+## In Preact
+
+```tsx
+import { Progress } from '@beastui/preact';
+
+<Progress aria-label="Uploading" value={sent} max={files.length} valueText={`${sent} of ${files.length} files`} />
+
+// Unknown length:
+<Progress aria-label="Syncing" size="thin" />
+```
+
+| Prop | Type | Default | |
+|---|---|---|---|
+| `aria-label` or `aria-labelledby` | `string` | required | What is progressing. |
+| `value` | `number` | | From 0 to `max`, kept in that range. Leave it out for an unknown length. |
+| `max` | `number` | `100` | The value of a finished job. The number of items is often clearer. |
+| `valueText` | `string` | | Said instead of a percent, such as "3 of 12 files". |
+| `size` | `'regular' \| 'thin'` | `'regular'` | 4px or 2px. |
+
+## The CSS contract
+
+| Markup | Effect |
+|---|---|
+| `<div class="b-progress" role="progressbar">` | The 4px track, as wide as its box. |
+| `style="--b-progress-value: 42"` | The fill, from 0 to 100 (a percent of the track). |
+| no `aria-valuenow` | Unknown length: the segment sways. |
+| `data-size="thin"` | 2px. |
+
+Corners follow the theme: half of radius 1, at most half the height.
+
+## Accessibility
+
+- `role="progressbar"` with `aria-valuemin`, `aria-valuemax` and `aria-valuenow` ([MDN](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/progressbar_role)). The look is read from the ARIA, so it can't say something else.
+- Name every bar. Two bars on one screen need two names.
+- A screen reader doesn't announce each change. For the end of a job, say it in a status message too.

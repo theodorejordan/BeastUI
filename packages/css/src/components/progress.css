@@ -1,0 +1,78 @@
+/*
+ * Progress: how far a job has gone, or that one is running when its length is unknown.
+ *
+ * <div class="b-progress" role="progressbar" aria-label="Uploading" aria-valuemin="0"
+ *      aria-valuemax="100" aria-valuenow="42" style="--b-progress-value: 42"></div>
+ * <div class="b-progress" data-size="thin" role="progressbar" aria-label="Syncing"></div>
+ *
+ * The ARIA says the state and the CSS reads it: no aria-valuenow = unknown length (MDN,
+ * progressbar role), so the look can't contradict what a screen reader says. The fill's width
+ * is a custom property, from 0 to 100: CSS can't yet read a number from an attribute in every
+ * browser (attr() with a type).
+ *
+ * Foundations (04-foundations.md): two heights, 4px (a task the user waits for) and 2px, --b-line-bold
+ * (beside other content: under a list row, along the edge of a bar). The track is the 8% ink tint of
+ * the tags, so it shows on any surface. No outline: in BeastUI an outline means "you can act
+ * on this". Corners follow the theme: half of radius 1, at most half the height (owner,
+ * 2026-11-24).
+ */
+@import '../layers.css';
+
+@layer beast.components {
+  .b-progress {
+    --b-progress-height: 4px;
+    position: relative;
+    display: block;
+    block-size: var(--b-progress-height);
+    overflow: hidden;
+    border-radius: min(var(--b-radius-1) / 2, var(--b-progress-height) / 2);
+    background: color-mix(in srgb, var(--b-color-text) 8%, transparent);
+
+    &[data-size='thin'] {
+      --b-progress-height: var(--b-line-bold);
+    }
+
+    /* The fill. Its width moves, not a scaleX: a scale would squash the round corners. */
+    &::before {
+      content: '';
+      position: absolute;
+      inset-block: 0;
+      inset-inline-start: 0;
+      inline-size: calc(clamp(0, var(--b-progress-value, 0), 100) * 1%);
+      border-radius: inherit;
+      background: var(--b-color-text);
+      transition: inline-size var(--b-duration-4) var(--b-easing-move);
+    }
+
+    /* Unknown length: a segment goes back and forth. The curve is symmetric (ease-in-out, not
+       a token): fastest in the middle, slowing the same way at both ends (owner review). */
+    &:not([aria-valuenow])::before {
+      inline-size: 30%;
+      transition: none;
+      animation: b-progress-sway 1.2s ease-in-out infinite alternate;
+    }
+  }
+
+  /* The segment is 30% of the track: 70% of the track is 233.33% of the segment. */
+  @keyframes b-progress-sway {
+    to {
+      translate: calc(233.333% * var(--b-progress-dir, 1)) 0;
+    }
+  }
+
+  .b-progress:dir(rtl) {
+    --b-progress-dir: -1;
+  }
+
+  /* No movement: the segment waits in the middle. Still a bar, still "running" for a reader. */
+  @media (prefers-reduced-motion: reduce) {
+    .b-progress::before {
+      transition: none;
+    }
+
+    .b-progress:not([aria-valuenow])::before {
+      animation: none;
+      translate: calc(116.667% * var(--b-progress-dir, 1)) 0;
+    }
+  }
+}

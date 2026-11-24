@@ -11,6 +11,7 @@ export const PAGES = [
   '/components/tag/',
   '/components/table/',
   '/components/tree/',
+  '/components/progress/',
 ] as const;
 
 /** Opens a page in a theme and mode, the way the docs remember a visitor's choice. */

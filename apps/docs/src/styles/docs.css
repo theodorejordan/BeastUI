@@ -331,6 +331,15 @@
     overflow: hidden;
   }
   /* A table's sticky header takes the stage's fill. On the table: .b-table sets it itself. */
+  /* A bar has no width of its own: one per line, as wide as a sidebar. */
+  .docs-demo__stage:has(> .b-progress) {
+    flex-direction: column;
+    gap: var(--b-space-4);
+  }
+  .docs-demo__stage > .b-progress {
+    inline-size: 100%;
+    max-inline-size: 320px;
+  }
   .docs-demo__stage .b-table {
     --b-table-ground: var(--b-color-surface-raised);
   }
