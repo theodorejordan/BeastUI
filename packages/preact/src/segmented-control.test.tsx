@@ -11,7 +11,7 @@ afterEach(() => render(null, root));
 const OPTIONS = [
   { value: 'name', label: 'Name' },
   { value: 'date', label: 'Date' },
-  { value: 'loudness', label: 'Loudness' },
+  { value: 'size', label: 'Size' },
 ] as const;
 type Sort = (typeof OPTIONS)[number]['value'];
 
@@ -76,7 +76,7 @@ describe('SegmentedControl', () => {
     expect(group().hasAttribute('data-thumb')).toBe(true);
     const labels = root.querySelectorAll('label');
     expect(thumbX()).toBe(`${labels[0]!.offsetLeft}px`);
-    await userEvent.click(page.getByRole('radio', { name: 'Loudness' }));
+    await userEvent.click(page.getByRole('radio', { name: 'Size' }));
     expect(thumbX()).toBe(`${labels[2]!.offsetLeft}px`);
     expect(group().style.getPropertyValue('--b-seg-w')).toBe(`${labels[2]!.offsetWidth}px`);
   });

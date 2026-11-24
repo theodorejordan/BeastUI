@@ -1,9 +1,9 @@
 /*
- * Tag: a short label on a thing (a crate, a flag, a count). Read only: nothing to click.
+ * Tag: a short label on a thing (a status, a category, a count). Read only: nothing to click.
  *
- * <span class="b-tag">House</span>
- * <span class="b-tag" data-variant="warn">Clipping</span>
- * <span class="b-tag" title="Disco, Edits, Live">+3</span>
+ * <span class="b-tag">Draft</span>
+ * <span class="b-tag" data-variant="warn">Expired</span>
+ * <span class="b-tag" title="Design, Finance, Legal">+3</span>
  *
  * Filled, never outlined: across BeastUI an outline means "you can act on this" (buttons,
  * inputs, the segmented control). Clickable tags (a filter, a popover) would be the outlined

@@ -15,7 +15,7 @@ export const components = { pre: Pre };
 
 ## When to use it
 
-For a list people compare or scan by column: tracks, files, jobs.
+For a list people compare or scan by column: files, orders, users.
 
 - A nested list (folders): use a [tree](../tree/).
 - A few settings: use fields, not a table.
@@ -24,7 +24,7 @@ For a list people compare or scan by column: tracks, files, jobs.
 
 - **Sort:** click a header for ascending, again for descending, a third time for the original order.
 - **Select:** tick a box, or click anywhere in its cell. Shift+click selects every row between it and the last one clicked. Cmd+click (Ctrl+click on Windows) adds or removes one row.
-- **Open:** a plain click on a row is the app's: here it opens the track.
+- **Open:** a plain click on a row is the app's: here it opens the file.
 
 <figure class="docs-demo">
   <div class="docs-demo__stage"><TableDemo client:visible /></div>
@@ -36,11 +36,11 @@ A native `<table>`: no component needed. One column takes the room left with `da
 
 <Demo html={`
 <table class="b-table">
-  <thead><tr><th data-grow>Title</th><th data-align="end">BPM</th><th data-align="end">Length</th></tr></thead>
+  <thead><tr><th data-grow>Name</th><th data-align="end">Size</th><th data-align="center">Modified</th></tr></thead>
   <tbody>
-    <tr><td data-grow>Intro.wav</td><td data-align="end">90</td><td data-align="end">1:12</td></tr>
-    <tr><td data-grow>Night drive.wav</td><td data-align="end">124</td><td data-align="end">5:41</td></tr>
-    <tr data-selected><td data-grow>Fog.wav</td><td data-align="end">118</td><td data-align="end">4:58</td></tr>
+    <tr><td data-grow>Budget 2027.xlsx</td><td data-align="end">84 kB</td><td data-align="center">2 Nov</td></tr>
+    <tr><td data-grow>Contract.pdf</td><td data-align="end">312 kB</td><td data-align="center">18 Nov</td></tr>
+    <tr data-selected><td data-grow>Team photo.jpg</td><td data-align="end">3.6 MB</td><td data-align="center">30 Aug</td></tr>
   </tbody>
 </table>
 `} />
@@ -56,9 +56,9 @@ BeastUI gives building blocks, not a data grid: you write the table, so any cell
 ```tsx
 import { Checkbox, SortHeader, compareText, useSelection, useSort } from '@beastui/preact';
 
-const sort = useSort(tracks, {
-  title: (a, b) => compareText(a.title, b.title),
-  bpm: (a, b) => a.bpm - b.bpm,
+const sort = useSort(files, {
+  name: (a, b) => compareText(a.name, b.name),
+  size: (a, b) => a.bytes - b.bytes,
 });
 // The ids in the order shown, so a Shift+click range follows the screen.
 const selection = useSelection(sort.rows.map((t) => t.id));
@@ -66,17 +66,17 @@ const selection = useSelection(sort.rows.map((t) => t.id));
 <table class="b-table">
   <thead>
     <tr>
-      <th data-select><Checkbox aria-label="Select all tracks" {...selection.allCheckbox()} /></th>
-      <SortHeader column="title" sort={sort} grow>Title</SortHeader>
-      <SortHeader column="bpm" sort={sort} align="end">BPM</SortHeader>
+      <th data-select><Checkbox aria-label="Select all files" {...selection.allCheckbox()} /></th>
+      <SortHeader column="name" sort={sort} grow>Name</SortHeader>
+      <SortHeader column="size" sort={sort} align="end">Size</SortHeader>
     </tr>
   </thead>
   <tbody>
     {sort.rows.map((t) => (
       <tr key={t.id} {...selection.row(t.id, () => open(t))}>
-        <td data-select><Checkbox aria-label={`Select ${t.title}`} {...selection.checkbox(t.id)} /></td>
-        <td data-grow>{t.title}</td>
-        <td data-align="end">{t.bpm}</td>
+        <td data-select><Checkbox aria-label={`Select ${t.name}`} {...selection.checkbox(t.id)} /></td>
+        <td data-grow>{t.name}</td>
+        <td data-align="end">{formatSize(t.bytes)}</td>
       </tr>
     ))}
   </tbody>
@@ -110,7 +110,7 @@ A header cell that sorts its column on click and shows the arrow.
 |---|---|---|---|
 | `column` | `string` | required | The key this header sorts. |
 | `sort` | what `useSort` returned | required | |
-| `align` | `'start' \| 'center' \| 'end'` | `'start'` | `end` for long numbers, `center` for short values of one width (BPM, durations). |
+| `align` | `'start' \| 'center' \| 'end'` | `'start'` | `end` for long numbers, `center` for short values of one width (dates, durations). |
 | `grow` | `boolean` | `false` | The column that takes the room left. |
 
 ### useSelection
@@ -132,7 +132,7 @@ useSelection(ids, initial?)
 
 ### compareText
 
-A comparator for text, the way people expect it: case and accents ignored, "Track 2" before "Track 10".
+A comparator for text, the way people expect it: case and accents ignored, "File 2" before "File 10".
 
 ```ts
 compareText(a: string, b: string): number
@@ -145,7 +145,7 @@ compareText(a: string, b: string): number
 | `<table class="b-table">` | 36px rows (32 in `tool`), one line per cell, hairline dividers, tabular figures, a sticky header. |
 | `data-grow` on a column's cells | Takes the room left and shrinks first, with an ellipsis. The table fits its box. |
 | `data-align="end"` on a cell | Right-aligned: long numbers, so digits line up by place. |
-| `data-align="center"` on a cell | Centred: short values of one width, like a BPM or a duration. |
+| `data-align="center"` on a cell | Centred: short values of one width, like a date or a duration. |
 | A `.b-btn` in a cell | The small control (24px, 20 in `tool`), so the row keeps air around it. |
 | `data-select` on a cell | The narrow checkbox column. |
 | `data-selected` on a `<tr>` | The hover tint, kept, and a bold edge on the left. |
@@ -157,7 +157,7 @@ compareText(a: string, b: string): number
 
 - A native table: a screen reader moves by row and column and reads each cell with its header.
 - A sortable header is a `<button>`, and only the sorted column carries `aria-sort` ([WAI-ARIA APG, sortable table](https://www.w3.org/WAI/ARIA/apg/patterns/table/examples/sortable-table/)).
-- Each row's checkbox needs a name: `aria-label="Select Intro.wav"`.
+- Each row's checkbox needs a name: `aria-label="Select Contract.pdf"`.
 - Selected is a ticked box **and** an edge, never colour alone.
 - Tab moves through the controls. Arrow keys between cells would be the [grid pattern](https://www.w3.org/WAI/ARIA/apg/patterns/grid/), not built.
 - Shift+click and Cmd+click are mouse shortcuts; every row can also be ticked one by one with the keyboard.

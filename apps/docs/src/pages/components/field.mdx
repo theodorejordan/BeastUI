@@ -32,8 +32,8 @@ Type a value above 8 in the second field to see the error.
 
 <Demo html={`
 <div class="b-field">
-  <label class="b-field__label" for="crate">Crate name</label>
-  <input class="b-input" id="crate" placeholder="Friday set" />
+  <label class="b-field__label" for="project">Project name</label>
+  <input class="b-input" id="project" placeholder="Spring launch" />
 </div>
 `} />
 
@@ -43,12 +43,12 @@ The box is narrower for a number, the figures are tabular, and the spin buttons 
 
 <Demo html={`
 <div class="b-field">
-  <label class="b-field__label" for="target">Target loudness</label>
+  <label class="b-field__label" for="limit">Upload limit</label>
   <span class="b-input">
-    <input id="target" type="number" step="0.5" value="-14" aria-describedby="target-unit target-hint" />
-    <span class="b-input__unit" id="target-unit">LUFS</span>
+    <input id="limit" type="number" step="5" value="25" aria-describedby="limit-unit limit-hint" />
+    <span class="b-input__unit" id="limit-unit">MB</span>
   </span>
-  <p class="b-field__hint" id="target-hint">Streaming services play at −14.</p>
+  <p class="b-field__hint" id="limit-hint">Larger files are refused.</p>
 </div>
 `} />
 
@@ -56,12 +56,12 @@ The box is narrower for a number, the figures are tabular, and the spin buttons 
 
 <Demo html={`
 <div class="b-field">
-  <label class="b-field__label" for="budget">Most limiting</label>
+  <label class="b-field__label" for="timeout">Session timeout</label>
   <span class="b-input">
-    <input id="budget" type="number" value="12" aria-invalid="true" aria-describedby="budget-unit budget-error" />
-    <span class="b-input__unit" id="budget-unit">dB</span>
+    <input id="timeout" type="number" value="90" aria-invalid="true" aria-describedby="timeout-unit timeout-error" />
+    <span class="b-input__unit" id="timeout-unit">min</span>
   </span>
-  <p class="b-field__error" id="budget-error">Between 0 and 8 dB.</p>
+  <p class="b-field__error" id="timeout-error">Between 5 and 60 min.</p>
 </div>
 `} />
 
@@ -70,7 +70,7 @@ The box is narrower for a number, the figures are tabular, and the spin buttons 
 <Demo html={`
 <div class="b-field">
   <label class="b-field__label" for="backup">Backups</label>
-  <input class="b-input" id="backup" value="~/Music/Backups" disabled />
+  <input class="b-input" id="backup" value="~/Documents/Backups" disabled />
 </div>
 `} />
 
@@ -81,8 +81,8 @@ The box is narrower for a number, the figures are tabular, and the spin buttons 
 ```tsx
 import { Field, Input } from '@beastui/preact';
 
-<Field label="Target loudness" hint="Streaming services play at −14." error={error}>
-  <Input type="number" step={0.5} unit="LUFS" value={target} onInput={(e) => setTarget(+e.currentTarget.value)} />
+<Field label="Upload limit" hint="Larger files are refused." error={error}>
+  <Input type="number" step={5} unit="MB" value={limit} onInput={(e) => setLimit(+e.currentTarget.value)} />
 </Field>
 ```
 

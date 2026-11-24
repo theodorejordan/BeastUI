@@ -1,7 +1,7 @@
 ---
 layout: ../../layouts/Docs.astro
 title: Tree
-description: "Nested items that fold, like crates and their subcrates: open a branch, choose an item."
+description: "Nested items that fold, like folders and their subfolders: open a branch, choose an item."
 ---
 import Demo from '../../components/Demo.astro';
 import TreeDemo from '../../components/TreeDemo';
@@ -12,11 +12,11 @@ export const components = { pre: Pre };
 
 # Tree
 
-<p class="docs-lead">Nested items that fold, like crates and their subcrates: open a branch, choose an item.</p>
+<p class="docs-lead">Nested items that fold, like folders and their subfolders: open a branch, choose an item.</p>
 
 ## When to use it
 
-For things that hold other things, where people pick one: crates, folders, sections.
+For things that hold other things, where people pick one: folders, categories, sections.
 
 - Rows with the same fields to compare: use a [table](../table/).
 - A flat list of pages: use plain links.
@@ -37,12 +37,12 @@ A parent is one of two things, set per item:
 
 | | Item (default) | Group (`group: true`) |
 |---|---|---|
-| What it is | A thing in itself: a crate holds tracks of its own. | Only a heading for its children: a section of pages. |
+| What it is | A thing in itself: a folder holds files of its own. | Only a heading for its children: a section of pages. |
 | Row click | Chooses it. | Opens or closes it. |
 | Arrow | Its own button: opens or closes it. | Part of the row. |
 | Buttons | Two: the arrow, the name. | One: the whole row, with `aria-expanded`. |
 
-Ask: does choosing the parent show something? Crates in Masterz do (all the tracks under them), so they are items. A "Components" heading in a docs menu shows nothing on its own, so it is a group.
+Ask: does choosing the parent show something? A folder does (the files in it), so it is an item. A "Components" heading in a docs menu shows nothing on its own, so it is a group.
 
 A menu of groups: click a heading anywhere to fold it.
 
@@ -55,19 +55,19 @@ A menu of groups: click a heading anywhere to fold it.
 Nested lists and two buttons per row. Each row says its depth with `--b-tree-level`. A leaf has no arrow: its name stays in line with its siblings'.
 
 <Demo panel html={`
-<ul class="b-tree" aria-label="Crates">
+<ul class="b-tree" aria-label="Folders">
   <li>
     <div class="b-tree-row" style="--b-tree-level: 0">
-      <button class="b-tree-toggle" type="button" aria-expanded="true" aria-label="Expand House">
+      <button class="b-tree-toggle" type="button" aria-expanded="true" aria-label="Expand Projects">
         <svg class="b-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
       </button>
-      <button class="b-tree-name" type="button">House</button>
+      <button class="b-tree-name" type="button">Projects</button>
       <span class="b-tree-count">128</span>
     </div>
     <ul>
       <li>
         <div class="b-tree-row" style="--b-tree-level: 1">
-          <button class="b-tree-name" type="button" aria-current="true">Deep</button>
+          <button class="b-tree-name" type="button" aria-current="true">Website</button>
           <span class="b-tree-count">54</span>
         </div>
       </li>
@@ -75,7 +75,7 @@ Nested lists and two buttons per row. Each row says its depth with `--b-tree-lev
   </li>
   <li>
     <div class="b-tree-row" style="--b-tree-level: 0">
-      <button class="b-tree-name" type="button">Techno</button>
+      <button class="b-tree-name" type="button">Finance</button>
       <span class="b-tree-count">87</span>
     </div>
   </li>
@@ -102,10 +102,10 @@ import { Tree } from '@beastui/preact';
 const [selected, setSelected] = useState<string | null>(null);
 
 <Tree
-  aria-label="Crates"
+  aria-label="Folders"
   items={[
-    { id: 'house', label: 'House', count: 128, children: [{ id: 'house/deep', label: 'Deep', count: 54 }] },
-    { id: 'techno', label: 'Techno', count: 87 },
+    { id: 'projects', label: 'Projects', count: 128, children: [{ id: 'projects/website', label: 'Website', count: 54 }] },
+    { id: 'finance', label: 'Finance', count: 87 },
   ]}
   selected={selected}
   onSelect={setSelected}
@@ -118,7 +118,7 @@ To remember the open branches between visits, keep them yourself:
 const [open, setOpen] = useState(() => new Set<string>(JSON.parse(localStorage.getItem('open') ?? '[]')));
 
 <Tree
-  items={crates}
+  items={folders}
   open={open}
   onOpenChange={(next) => {
     setOpen(next);
@@ -138,7 +138,7 @@ const [open, setOpen] = useState(() => new Set<string>(JSON.parse(localStorage.g
 | `open` | `ReadonlySet<string>` | | The open branches, when you keep them. |
 | `onOpenChange` | `(open: Set<string>) => void` | | Every fold, with the new set. |
 | `toggleLabel` | `(item) => string` | `Expand {label}` | The arrow's name for a screen reader. |
-| `aria-label` | `string` | | Names the list: "Crates". |
+| `aria-label` | `string` | | Names the list: "Folders". |
 
 ## The CSS contract
 

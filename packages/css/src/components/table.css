@@ -8,7 +8,7 @@
  *   <thead><tr>
  *     <th data-select><input class="b-checkbox" type="checkbox" aria-label="Select all"></th>
  *     <th data-grow aria-sort="ascending"><button class="b-table-sort" type="button">Title <svg …></button></th>
- *     <th data-align="end">BPM</th>
+ *     <th data-align="end">Size</th>
  *   </tr></thead>
  *   <tbody>
  *     <tr data-selected>…</tr>
@@ -17,7 +17,7 @@
  *
  * The table fits its box: one column (data-grow) takes the room left and shrinks first, with
  * an ellipsis; every other cell keeps its content on one line. So rows keep their height and
- * the last column (actions) stays in view. From Masterz's track table.
+ * the last column (actions) stays in view.
  *
  * Foundations (04-foundations.md): rows are --b-size-row (the control height plus 4px), the
  * header is the control height; one 16px gap between all columns (--b-table-gap), the
@@ -38,7 +38,7 @@
     border-collapse: separate;
     border-spacing: 0;
     color: var(--b-color-text);
-    /* The UI body size; the header and in-row buttons one step down, like Masterz (12px). */
+    /* The UI body size; the header and in-row buttons one step down (12px). */
     font: var(--b-font-weight-regular) var(--b-font-size-2) / var(--b-font-line-height-2)
       var(--b-font-family-ui);
     font-variant-numeric: tabular-nums;
@@ -74,7 +74,7 @@
     }
 
     /* The column that takes the room left (a title) and shrinks first. max-width: 0 lets it
-       go narrower than its text, so the ellipsis can show (Masterz .col-name). */
+       go narrower than its text, so the ellipsis can show. */
     & [data-grow] {
       width: 100%;
       max-width: 0;
@@ -86,7 +86,7 @@
     & [data-align='end'] {
       text-align: end;
     }
-    /* Short values of one width (a BPM, a duration): centred under their header (owner review).
+    /* Short values of one width (a duration, a date): centred under their header (owner review).
        Long or mixed numbers stay right-aligned, where digits line up by place. */
     & [data-align='center'] {
       text-align: center;
@@ -134,7 +134,7 @@
     /* Buttons in a row are the small control (the control height less one --b-size-step: 24px,
        20 in tool), so the row keeps air above and below them and a hover fill doesn't touch
        the row lines (owner review). Smaller text, and the smaller radius (radius grows with
-       size). Masterz's row button is the same idea. */
+       size). */
     & td .b-btn {
       --b-btn-size: var(--b-font-size-1);
       height: calc(var(--b-size-control) - var(--b-size-step));

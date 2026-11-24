@@ -3,25 +3,27 @@ import { Button, Checkbox, SortHeader, compareText, useSelection, useSort } from
 import type { JSX } from 'preact';
 import { useState } from 'preact/hooks';
 
-type Track = { id: string; title: string; genre: string; bpm: number; seconds: number; clipping?: boolean };
+type Entry = { id: string; name: string; tag: string; kb: number; modified: string; unsynced?: boolean };
 
-const TRACKS: Track[] = [
-  { id: '1', title: 'Intro.wav', genre: 'Ambient', bpm: 90, seconds: 72 },
-  { id: '2', title: 'Night drive (extended club mix).wav', genre: 'House', bpm: 124, seconds: 341, clipping: true },
-  { id: '3', title: 'Fog.wav', genre: 'Edits', bpm: 118, seconds: 298 },
-  { id: '4', title: 'Signal.wav', genre: 'House', bpm: 126, seconds: 412 },
-  { id: '5', title: 'Static.wav', genre: 'Disco', bpm: 112, seconds: 265 },
-  { id: '6', title: 'Last call.wav', genre: 'Edits', bpm: 120, seconds: 388 },
-  { id: '7', title: 'Outro.wav', genre: 'Ambient', bpm: 84, seconds: 95 },
+const FILES: Entry[] = [
+  { id: '1', name: 'Budget 2027.xlsx', tag: 'Finance', kb: 84, modified: '2026-11-02' },
+  { id: '2', name: 'Brand guidelines (final, approved by legal).pdf', tag: 'Design', kb: 12480, modified: '2026-10-28', unsynced: true },
+  { id: '3', name: 'Contract.pdf', tag: 'Legal', kb: 312, modified: '2026-11-18' },
+  { id: '4', name: 'Logo.svg', tag: 'Design', kb: 9, modified: '2026-09-14' },
+  { id: '5', name: 'Invoices.csv', tag: 'Finance', kb: 41, modified: '2026-11-20' },
+  { id: '6', name: 'Team photo.jpg', tag: 'Photos', kb: 3620, modified: '2026-08-30' },
+  { id: '7', name: 'Notes.md', tag: 'Drafts', kb: 3, modified: '2026-11-23' },
 ];
 
-const duration = (s: number): string => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+const size = (kb: number): string => (kb < 1000 ? `${kb} kB` : `${(kb / 1000).toFixed(1)} MB`);
+const day = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+const date = (iso: string): string => day.format(new Date(iso));
 
 export default function TableDemo(): JSX.Element {
-  const sort = useSort(TRACKS, {
-    title: (a, b) => compareText(a.title, b.title),
-    bpm: (a, b) => a.bpm - b.bpm,
-    length: (a, b) => a.seconds - b.seconds,
+  const sort = useSort(FILES, {
+    name: (a, b) => compareText(a.name, b.name),
+    size: (a, b) => a.kb - b.kb,
+    modified: (a, b) => a.modified.localeCompare(b.modified),
   });
   const selection = useSelection(sort.rows.map((t) => t.id));
   const [opened, setOpened] = useState<string | null>(null);
@@ -29,49 +31,49 @@ export default function TableDemo(): JSX.Element {
   return (
     <div style={{ width: '100%', display: 'grid', gap: 'var(--b-gap-field)' }}>
       <p style={{ margin: 0, color: 'var(--b-color-text-muted)' }} aria-live="polite">
-        {selection.selected.size} of {TRACKS.length} selected
+        {selection.selected.size} of {FILES.length} selected
         {opened && <> · opened {opened}</>}
       </p>
       <table class="b-table">
         <thead>
           <tr>
             <th data-select>
-              <Checkbox aria-label="Select all tracks" {...selection.allCheckbox()} />
+              <Checkbox aria-label="Select all files" {...selection.allCheckbox()} />
             </th>
-            <SortHeader column="title" sort={sort} grow>
-              Title
+            <SortHeader column="name" sort={sort} grow>
+              Name
             </SortHeader>
             <th>Tags</th>
-            <SortHeader column="bpm" sort={sort} align="center">
-              BPM
+            <SortHeader column="size" sort={sort} align="end">
+              Size
             </SortHeader>
-            <SortHeader column="length" sort={sort} align="center">
-              Length
+            <SortHeader column="modified" sort={sort} align="center">
+              Modified
             </SortHeader>
             <th aria-label="Actions" />
           </tr>
         </thead>
         <tbody>
           {sort.rows.map((t) => (
-            <tr key={t.id} {...selection.row(t.id, () => setOpened(t.title))}>
+            <tr key={t.id} {...selection.row(t.id, () => setOpened(t.name))}>
               <td data-select>
-                <Checkbox aria-label={`Select ${t.title}`} {...selection.checkbox(t.id)} />
+                <Checkbox aria-label={`Select ${t.name}`} {...selection.checkbox(t.id)} />
               </td>
-              <td data-grow class="b-keep" title={t.title}>
-                {t.title}
+              <td data-grow class="b-keep" title={t.name}>
+                {t.name}
               </td>
               <td>
-                <span class="b-tag">{t.genre}</span>
-                {t.clipping && (
+                <span class="b-tag">{t.tag}</span>
+                {t.unsynced && (
                   <span class="b-tag" data-variant="warn">
-                    Clipping
+                    Unsynced
                   </span>
                 )}
               </td>
-              <td data-align="center">{t.bpm}</td>
-              <td data-align="center">{duration(t.seconds)}</td>
+              <td data-align="end">{size(t.kb)}</td>
+              <td data-align="center">{date(t.modified)}</td>
               <td>
-                <Button variant="secondary">Replace</Button>
+                <Button variant="secondary">Share</Button>
               </td>
             </tr>
           ))}

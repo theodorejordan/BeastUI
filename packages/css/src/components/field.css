@@ -2,12 +2,12 @@
  * Field: a label, one control, then an optional hint and error. The input is the box itself.
  *
  * <div class="b-field">
- *   <label class="b-field__label" for="target">Target loudness</label>
+ *   <label class="b-field__label" for="limit">Upload limit</label>
  *   <span class="b-input">
- *     <input id="target" type="number" step="0.5" aria-describedby="target-unit target-hint" />
- *     <span class="b-input__unit" id="target-unit">LUFS</span>
+ *     <input id="limit" type="number" step="10" aria-describedby="limit-unit limit-hint" />
+ *     <span class="b-input__unit" id="limit-unit">MB</span>
  *   </span>
- *   <p class="b-field__hint" id="target-hint">Streaming services play at −14.</p>
+ *   <p class="b-field__hint" id="limit-hint">Larger files are refused.</p>
  * </div>
  *
  * Without a unit, the input carries the class itself: <input class="b-input" />.
@@ -50,7 +50,7 @@
   .b-input {
     /* The border width; focus raises it to --b-line-bold. */
     --b-input-line: var(--b-line-stroke);
-    /* A number rarely needs the whole row: four control heights fit "−14.5 LUFS" with room. */
+    /* A number rarely needs the whole row: four control heights fit "1024 MB" with room. */
     --b-input-width: 100%;
 
     display: inline-flex;
@@ -124,7 +124,7 @@
     }
   }
 
-  /* A unit is written as is: "dB", "LUFS" are never lowercased by the voice. */
+  /* A unit is written as is: "MB", "kHz" are never lowercased by the voice. */
   .b-input__unit {
     flex: none;
     color: var(--b-color-text-muted);

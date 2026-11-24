@@ -1,7 +1,7 @@
 ---
 layout: ../../layouts/Docs.astro
 title: Tag
-description: "A short label on a thing: a crate, a flag, a count."
+description: "A short label on a thing: a status, a category, a count."
 ---
 import Demo from '../../components/Demo.astro';
 import Pre from '../../components/Pre.astro';
@@ -10,7 +10,7 @@ export const components = { pre: Pre };
 
 # Tag
 
-<p class="docs-lead">A short label on a thing: a crate, a flag, a count.</p>
+<p class="docs-lead">A short label on a thing: a status, a category, a count.</p>
 
 ## When to use it
 
@@ -24,10 +24,10 @@ A tag is filled, never outlined: in BeastUI an outline means "you can act on thi
 ## Neutral and warn
 
 <Demo html={`
-<span class="b-tag">House</span>
-<span class="b-tag">Edits</span>
-<span class="b-tag" title="Disco, Live, Promo">+3</span>
-<span class="b-tag" data-variant="warn">Clipping</span>
+<span class="b-tag">Design</span>
+<span class="b-tag">Finance</span>
+<span class="b-tag" title="Legal, Photos, Drafts">+3</span>
+<span class="b-tag" data-variant="warn">Expired</span>
 `} />
 
 ## In a table
@@ -36,10 +36,10 @@ The tint is of the ink over whatever is under it: a tag stays visible on a hover
 
 <Demo html={`
 <div style="display:grid;width:100%">
-  <div style="display:flex;gap:6px;align-items:center;height:36px;padding:0 12px">Intro.wav <span class="b-tag">House</span> <span class="b-tag">+3</span></div>
-  <div style="display:flex;gap:6px;align-items:center;height:36px;padding:0 12px;background:var(--b-color-hover)">Night drive.wav <span class="b-tag">Edits</span> <span class="b-tag" data-variant="warn">Clipping</span></div>
-  <div style="display:flex;gap:6px;align-items:center;height:36px;padding:0 12px">Outro.wav <span class="b-tag">Live</span> <span class="b-tag" data-variant="warn">Too quiet</span></div>
-  <div style="display:flex;gap:6px;align-items:center;height:36px;padding:0 12px;background:var(--b-color-hover)">Encore.wav <span class="b-tag">House</span></div>
+  <div style="display:flex;gap:6px;align-items:center;height:36px;padding:0 12px">Logo.svg <span class="b-tag">Design</span> <span class="b-tag">+3</span></div>
+  <div style="display:flex;gap:6px;align-items:center;height:36px;padding:0 12px;background:var(--b-color-hover)">Contract.pdf <span class="b-tag">Legal</span> <span class="b-tag" data-variant="warn">Expired</span></div>
+  <div style="display:flex;gap:6px;align-items:center;height:36px;padding:0 12px">Brand guidelines.pdf <span class="b-tag">Design</span> <span class="b-tag" data-variant="warn">Unsynced</span></div>
+  <div style="display:flex;gap:6px;align-items:center;height:36px;padding:0 12px;background:var(--b-color-hover)">Invoices.csv <span class="b-tag">Finance</span></div>
 </div>
 `} />
 

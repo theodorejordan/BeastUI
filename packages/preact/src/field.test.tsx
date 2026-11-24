@@ -16,12 +16,12 @@ const described = (input: Element): string[] =>
 describe('Field', () => {
   it('names the input with its label', () => {
     render(
-      <Field label="Target loudness">
+      <Field label="Upload limit">
         <Input type="number" />
       </Field>,
       root,
     );
-    expect(page.getByRole('spinbutton', { name: 'Target loudness' }).element()).toBeInstanceOf(HTMLInputElement);
+    expect(page.getByRole('spinbutton', { name: 'Upload limit' }).element()).toBeInstanceOf(HTMLInputElement);
   });
 
   it('describes the input with its unit, hint and error, in reading order', () => {
@@ -52,7 +52,7 @@ describe('Field', () => {
     render(
       <>
         <Input aria-label="Plain" />
-        <Input aria-label="With unit" unit="LUFS" />
+        <Input aria-label="With unit" unit="MB" />
       </>,
       root,
     );
@@ -66,7 +66,7 @@ describe('Field', () => {
     render(
       <>
         <Input aria-label="Plain" />
-        <Input aria-label="With unit" unit="LUFS" />
+        <Input aria-label="With unit" unit="MB" />
       </>,
       root,
     );

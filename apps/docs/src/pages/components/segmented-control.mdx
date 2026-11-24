@@ -45,8 +45,8 @@ An option that can't be picked right now fades and is skipped by the arrow keys.
 
 <Demo html={`
 <div class="b-seg" role="radiogroup" aria-label="Version">
-  <label><input type="radio" name="version" value="original" checked /><span>Original</span></label>
-  <label><input type="radio" name="version" value="master" disabled /><span>Master</span></label>
+  <label><input type="radio" name="version" value="draft" checked /><span>Draft</span></label>
+  <label><input type="radio" name="version" value="published" disabled /><span>Published</span></label>
 </div>
 `} />
 
@@ -58,7 +58,7 @@ import { SegmentedControl } from '@beastui/preact';
 const [sort, setSort] = useState<'name' | 'date'>('name');
 
 <SegmentedControl
-  label="Sort tracks"
+  label="Sort files"
   options={[
     { value: 'name', label: 'Name' },
     { value: 'date', label: 'Date added' },
@@ -89,7 +89,7 @@ const [sort, setSort] = useState<'name' | 'date'>('name');
 
 ## Accessibility
 
-- Native radio buttons ([WAI-ARIA radio group pattern](https://www.w3.org/WAI/ARIA/apg/patterns/radio/)): a screen reader says "Sort tracks, radio group, Name, 1 of 3".
+- Native radio buttons ([WAI-ARIA radio group pattern](https://www.w3.org/WAI/ARIA/apg/patterns/radio/)): a screen reader says "Sort files, radio group, Name, 1 of 3".
 - One tab stop for the whole group; the arrow keys move and pick. The focus ring shows on the label, since the radio itself is invisible.
 - The picked option has no fill: it is marked by ink text **and** an outline at 3:1, never by colour alone.
 - Under "reduce motion", the outline jumps instead of sliding.

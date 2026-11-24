@@ -13,13 +13,13 @@ describe('Checkbox', () => {
     const onChange = vi.fn();
     render(
       <Checkbox checked={false} onChange={onChange}>
-        Turn louder tracks down
+        Email me when someone comments
       </Checkbox>,
       root,
     );
-    await userEvent.click(page.getByText('Turn louder tracks down'));
+    await userEvent.click(page.getByText('Email me when someone comments'));
     expect(onChange).toHaveBeenCalledWith(true);
-    expect(page.getByRole('checkbox', { name: 'Turn louder tracks down' }).element()).toBeInstanceOf(HTMLInputElement);
+    expect(page.getByRole('checkbox', { name: 'Email me when someone comments' }).element()).toBeInstanceOf(HTMLInputElement);
   });
 
   it('sets the indeterminate property, which has no attribute', () => {

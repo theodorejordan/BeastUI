@@ -12,19 +12,19 @@ afterEach(() => {
   root.style.width = '';
 });
 
-type Track = { id: string; title: string; bpm: number };
-const TRACKS: Track[] = [
-  { id: 'a', title: 'Track 10', bpm: 124 },
-  { id: 'b', title: 'track 2', bpm: 98 },
-  { id: 'c', title: 'Intro', bpm: 124 },
-  { id: 'd', title: 'Outro', bpm: 110 },
-  { id: 'e', title: 'Fog', bpm: 90 },
+type Entry = { id: string; title: string; kb: number };
+const FILES: Entry[] = [
+  { id: 'a', title: 'Notes 10', kb: 124 },
+  { id: 'b', title: 'notes 2', kb: 98 },
+  { id: 'c', title: 'Budget', kb: 124 },
+  { id: 'd', title: 'Contract', kb: 110 },
+  { id: 'e', title: 'Agenda', kb: 90 },
 ];
 
-function Tracks({ onOpen }: { onOpen?: (id: string) => void }) {
-  const sort = useSort(TRACKS, {
+function Files({ onOpen }: { onOpen?: (id: string) => void }) {
+  const sort = useSort(FILES, {
     title: (a, b) => compareText(a.title, b.title),
-    bpm: (a, b) => a.bpm - b.bpm,
+    kb: (a, b) => a.kb - b.kb,
   });
   const selection = useSelection(sort.rows.map((t) => t.id));
   return (
@@ -37,8 +37,8 @@ function Tracks({ onOpen }: { onOpen?: (id: string) => void }) {
           <SortHeader column="title" sort={sort} grow>
             Title
           </SortHeader>
-          <SortHeader column="bpm" sort={sort} align="end">
-            BPM
+          <SortHeader column="kb" sort={sort} align="end">
+            Size
           </SortHeader>
           <th aria-label="Actions" />
         </tr>
@@ -50,7 +50,7 @@ function Tracks({ onOpen }: { onOpen?: (id: string) => void }) {
               <Checkbox aria-label={`Select ${t.title}`} {...selection.checkbox(t.id)} />
             </td>
             <td data-grow>{t.title}</td>
-            <td data-align="end">{t.bpm}</td>
+            <td data-align="end">{t.kb}</td>
             <td>
               <Button variant="quiet">Open</Button>
             </td>
@@ -71,76 +71,76 @@ const sortedHeader = () => root.querySelector('th[aria-sort]');
 
 describe('Table sorting', () => {
   it('goes ascending, descending, then back to the original order', async () => {
-    render(<Tracks />, root);
+    render(<Files />, root);
     expect(sortedHeader()).toBeNull();
 
     await userEvent.click(header('Title'));
-    // Case ignored, numbers read as numbers: "track 2" before "Track 10".
-    expect(titles()).toEqual(['Fog', 'Intro', 'Outro', 'track 2', 'Track 10']);
+    // Case ignored, numbers read as numbers: "notes 2" before "Notes 10".
+    expect(titles()).toEqual(['Agenda', 'Budget', 'Contract', 'notes 2', 'Notes 10']);
     expect(sortedHeader()!.textContent).toBe('Title');
     expect(sortedHeader()!.getAttribute('aria-sort')).toBe('ascending');
 
     await userEvent.click(header('Title'));
-    expect(titles()).toEqual(['Track 10', 'track 2', 'Outro', 'Intro', 'Fog']);
+    expect(titles()).toEqual(['Notes 10', 'notes 2', 'Contract', 'Budget', 'Agenda']);
     expect(sortedHeader()!.getAttribute('aria-sort')).toBe('descending');
 
     await userEvent.click(header('Title'));
-    expect(titles()).toEqual(['Track 10', 'track 2', 'Intro', 'Outro', 'Fog']);
+    expect(titles()).toEqual(['Notes 10', 'notes 2', 'Budget', 'Contract', 'Agenda']);
     expect(sortedHeader()).toBeNull();
   });
 
   it('starts another column ascending, and equal rows keep their order', async () => {
-    render(<Tracks />, root);
+    render(<Files />, root);
     await userEvent.click(header('Title'));
-    await userEvent.click(header('BPM'));
-    expect(titles()).toEqual(['Fog', 'track 2', 'Outro', 'Track 10', 'Intro']);
+    await userEvent.click(header('Size'));
+    expect(titles()).toEqual(['Agenda', 'notes 2', 'Contract', 'Notes 10', 'Budget']);
     expect(root.querySelectorAll('[aria-sort]')).toHaveLength(1);
     // Descending keeps equal rows in place too (comparator negated, not the list reversed).
-    await userEvent.click(header('BPM'));
-    expect(titles()).toEqual(['Track 10', 'Intro', 'Outro', 'track 2', 'Fog']);
+    await userEvent.click(header('Size'));
+    expect(titles()).toEqual(['Notes 10', 'Budget', 'Contract', 'notes 2', 'Agenda']);
   });
 
   it('is a header button the keyboard reaches', async () => {
-    render(<Tracks />, root);
-    (header('BPM').element() as HTMLElement).focus();
+    render(<Files />, root);
+    (header('Size').element() as HTMLElement).focus();
     await userEvent.keyboard('{Enter}');
-    expect(sortedHeader()!.textContent).toBe('BPM');
+    expect(sortedHeader()!.textContent).toBe('Size');
   });
 });
 
 describe('Table selection', () => {
   it('selects a row with its box and marks it', async () => {
-    render(<Tracks />, root);
-    await userEvent.click(box('Intro'));
-    expect((box('Intro').element() as HTMLInputElement).checked).toBe(true);
-    expect(picked()).toEqual(['Intro']);
+    render(<Files />, root);
+    await userEvent.click(box('Budget'));
+    expect((box('Budget').element() as HTMLInputElement).checked).toBe(true);
+    expect(picked()).toEqual(['Budget']);
   });
 
   it('selects a range with Shift+click on the boxes, in the order shown', async () => {
-    render(<Tracks />, root);
-    await userEvent.click(header('Title')); // Fog, Intro, Outro, track 2, Track 10
-    await userEvent.click(box('Intro'));
+    render(<Files />, root);
+    await userEvent.click(header('Title')); // Agenda, Budget, Contract, notes 2, Notes 10
+    await userEvent.click(box('Budget'));
     await userEvent.keyboard('{Shift>}');
-    await userEvent.click(box('track 2'));
+    await userEvent.click(box('notes 2'));
     await userEvent.keyboard('{/Shift}');
-    expect(picked()).toEqual(['Intro', 'Outro', 'track 2']);
+    expect(picked()).toEqual(['Budget', 'Contract', 'notes 2']);
   });
 
   it('clears a range when the Shift+clicked box is turned off', async () => {
-    render(<Tracks />, root);
+    render(<Files />, root);
     await userEvent.click(page.getByRole('checkbox', { name: 'Select all' }));
-    await userEvent.click(box('Track 10')); // off: the anchor
+    await userEvent.click(box('Notes 10')); // off: the anchor
     await userEvent.keyboard('{Shift>}');
-    await userEvent.click(box('Intro'));
+    await userEvent.click(box('Budget'));
     await userEvent.keyboard('{/Shift}');
-    // Order shown (unsorted): Track 10, track 2, Intro, Outro, Fog.
-    expect(picked()).toEqual(['Outro', 'Fog']);
+    // Order shown (unsorted): Notes 10, notes 2, Budget, Contract, Agenda.
+    expect(picked()).toEqual(['Contract', 'Agenda']);
   });
 
   it('"select all" is mixed when some rows are selected, and a click selects them all', async () => {
-    render(<Tracks />, root);
+    render(<Files />, root);
     const all = () => page.getByRole('checkbox', { name: 'Select all' }).element() as HTMLInputElement;
-    await userEvent.click(box('Fog'));
+    await userEvent.click(box('Agenda'));
     expect(all().indeterminate).toBe(true);
     await userEvent.click(all());
     expect(all().checked).toBe(true);
@@ -150,18 +150,18 @@ describe('Table selection', () => {
   });
 
   it('keeps the selection when the rows are sorted', async () => {
-    render(<Tracks />, root);
-    await userEvent.click(box('Outro'));
-    await userEvent.click(header('BPM'));
-    expect((box('Outro').element() as HTMLInputElement).checked).toBe(true);
+    render(<Files />, root);
+    await userEvent.click(box('Contract'));
+    await userEvent.click(header('Size'));
+    expect((box('Contract').element() as HTMLInputElement).checked).toBe(true);
   });
 });
 
 describe('Table rows', () => {
   it('a plain click opens the row, not selects it', async () => {
     const onOpen = vi.fn();
-    render(<Tracks onOpen={onOpen} />, root);
-    await userEvent.click(cell('Outro'));
+    render(<Files onOpen={onOpen} />, root);
+    await userEvent.click(cell('Contract'));
     expect(onOpen).toHaveBeenCalledWith('d');
     expect(picked()).toEqual([]);
   });
@@ -170,32 +170,32 @@ describe('Table rows', () => {
   // on Windows and Linux, Ctrl is the same code path (event.ctrlKey).
   it('Cmd+click adds or removes one row, without opening it', async () => {
     const onOpen = vi.fn();
-    render(<Tracks onOpen={onOpen} />, root);
-    await userEvent.click(cell('Outro'), { modifiers: ['Meta'] });
-    await userEvent.click(cell('Fog'), { modifiers: ['Meta'] });
-    expect(picked()).toEqual(['Outro', 'Fog']);
-    await userEvent.click(cell('Outro'), { modifiers: ['Meta'] });
-    expect(picked()).toEqual(['Fog']);
+    render(<Files onOpen={onOpen} />, root);
+    await userEvent.click(cell('Contract'), { modifiers: ['Meta'] });
+    await userEvent.click(cell('Agenda'), { modifiers: ['Meta'] });
+    expect(picked()).toEqual(['Contract', 'Agenda']);
+    await userEvent.click(cell('Contract'), { modifiers: ['Meta'] });
+    expect(picked()).toEqual(['Agenda']);
     expect(onOpen).not.toHaveBeenCalled();
   });
 
   it('Shift+click on a row selects the range from the last row clicked', async () => {
-    render(<Tracks onOpen={() => {}} />, root);
-    await userEvent.click(cell('track 2'), { modifiers: ['Meta'] });
-    await userEvent.click(cell('Outro'), { modifiers: ['Shift'] });
-    expect(picked()).toEqual(['track 2', 'Intro', 'Outro']);
+    render(<Files onOpen={() => {}} />, root);
+    await userEvent.click(cell('notes 2'), { modifiers: ['Meta'] });
+    await userEvent.click(cell('Contract'), { modifiers: ['Shift'] });
+    expect(picked()).toEqual(['notes 2', 'Budget', 'Contract']);
   });
 
   it('a click anywhere in the checkbox cell toggles the row', async () => {
-    render(<Tracks />, root);
-    const td = box('Fog').element().closest('td')!;
+    render(<Files />, root);
+    const td = box('Agenda').element().closest('td')!;
     await userEvent.click(td, { position: { x: 2, y: 2 } });
-    expect(picked()).toEqual(['Fog']);
+    expect(picked()).toEqual(['Agenda']);
   });
 
   it('a button in the row keeps its own click', async () => {
     const onOpen = vi.fn();
-    render(<Tracks onOpen={onOpen} />, root);
+    render(<Files onOpen={onOpen} />, root);
     await userEvent.click(page.getByRole('button', { name: 'Open' }).first());
     expect(onOpen).not.toHaveBeenCalled();
     expect(picked()).toEqual([]);
@@ -206,13 +206,13 @@ describe('Table foundations', () => {
   const px = (name: string): number => parseFloat(getComputedStyle(root).getPropertyValue(name));
 
   it('rows are the row height, the header the control height', () => {
-    render(<Tracks />, root);
+    render(<Files />, root);
     expect(root.querySelector('tbody tr')!.getBoundingClientRect().height).toBe(px('--b-size-row'));
     expect(root.querySelector('thead tr')!.getBoundingClientRect().height).toBe(px('--b-size-control'));
   });
 
   it('has one even gap between all columns, and the control inset at the edges', () => {
-    render(<Tracks />, root);
+    render(<Files />, root);
     const cells = [...root.querySelector('tbody tr')!.children].map((c) => getComputedStyle(c));
     const gap = px('--b-space-4');
     const inset = px('--b-inset-control');
@@ -223,14 +223,14 @@ describe('Table foundations', () => {
   });
 
   it('a button in a row is the small control, with air above and below', () => {
-    render(<Tracks />, root);
+    render(<Files />, root);
     const button = root.querySelector('tbody .b-btn')!.getBoundingClientRect();
     expect(button.height).toBe(px('--b-size-control') - px('--b-size-step'));
   });
 
   it('fits a narrow box: the grow column truncates, rows keep their height', () => {
     root.style.width = '200px';
-    render(<Tracks />, root);
+    render(<Files />, root);
     const table = root.querySelector('table')!;
     expect(table.getBoundingClientRect().width).toBeLessThanOrEqual(200);
     const title = root.querySelector<HTMLElement>('tbody td[data-grow]')!;

@@ -67,7 +67,7 @@ export type InputType = 'text' | 'number' | 'email' | 'password' | 'search' | 't
 export type InputProps = NativeInputProps & {
   /** `text` by default. */
   type?: InputType;
-  /** A unit shown inside the box, after the value: "dB", "LUFS". Read after the label. */
+  /** A unit shown inside the box, after the value: "MB", "kHz". Read after the label. */
   unit?: string;
   /** Extra classes, on the box (`b-input`). */
   class?: string;

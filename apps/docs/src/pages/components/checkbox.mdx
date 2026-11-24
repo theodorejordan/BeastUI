@@ -22,7 +22,7 @@ For an option that takes effect when the form is saved, or to select rows.
 
 ## Live
 
-The first box shows a dash when some tracks are picked but not all.
+The first box shows a dash when some files are picked but not all.
 
 <figure class="docs-demo">
   <div class="docs-demo__stage"><CheckboxDemo client:visible /></div>
@@ -35,7 +35,7 @@ The whole label is the target. A long label wraps; the box stays on the first li
 <Demo html={`
 <label class="b-check">
   <input class="b-checkbox" type="checkbox" checked />
-  <span>Turn louder tracks down to the target (lossless for MP3)</span>
+  <span>Email me when someone comments on a file I shared (at most once a day)</span>
 </label>
 `} />
 
@@ -44,8 +44,8 @@ The whole label is the target. A long label wraps; the box stays on the first li
 Without a visible label, the box needs `aria-label`.
 
 <Demo html={`
-<input class="b-checkbox" type="checkbox" aria-label="Select Intro.wav" />
-<input class="b-checkbox" type="checkbox" aria-label="Select Outro.wav" checked />
+<input class="b-checkbox" type="checkbox" aria-label="Select Report.pdf" />
+<input class="b-checkbox" type="checkbox" aria-label="Select Budget.xlsx" checked />
 `} />
 
 ## Disabled
@@ -63,15 +63,15 @@ Without a visible label, the box needs `aria-label`.
 import { Checkbox } from '@beastui/preact';
 
 <Checkbox checked={turnDown} onChange={setTurnDown}>
-  Turn louder tracks down to the target
+  Email me when someone comments
 </Checkbox>
 
 // "Select all" over a list:
 <Checkbox
-  aria-label="Select all tracks"
-  checked={picked.size === tracks.length}
-  indeterminate={picked.size > 0 && picked.size < tracks.length}
-  onChange={(all) => setPicked(new Set(all ? tracks : []))}
+  aria-label="Select all files"
+  checked={picked.size === files.length}
+  indeterminate={picked.size > 0 && picked.size < files.length}
+  onChange={(all) => setPicked(new Set(all ? files : []))}
 />
 ```
 

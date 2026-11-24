@@ -27,7 +27,7 @@ export type Sort<T, K extends string> = {
   setState: (state: SortState<K>) => void;
 };
 
-/** Text, the way people expect it: case and accents ignored, "Track 2" before "Track 10". */
+/** Text, the way people expect it: case and accents ignored, "File 2" before "File 10". */
 export const compareText: (a: string, b: string) => number = new Intl.Collator(undefined, {
   numeric: true,
   sensitivity: 'base',
@@ -51,7 +51,7 @@ export function useSort<T, K extends string>(
     return [...rows].sort((a, b) => sign * by(a, b));
     // Not on `compare`: it is usually an inline object, so it would re-sort on every render.
   }, [rows, state]);
-  // Three steps, so the original order (a crate's, a folder's) is one more click away.
+  // Three steps, so the original order (a folder's, a list's) is one more click away.
   const toggle = (key: K): void => {
     if (state?.key !== key) setState({ key, direction: 'ascending' });
     else if (state.direction === 'ascending') setState({ key, direction: 'descending' });
@@ -131,7 +131,7 @@ export type Selection<Id> = {
   /**
    * Props for the <tr>: data-selected, and the clicks. Cmd/Ctrl+click toggles the row,
    * Shift+click selects a range, a click in the checkbox cell toggles it; a plain click
-   * elsewhere calls `onOpen` (open the item, play the track).
+   * elsewhere calls `onOpen` (open the item, preview the file).
    */
   row: (id: Id, onOpen?: (event: MouseEvent) => void) => RowProps;
   setSelected: (ids: Iterable<Id>) => void;

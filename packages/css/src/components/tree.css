@@ -1,5 +1,5 @@
 /*
- * Tree: nested items that fold, like crates and their subcrates. Built as disclosure
+ * Tree: nested items that fold, like folders and their subfolders. Built as disclosure
  * navigation (WAI-ARIA APG): nested lists, a <button aria-expanded> folds a branch, a second
  * <button> chooses the item, Tab moves between them. Not the ARIA treeview (role="tree",
  * arrow keys): worth it only for very long lists, and it can come later with the same look.
@@ -7,10 +7,10 @@
  * <ul class="b-tree">
  *   <li>
  *     <div class="b-tree-row" style="--b-tree-level: 0">
- *       <button class="b-tree-toggle" type="button" aria-expanded="true" aria-label="Expand House">
+ *       <button class="b-tree-toggle" type="button" aria-expanded="true" aria-label="Expand Projects">
  *         <svg class="b-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
  *       </button>
- *       <button class="b-tree-name" type="button" aria-current="true">House</button>
+ *       <button class="b-tree-name" type="button" aria-current="true">Projects</button>
  *       <span class="b-tree-count">42</span>
  *     </div>
  *     <ul>…the same rows, --b-tree-level: 1…</ul>
@@ -23,7 +23,7 @@
  *
  * A parent that is only a group (never chosen) has one button, the whole row, that folds it:
  *   <button class="b-tree-toggle" type="button" data-group aria-expanded="false">
- *     <svg class="b-icon" …/><span>Playlists</span>
+ *     <svg class="b-icon" …/><span>Shared</span>
  *   </button>
  *
  * Foundations (04-foundations.md): rows are --b-size-row, like the table; the toggle is the

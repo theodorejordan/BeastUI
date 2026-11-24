@@ -29,7 +29,7 @@
       }
     },
     "theme": {
-      "description": "The app's theme: core (default), tool for desk apps, playful for the game.",
+      "description": "The app's theme: core (default), tool for dense desk apps, playful for apps with more colour and motion.",
       "default": "core",
       "contexts": {
         "core": [],

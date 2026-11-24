@@ -3,11 +3,11 @@
  *
  * <label class="b-check">
  *   <input class="b-checkbox" type="checkbox" />
- *   <span>Turn louder tracks down to the target</span>
+ *   <span>Email me when someone comments</span>
  * </label>
  *
  * Alone, in a table cell, the box needs a name: <input class="b-checkbox" type="checkbox"
- * aria-label="Select Intro.wav" />.
+ * aria-label="Select report.pdf" />.
  *
  * appearance: none keeps the native element (keyboard, form value, :checked, :indeterminate,
  * the "checked" / "mixed" announcement) and drops only the browser's drawing, which no token

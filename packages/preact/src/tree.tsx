@@ -24,7 +24,7 @@ export type TreeItem = {
   /** Unique in the whole tree. */
   id: string;
   label: string;
-  /** A number shown on the right: the tracks in a crate, for instance. */
+  /** A number shown on the right: the files in a folder, for instance. */
   count?: number;
   /** Shown on hover (a cut label, a date). */
   title?: string;
@@ -53,7 +53,7 @@ export type TreeProps = {
   onOpenChange?: (open: Set<string>) => void;
   /** The toggle's name for a screen reader. Its state is aria-expanded, so the name stays. */
   toggleLabel?: (item: TreeItem) => string;
-  /** Names the list, e.g. "Crates". */
+  /** Names the list, e.g. "Folders". */
   'aria-label'?: string;
   class?: string;
 };
