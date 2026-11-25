@@ -22,7 +22,8 @@
   .docs-bar {
     position: sticky;
     top: 0;
-    z-index: 1;
+    /* Above the sticky things of the page, a table's header among them. */
+    z-index: 2;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
