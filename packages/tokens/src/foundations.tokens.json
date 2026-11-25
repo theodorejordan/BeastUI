@@ -198,6 +198,16 @@
       }
     }
   },
+  "blur": {
+    "$type": "dimension",
+    "$description": "The blur behind a modal or a drawer: just enough to set the page back, the page still recognisable (owner, 2026-11-25).",
+    "backdrop": {
+      "$value": {
+        "value": 2,
+        "unit": "px"
+      }
+    }
+  },
   "width": {
     "$type": "dimension",
     "$description": "Widths of floating things, on the grid (§11).",

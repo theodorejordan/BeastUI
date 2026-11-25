@@ -40,6 +40,7 @@ Fonts are not bundled: load Inter Tight, Outfit and IBM Plex Mono the way your a
 | Checkbox | `b-checkbox` on the input, `b-check` on its label |
 | Field | `b-field`, `b-input` |
 | Progress | `b-progress` with `role="progressbar"`, `data-size="thin"` |
+| Modal, drawer | `<dialog class="b-modal">`, `+ b-drawer` on an edge (`data-side="start"`); parts `b-modal-head`, `-title`, `-body`, `-foot` |
 | Segmented control | `b-seg` |
 | Table | `b-table`, with `data-grow` and `data-align` on cells |
 | Tag | `b-tag`, `data-variant="warn"` |

@@ -1,0 +1,60 @@
+---
+layout: ../../layouts/Docs.astro
+title: Drawer
+description: "A modal on an edge of the screen, for longer content beside the page's context."
+---
+import DrawerDemo from '../../components/DrawerDemo';
+import Pre from '../../components/Pre.astro';
+
+export const components = { pre: Pre };
+
+# Drawer
+
+<p class="docs-lead">A modal on an edge of the screen, for longer content beside the page's context.</p>
+
+## When to use it
+
+For content that takes room and relates to the page: a file's details, settings, a guide. The page stays visible on the side, so the user keeps their place.
+
+- A short task or a question: use a [modal](../modal/).
+- A panel that stays open while the user works in the page: that is the app's layout, not a drawer. A drawer is modal: the page waits behind it.
+
+<figure class="docs-demo">
+  <div class="docs-demo__stage"><DrawerDemo client:visible /></div>
+</figure>
+
+## How it behaves
+
+The same as a [modal](../modal/#how-it-behaves): a native `<dialog>`, the page inert behind it, Escape, a click on the backdrop or the close button close it, and the focus comes back to what opened it. It slides in from its edge; with reduced motion, it appears.
+
+It is 360px wide, the full height of the screen, and leaves a strip of backdrop on small screens, so it can be closed with a tap.
+
+## Side
+
+`end` by default: the right in a left-to-right page, the left in a right-to-left one. `start` for the other edge.
+
+## In Preact
+
+```tsx
+import { Button, Drawer } from '@beastui/preact';
+
+<Drawer open={open} onClose={() => setOpen(false)} title="Contract.pdf" footer={<Button>Download</Button>}>
+  …
+</Drawer>
+```
+
+| Prop | Type | Default | |
+|---|---|---|---|
+| `side` | `'start' \| 'end'` | `'end'` | The edge it comes from. |
+| `open`, `onClose`, `title`, `footer`, `closeLabel` | | | As on the [modal](../modal/#in-preact). |
+
+## Without Preact
+
+A modal with the class `b-drawer`, and `data-side="start"` for the other edge.
+
+```html
+<dialog class="b-modal b-drawer" aria-labelledby="file-title">
+  <header class="b-modal-head">…</header>
+  <div class="b-modal-body">…</div>
+</dialog>
+```

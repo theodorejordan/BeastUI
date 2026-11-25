@@ -12,3 +12,5 @@ export { Tree } from './tree';
 export type { TreeItem, TreeProps } from './tree';
 export { Progress } from './progress';
 export type { ProgressProps } from './progress';
+export { Drawer, Modal } from './modal';
+export type { DrawerProps, ModalProps } from './modal';

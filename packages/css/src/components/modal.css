@@ -1,0 +1,187 @@
+/*
+ * Modal and drawer: a native <dialog>, opened with showModal().
+ *
+ * <dialog class="b-modal" aria-labelledby="t">                       centred box, 400px
+ * <dialog class="b-modal b-drawer" aria-labelledby="t">              on the end edge, 360px
+ * <dialog class="b-modal b-drawer" data-side="start" …>              on the start edge
+ *   <header class="b-modal-head">
+ *     <h2 class="b-modal-title" id="t">Details</h2>
+ *     <button class="b-btn" data-variant="quiet" data-icon aria-label="Close">…</button>
+ *   </header>
+ *   <div class="b-modal-body">…</div>                                 scrolls on its own
+ *   <footer class="b-modal-foot">…buttons…</footer>                   optional
+ * </dialog>
+ *
+ * One mechanism, two shapes. showModal() gives the top layer (above everything, no z-index),
+ * an inert page, Escape and ::backdrop (MDN, <dialog>). A drawer is a modal on an edge: it adds
+ * the class b-drawer and keeps every b-modal part, the way MUI's Drawer is built on its Modal.
+ * A docked side panel that leaves the page usable is not this: that is the app's layout.
+ *
+ * Foundations (04-foundations.md): widths 400 / 360 (§11); padding --b-inset-dialog; head and
+ * foot are the same height, control + 2 × 12 (rule 4); the quiet close button aligns by its
+ * glyph, not its box (rule 3). No shadow: a floating thing is the raised ground plus a strong
+ * line. The box takes radius 3; the drawer sits flush on its edge, so it has none.
+ */
+@import '../layers.css';
+
+@layer beast.components {
+  .b-modal {
+    /* The close button is a quiet control: its X is drawn this far inside its box. */
+    --b-modal-glyph-inset: calc((var(--b-size-control) - var(--b-size-glyph)) / 2);
+    box-sizing: border-box;
+    inline-size: min(var(--b-width-dialog), 100% - 2 * var(--b-space-4));
+    max-block-size: calc(100% - 2 * var(--b-space-12));
+    padding: 0;
+    border: var(--b-line-hair) solid var(--b-color-border-strong);
+    border-radius: var(--b-radius-3);
+    background: var(--b-color-surface-raised);
+    color: var(--b-color-text);
+    /* A wheel or a swipe at the end of the content stops here, not on the page behind. No
+       overflow: hidden on <html>: it makes the page jump (research §5, Chrome's guide). */
+    overscroll-behavior: contain;
+
+    /* Always a column, closing included: [open] goes at once, but the dialog stays drawn while
+       it fades out (allow-discrete keeps the old display to the end). Tied to [open], the parts
+       fell into one row for that fraction of a second. Closed = none, as the browser's own. */
+    display: flex;
+    flex-direction: column;
+
+    &:not([open]) {
+      display: none;
+    }
+
+    /* The page darkens and blurs a little behind: it steps back, still recognisable. */
+    &::backdrop {
+      background: var(--b-color-backdrop);
+      backdrop-filter: blur(var(--b-blur-backdrop));
+    }
+  }
+
+  .b-modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--b-gap-inline);
+    min-block-size: var(--b-size-control);
+    padding-block: var(--b-inset-control);
+    padding-inline: var(--b-inset-dialog) calc(var(--b-inset-dialog) - var(--b-modal-glyph-inset));
+    flex: none;
+  }
+
+  .b-modal-title {
+    margin: 0;
+    font: var(--b-font-weight-medium) var(--b-font-size-3) / var(--b-font-line-height-3) var(--b-font-family-ui);
+  }
+
+  /* The only part that scrolls, so the head and foot stay in view. */
+  .b-modal-body {
+    flex: 1 1 auto;
+    min-block-size: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-inline: var(--b-inset-dialog);
+    padding-block-end: var(--b-inset-dialog);
+  }
+
+  /* With a foot, the foot's own padding closes the box. */
+  .b-modal-body:has(+ .b-modal-foot) {
+    padding-block-end: 0;
+  }
+
+  .b-modal-foot {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--b-gap-inline);
+    min-block-size: var(--b-size-control);
+    padding: var(--b-inset-control) var(--b-inset-dialog);
+    flex: none;
+  }
+
+  /* ---------- Drawer ---------- */
+  .b-drawer {
+    /* Which way it slides out: towards its own edge. */
+    --b-drawer-out: 100%;
+    inline-size: min(var(--b-width-drawer), 100% - var(--b-space-12));
+    block-size: 100%;
+    max-block-size: none;
+    margin-block: 0;
+    margin-inline: auto 0;
+    border: 0;
+    border-inline-start: var(--b-line-hair) solid var(--b-color-border-strong);
+    border-radius: 0;
+
+    &[data-side='start'] {
+      --b-drawer-out: -100%;
+      margin-inline: 0 auto;
+      border-inline-start: 0;
+      border-inline-end: var(--b-line-hair) solid var(--b-color-border-strong);
+    }
+  }
+
+  .b-drawer:dir(rtl) {
+    --b-drawer-out: -100%;
+
+    &[data-side='start'] {
+      --b-drawer-out: 100%;
+    }
+  }
+
+  /* ---------- Motion ---------- */
+  /* The box fades in and rises a little; the drawer slides in from its edge, so the eye sees
+     where it came from. The backdrop fades with them. On close, allow-discrete keeps display
+     and the top layer (overlay) until the motion ends; @starting-style is where an opening
+     starts (MDN, @starting-style, transition-behavior). Off with reduced motion: it appears. */
+  @media (prefers-reduced-motion: no-preference) {
+    .b-modal,
+    .b-modal::backdrop {
+      transition:
+        opacity var(--b-duration-2) var(--b-easing-move),
+        translate var(--b-duration-2) var(--b-easing-move),
+        display var(--b-duration-2) allow-discrete,
+        overlay var(--b-duration-2) allow-discrete;
+      opacity: 0;
+    }
+
+    .b-modal {
+      translate: 0 var(--b-space-2);
+    }
+
+    .b-modal[open],
+    .b-modal[open]::backdrop {
+      opacity: 1;
+    }
+
+    .b-modal[open] {
+      translate: 0 0;
+    }
+
+    @starting-style {
+      .b-modal[open],
+      .b-modal[open]::backdrop {
+        opacity: 0;
+      }
+
+      .b-modal[open] {
+        translate: 0 var(--b-space-2);
+      }
+    }
+
+    /* The drawer is wider travel: one step longer. It slides; it doesn't fade. */
+    .b-drawer,
+    .b-drawer::backdrop {
+      transition-duration: var(--b-duration-3);
+    }
+
+    .b-drawer {
+      opacity: 1;
+      translate: var(--b-drawer-out) 0;
+    }
+
+    @starting-style {
+      .b-drawer[open] {
+        opacity: 1;
+        translate: var(--b-drawer-out) 0;
+      }
+    }
+  }
+}

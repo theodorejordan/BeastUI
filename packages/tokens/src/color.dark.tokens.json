@@ -106,6 +106,19 @@
         }
       }
     },
+    "backdrop": {
+      "$description": "Behind a modal or a drawer: the page darkens, so what is in front reads as in front. The warm dark, never a lighter wash, in both modes.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.102,
+          0.0941,
+          0.0784
+        ],
+        "hex": "#1a1814",
+        "alpha": 0.6
+      }
+    },
     "focus": {
       "$value": "{color.text}"
     },

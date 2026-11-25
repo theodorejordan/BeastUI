@@ -305,7 +305,8 @@
   h1 {
     font: var(--b-font-weight-display) var(--b-font-size-5) / var(--b-font-line-height-5) var(--b-font-family-display);
   }
-  h2 {
+  /* :where keeps the weight of a plain h2; a modal's title keeps its own size. */
+  h2:where(:not(.b-modal-title)) {
     font: var(--b-font-weight-medium) var(--b-font-size-4) / var(--b-font-line-height-4) var(--b-font-family-ui);
   }
   h3 {
@@ -321,6 +322,25 @@
   /* :where keeps the weight of a plain ul, so .docs-toc ul still wins. */
   ul:where(:not(.b-tree, .b-tree ul)) {
     padding-inline-start: var(--b-space-6);
+  }
+
+  /* A label/value list on the row pitch, for the drawer demo: the label muted, the value ink. */
+  .docs-props {
+    margin: 0;
+
+    & div {
+      display: grid;
+      grid-template-columns: 7rem 1fr;
+      gap: var(--b-gap-inline);
+      align-items: center;
+      min-block-size: var(--b-size-control);
+    }
+    & dt {
+      color: var(--b-color-text-muted);
+    }
+    & dd {
+      margin: 0;
+    }
   }
 
   /* ---------- Code ---------- */

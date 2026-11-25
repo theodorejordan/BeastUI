@@ -21,6 +21,10 @@
        any ground and stacks (a button hovered on a hovered row is one step darker). Same idea
        as Radix's alpha scales. DTCG can't mix two tokens, so it lives here. */
     --b-color-hover: color-mix(in srgb, var(--b-color-text) 6%, transparent);
+    /* The veil: a part of the page that is busy (a list while a job runs) is washed with its own
+       ground, so it fades back without going dark. The backdrop (--b-color-backdrop) darkens
+       the whole page behind a modal or a drawer: two different messages, two different looks. */
+    --b-color-veil: color-mix(in srgb, var(--b-color-surface) 70%, transparent);
   }
   :root[data-theme='playful'] {
     --b-easing-press: var(--b-easing-spring);
