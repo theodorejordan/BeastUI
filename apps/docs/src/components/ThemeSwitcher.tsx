@@ -13,7 +13,8 @@ type Theme = (typeof themes)[number];
 type Mode = (typeof modes)[number];
 
 const title = (word: string): string => word[0]!.toUpperCase() + word.slice(1);
-const themeOptions = themes.map((value) => ({ value, label: title(value) }));
+// Each theme's name in its own voice: tool writes its interface lowercase (owner review).
+const themeOptions = themes.map((value) => ({ value, label: value === 'tool' ? value : title(value) }));
 const modeOptions = modes.map((value) => ({ value, label: title(value) }));
 
 // Also read by the inline script in layouts/Docs.astro.
