@@ -1,6 +1,6 @@
 {
   "name": "@beastui/css",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "BeastUI components as plain CSS classes, zero JS, inside BeastUI's cascade layers.",
   "type": "module",
   "license": "MIT",

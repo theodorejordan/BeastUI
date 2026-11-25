@@ -1,5 +1,19 @@
 # @beastui/preact
 
+## 0.0.3
+
+### Patch Changes
+
+- c0647f3: The modal and the drawer, on a native `<dialog>` opened with `showModal()`: inert page, Escape, focus kept inside and given back. `.b-modal` is a 400px box in the middle; `.b-modal.b-drawer` is the same on an edge (360px, `data-side="start"` for the other one), sliding in. Head, scrolling body and an optional foot. `Modal` and `Drawer` in Preact share one hook: `open` state to `showModal()`/`close()`, a click on the backdrop closes, focus back to the opener. New tokens: `--b-color-backdrop` and `--b-blur-backdrop` (2px), behind a modal; and `--b-color-veil` (a busy part of the page).
+- 78eec45: The progress bar: how far a job has gone, or that one is running when its length is unknown. `.b-progress` (4px, or 2px with `data-size="thin"`) reads its state from the ARIA: no `aria-valuenow` = a segment that sways. A `Progress` in Preact sets the ARIA and the fill from `value` and `max`.
+- dc21ec7: The table's detail row: a second row that opens under a row (the disclosure pattern). The row is the target, no arrow column: its name is a `.b-table-open` button for the keyboard, `data-open` marks the open row, `data-detail` the row under it (one tint for both, any height, text wraps; a selected row's edge runs down its detail). `useDetail` keeps the open rows, one at a time or several with `multiple`, and wires `aria-expanded` and `aria-controls`. `useSelection` treats a click on `.b-table-open` as the row's, so Cmd and Shift still select.
+- 7e69307: The tree: nested items that fold (disclosure navigation). `.b-tree` rows with a toggle, a name and a count in the CSS; a data-driven `Tree` in Preact that keeps the open branches, or lets the app keep them. A parent is an item (chosen on click) or a group (`group: true`: the whole row folds it). The parents of the chosen item keep the hover tint (`data-trail`).
+- Updated dependencies [c0647f3]
+- Updated dependencies [78eec45]
+- Updated dependencies [dc21ec7]
+- Updated dependencies [7e69307]
+  - @beastui/css@0.0.3
+
 ## 0.0.2
 
 ### Patch Changes
