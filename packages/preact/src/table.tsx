@@ -9,9 +9,11 @@
  * - Selection: useSelection keeps the selected ids and wires the checkboxes, "select all" with
  *   the mixed state included, and the rows: Shift+click selects a range and Cmd+click (Ctrl+click
  *   on Windows and Linux) adds or removes one row, like Finder. A plain click stays the app's.
+ * - Detail rows: useDetail keeps the open rows (one at a time, or several with `multiple`) and
+ *   wires the disclosure: data-open, aria-expanded, aria-controls and the detail row's id.
  */
 import type { ComponentChildren, JSX } from 'preact';
-import { useMemo, useRef, useState } from 'preact/hooks';
+import { useId, useMemo, useRef, useState } from 'preact/hooks';
 
 /* ----- Sorting ----- */
 
@@ -203,7 +205,9 @@ export function useSelection<Id>(ids: readonly Id[], initial: Iterable<Id> = [])
       },
       onClick: (event) => {
         const target = event.target as Element;
-        if (target.closest(CONTROLS)) return; // the checkbox, a button: they handle their click
+        // The checkbox, a button: they handle their click. Not the row's open button (b-table-open):
+        // it is the row, for the keyboard, so Cmd and Shift still select.
+        if (target.closest(CONTROLS) && !target.closest('.b-table-open')) return;
         const inBoxCell = target.closest('[data-select]') !== null;
         if (event.metaKey || event.ctrlKey || event.shiftKey || inBoxCell) {
           set(id, !selected.has(id), event.shiftKey);
@@ -214,5 +218,76 @@ export function useSelection<Id>(ids: readonly Id[], initial: Iterable<Id> = [])
     }),
     setSelected: (next) => setSelectedState(new Set(next)),
     clear: () => setSelectedState(new Set()),
+  };
+}
+
+/* ----- Detail rows ----- */
+
+export type DetailOptions<Id> = {
+  /** Several rows open at once. Off by default: opening a row closes the other. */
+  multiple?: boolean;
+  /** The rows open at first. */
+  initial?: Iterable<Id>;
+};
+
+export type Detail<Id> = {
+  /** Every open id. */
+  open: ReadonlySet<Id>;
+  isOpen: (id: Id) => boolean;
+  /** Opens a closed row, closes an open one. Without `multiple`, opening closes the others. */
+  toggle: (id: Id) => void;
+  /** Closes every row. */
+  close: () => void;
+  /** Props for the row's <tr>: data-open. */
+  row: (id: Id) => { 'data-open'?: true };
+  /** Props for the row's open button (class="b-table-open"): the disclosure state. */
+  button: (id: Id) => { type: 'button'; 'aria-expanded': boolean; 'aria-controls'?: string };
+  /** Props for the detail's <tr>: data-detail and the id the button points at. */
+  detail: (id: Id) => { id: string; 'data-detail': true };
+};
+
+/**
+ * Rows that open a detail row under them. The open rows are kept by id, so a sort or a filter
+ * keeps them open. Pair `toggle` with useSelection's `row(id, onOpen)`, or a click on the <tr>.
+ */
+export function useDetail<Id>({ multiple = false, initial = [] }: DetailOptions<Id> = {}): Detail<Id> {
+  const [open, setOpenState] = useState<ReadonlySet<Id>>(() => {
+    const first = [...initial];
+    return new Set(multiple ? first : first.slice(0, 1));
+  });
+  // DOM ids from a counter, not from the app's ids: those may hold spaces, which aria-controls
+  // would read as two ids.
+  const prefix = useId();
+  const numbers = useRef(new Map<Id, number>());
+  const domId = (id: Id): string => {
+    let n = numbers.current.get(id);
+    if (n === undefined) {
+      n = numbers.current.size;
+      numbers.current.set(id, n);
+    }
+    return `${prefix}-detail-${n}`;
+  };
+
+  return {
+    open,
+    isOpen: (id) => open.has(id),
+    toggle: (id) =>
+      setOpenState((now) => {
+        if (now.has(id)) {
+          const next = new Set(now);
+          next.delete(id);
+          return next;
+        }
+        return multiple ? new Set(now).add(id) : new Set([id]);
+      }),
+    close: () => setOpenState(new Set()),
+    row: (id) => ({ 'data-open': open.has(id) || undefined }),
+    button: (id) => ({
+      type: 'button',
+      'aria-expanded': open.has(id),
+      // Only while the detail is in the page: a reference to a missing id is an axe error.
+      'aria-controls': open.has(id) ? domId(id) : undefined,
+    }),
+    detail: (id) => ({ id: domId(id), 'data-detail': true }),
   };
 }

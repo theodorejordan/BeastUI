@@ -1,10 +1,10 @@
 import '@beastui/css/beastui.css';
-import { render } from 'preact';
+import { Fragment, render } from 'preact';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 import { Button } from './button';
 import { Checkbox } from './checkbox';
-import { SortHeader, compareText, useSelection, useSort } from './table';
+import { SortHeader, compareText, useDetail, useSelection, useSort } from './table';
 
 const root = document.body.appendChild(document.createElement('div'));
 afterEach(() => {
@@ -199,6 +199,91 @@ describe('Table rows', () => {
     await userEvent.click(page.getByRole('button', { name: 'Open' }).first());
     expect(onOpen).not.toHaveBeenCalled();
     expect(picked()).toEqual([]);
+  });
+});
+
+/** Rows that open a detail: the name is the open button (b-table-open). */
+function Openable({ onOpen, multiple }: { onOpen?: (id: string) => void; multiple?: boolean }) {
+  const selection = useSelection(FILES.map((t) => t.id));
+  const detail = useDetail<string>({ multiple });
+  return (
+    <table class="b-table">
+      <tbody>
+        {FILES.map((t) => (
+          <Fragment key={t.id}>
+            <tr
+              {...detail.row(t.id)}
+              {...selection.row(t.id, () => {
+                onOpen?.(t.id);
+                detail.toggle(t.id);
+              })}
+            >
+              <td data-grow>
+                <button class="b-table-open" {...detail.button(t.id)}>
+                  {t.title}
+                </button>
+              </td>
+            </tr>
+            {detail.isOpen(t.id) && (
+              <tr {...detail.detail(t.id)}>
+                <td>Details of {t.title}</td>
+              </tr>
+            )}
+          </Fragment>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+const openButton = (title: string) => page.getByRole('button', { name: title, exact: true });
+const details = (): string[] => [...root.querySelectorAll('tr[data-detail]')].map((tr) => tr.textContent!);
+
+describe('Table detail rows', () => {
+  it('the open button is the row: a click or Enter opens it', async () => {
+    const onOpen = vi.fn();
+    render(<Openable onOpen={onOpen} />, root);
+    await userEvent.click(openButton('Contract'));
+    expect(onOpen).toHaveBeenCalledWith('d');
+    (openButton('Budget').element() as HTMLElement).focus();
+    await userEvent.keyboard('{Enter}');
+    expect(onOpen).toHaveBeenLastCalledWith('c');
+  });
+
+  it('Cmd+click on the open button selects, without opening', async () => {
+    const onOpen = vi.fn();
+    render(<Openable onOpen={onOpen} />, root);
+    await userEvent.click(openButton('Agenda'), { modifiers: ['Meta'] });
+    expect(root.querySelector('tr[data-selected]')?.textContent).toBe('Agenda');
+    expect(onOpen).not.toHaveBeenCalled();
+  });
+
+  it('opens one row at a time by default, and a second click closes it', async () => {
+    render(<Openable />, root);
+    await userEvent.click(openButton('Contract'));
+    await userEvent.click(openButton('Budget'));
+    expect(details()).toEqual(['Details of Budget']);
+    await userEvent.click(openButton('Budget'));
+    expect(details()).toEqual([]);
+  });
+
+  it('opens several rows with multiple', async () => {
+    render(<Openable multiple />, root);
+    await userEvent.click(openButton('Contract'));
+    await userEvent.click(openButton('Budget'));
+    expect(details()).toEqual(['Details of Budget', 'Details of Contract']);
+  });
+
+  it('wires the disclosure: aria-expanded, aria-controls to the detail, data-open', async () => {
+    render(<Openable />, root);
+    const button = openButton('Contract').element();
+    expect(button.getAttribute('aria-expanded')).toBe('false');
+    expect(button.hasAttribute('aria-controls')).toBe(false);
+    await userEvent.click(button);
+    expect(button.getAttribute('aria-expanded')).toBe('true');
+    const detail = document.getElementById(button.getAttribute('aria-controls')!);
+    expect(detail?.textContent).toBe('Details of Contract');
+    expect(button.closest('tr')!.hasAttribute('data-open')).toBe(true);
   });
 });
 

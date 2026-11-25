@@ -15,6 +15,17 @@
  *   </tbody>
  * </table>
  *
+ * A detail row opens under its row (the disclosure pattern). No arrow column (owner review,
+ * like Mantine DataTable): a click on the row opens it, and the name is the button that does
+ * it for the keyboard and names the state.
+ *
+ *     <tr data-open>
+ *       <td data-grow><button class="b-table-open" type="button" aria-expanded="true"
+ *         aria-controls="detail-3">Contract.pdf</button></td>
+ *       …
+ *     </tr>
+ *     <tr data-detail id="detail-3"><td colspan="4">…anything…</td></tr>
+ *
  * The table fits its box: one column (data-grow) takes the room left and shrinks first, with
  * an ellipsis; every other cell keeps its content on one line. So rows keep their height and
  * the last column (actions) stays in view.
@@ -147,6 +158,48 @@
       }
     }
 
+    /* An open row and its detail read as one block: the same tint, no line between them. */
+    & tbody tr[data-open] {
+      background: var(--b-color-hover);
+
+      & > td {
+        border-bottom-color: transparent;
+      }
+    }
+    & tbody tr[data-detail] {
+      background: var(--b-color-hover);
+      cursor: auto;
+      /* Its text can be copied, unlike a row's. */
+      user-select: text;
+
+      & > td {
+        height: auto;
+        /* No space on top: the row above is its heading. A panel's inset below. */
+        padding: 0 var(--b-inset-control) var(--b-inset-panel);
+        /* Anything goes in a detail: text wraps, unlike a row's cells. */
+        white-space: normal;
+      }
+    }
+    /* A selected row's edge runs down its detail: one block, one edge (owner review). On the
+       open row it is a background, not a shadow: a shadow stops above the (clear) bottom
+       border and leaves a notch. */
+    & tbody tr[data-selected][data-open] > :first-child {
+      box-shadow: none;
+      background: linear-gradient(to right, var(--b-color-text) var(--b-line-bold), transparent 0);
+    }
+    & tbody tr[data-selected] + tr[data-detail] > td {
+      box-shadow: inset var(--b-line-bold) 0 0 var(--b-color-text);
+    }
+    /* With a checkbox column, it starts under the name, as a tree's child does (owner review). */
+    &:has(th[data-select]) tbody tr[data-detail] > td {
+      padding-inline-start: calc(var(--b-inset-control) + var(--b-size-glyph) + var(--b-table-gap));
+    }
+    /* The open button's ring goes round its row, the real target: the cell would clip it. */
+    & tbody tr:has(.b-table-open:focus-visible) {
+      outline: var(--b-line-bold) solid var(--b-color-focus);
+      outline-offset: calc(-1 * var(--b-line-bold));
+    }
+
     /* A sortable header: the button fills the cell, so the whole header is the target. */
     & th:has(> .b-table-sort) {
       padding-block: 0;
@@ -220,6 +273,22 @@
   @media (prefers-reduced-motion: reduce) {
     .b-table-sort .b-icon {
       transition: none;
+    }
+  }
+
+  /* The button that opens a detail row: the row's name, plain text to the eye. */
+  .b-table-open {
+    all: unset;
+    box-sizing: border-box;
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: none;
     }
   }
 }

@@ -38,7 +38,7 @@ import { Button } from '@beastui/preact';
 | `Field`, `Input` | Label, hint and error wired to the input |
 | `Progress` | The progressbar ARIA and the fill, from `value` and `max` |
 | `SegmentedControl` | One choice out of a few, with arrow keys |
-| `SortHeader`, `useSort`, `useSelection` | Sortable columns and row selection for a `b-table` |
+| `SortHeader`, `useSort`, `useSelection`, `useDetail` | Sortable columns, row selection and detail rows for a `b-table` |
 | `Tree` | Nested items that fold, from data |
 
 Props and examples for each: [the docs](https://theodorejordan.github.io/BeastUI/).
