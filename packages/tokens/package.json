@@ -1,6 +1,6 @@
 {
   "name": "@beastui/tokens",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "BeastUI design tokens: one DTCG source, built to CSS variables, JSON and TypeScript constants.",
   "type": "module",
   "license": "MIT",
