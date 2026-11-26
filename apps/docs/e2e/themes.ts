@@ -15,6 +15,7 @@ export const PAGES = [
   '/components/modal/',
   '/components/drawer/',
   '/components/empty/',
+  '/components/veil/',
 ] as const;
 
 /** Opens a page in a theme and mode, the way the docs remember a visitor's choice. */

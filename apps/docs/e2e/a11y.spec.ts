@@ -48,3 +48,26 @@ for (const { path, button } of OPEN) {
     }
   }
 }
+
+// The veil open: its card sits on a washed, blurred list, a ground of its own.
+for (const theme of THEMES) {
+  for (const mode of MODES) {
+    test(`axe: /components/veil/ busy, in ${theme}, ${mode}`, async ({ page }) => {
+      await open(page, '/components/veil/', theme, mode);
+      await page.getByRole('button', { name: 'Export folder' }).click();
+      const card = page.locator('.b-veil-card');
+      await expect(card).toBeVisible();
+      await expect(page.locator('.b-veil')).toHaveCSS('opacity', '1');
+      const { violations } = await new AxeBuilder({ page })
+        .include('.b-veil-region')
+        .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+        .analyze();
+      const summary = violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`);
+      expect(summary).toEqual([]);
+      // The button outside the region stays usable, and the focus stays on it.
+      await expect(page.getByRole('button', { name: 'Cancel export' })).toBeFocused();
+      await page.getByRole('button', { name: 'Cancel export' }).click();
+      await expect(card).toBeHidden();
+    });
+  }
+}

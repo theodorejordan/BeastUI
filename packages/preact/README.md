@@ -38,6 +38,7 @@ import { Button } from '@beastui/preact';
 | `Field`, `Input` | Label, hint and error wired to the input |
 | `Progress` | The progressbar ARIA and the fill, from `value` and `max` |
 | `Modal`, `Drawer` | `open` state to `showModal()`/`close()`, backdrop click, focus back to the opener |
+| `Veil` | `busy` → `inert` + `aria-busy` on the region's content, a live title, focus caught and given back |
 | `SegmentedControl` | One choice out of a few, with arrow keys |
 | `SortHeader`, `useSort`, `useSelection`, `useDetail` | Sortable columns, row selection and detail rows for a `b-table` |
 | `Tree` | Nested items that fold, from data |
