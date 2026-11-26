@@ -1,0 +1,77 @@
+---
+layout: ../../layouts/Docs.astro
+title: Tooltip
+description: "A short line that names or describes a control, on hover and on keyboard focus."
+---
+import TooltipDemo from '../../components/TooltipDemo';
+import Pre from '../../components/Pre.astro';
+
+export const components = { pre: Pre };
+
+# Tooltip
+
+<p class="docs-lead">A short line that names or describes a control, on hover and on keyboard focus.</p>
+
+## When to use it
+
+To name an icon-only button, or to add a detail the user may want but doesn't need: when a file was last synced, what a shortcut does.
+
+- The text holds a button or a link: use a popover. A tooltip is never a target.
+- The user needs it to finish the task: write it on the page. On a phone there is no hover, so a tooltip is never seen.
+- A field's rule or error: the field's hint, under it.
+
+<figure class="docs-demo">
+  <div class="docs-demo__stage"><TooltipDemo client:visible /></div>
+</figure>
+
+## How it behaves
+
+- It opens on hover at once (10 ms), and on keyboard focus. Moving from one tooltip to the next opens the next at once.
+- The pointer can move onto the tooltip without closing it, so someone who zooms in can read it.
+- Escape closes it, and only it: a modal around it stays open.
+- A click, a blur or leaving with the pointer closes it. Touch never opens it.
+- It sits above the control, and below when there is no room. It is never cut by a scrolling box or a table cell: it lives in the top layer.
+
+## In Preact
+
+```tsx
+import { Button, Tooltip } from '@beastui/preact';
+
+<Tooltip content="Download" mode="label">
+  <Button iconOnly aria-label="Download"><svg class="b-icon">…</svg></Button>
+</Tooltip>
+
+<Tooltip content="Last synced 2 minutes ago">
+  <Button variant="quiet">Budget 2027.xlsx</Button>
+</Tooltip>
+```
+
+| Prop | Type | Default | |
+|---|---|---|---|
+| `content` | `ComponentChildren` | required | The text. Short and plain: no button, no link. |
+| `mode` | `'description' \| 'label'` | `'description'` | `label`: the tooltip is the control's name (icon-only buttons). `description`: read after the name. |
+| `side` | `'top' \| 'bottom'` | `'top'` | The preferred side. It flips when there is no room. |
+| `children` | one element | required | The control. It gets the handlers and the ARIA attribute; its own handlers still run. |
+
+No wrapper is added around the control, so it keeps its place in a toolbar, a flex row or a table cell.
+
+## Accessibility
+
+- `mode="label"` sets `aria-labelledby` on the control: a screen reader says the tooltip as its name, once. Keep an `aria-label` too, with the same word: it names the button before the script runs.
+- `mode="description"` sets `aria-describedby`: the name first, then the tooltip.
+- A disabled button gets no events, so no tooltip. Say why it is disabled on the page instead.
+
+## Writing it
+
+- A few words, no full stop for a name: “Download”, “Share”.
+- A description is one sentence at most: “Last synced 2 minutes ago, by the desktop app”.
+- Never repeat what the control already says.
+
+## Without Preact
+
+```html
+<button class="b-btn" data-variant="secondary" data-icon aria-label="Download" aria-labelledby="tip-1">…</button>
+<div class="b-tooltip" id="tip-1" role="tooltip" popover="manual">Download</div>
+```
+
+The CSS draws the box and its fade. Opening it (`showPopover()`), placing it (`top` and `left` in viewport pixels), the delays and Escape are yours to write; the Preact component does all of it.

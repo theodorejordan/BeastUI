@@ -16,3 +16,5 @@ export { Drawer, Modal } from './modal';
 export type { DrawerProps, ModalProps } from './modal';
 export { Veil } from './veil';
 export type { VeilProps } from './veil';
+export { Tooltip } from './tooltip';
+export type { TooltipProps } from './tooltip';

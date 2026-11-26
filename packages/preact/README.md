@@ -39,6 +39,7 @@ import { Button } from '@beastui/preact';
 | `Progress` | The progressbar ARIA and the fill, from `value` and `max` |
 | `Modal`, `Drawer` | `open` state to `showModal()`/`close()`, backdrop click, focus back to the opener |
 | `Veil` | `busy` → `inert` + `aria-busy` on the region's content, a live title, focus caught and given back |
+| `Tooltip` | hover delay, keyboard focus, Escape (not the modal around it), hoverable, placed and flipped in the top layer; `mode` = description or label |
 | `SegmentedControl` | One choice out of a few, with arrow keys |
 | `SortHeader`, `useSort`, `useSelection`, `useDetail` | Sortable columns, row selection and detail rows for a `b-table` |
 | `Tree` | Nested items that fold, from data |

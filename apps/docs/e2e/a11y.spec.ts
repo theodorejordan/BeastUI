@@ -71,3 +71,28 @@ for (const theme of THEMES) {
     });
   }
 }
+
+// A tooltip open: an ink box on the page, in every theme and mode.
+for (const theme of THEMES) {
+  for (const mode of MODES) {
+    test(`axe: /components/tooltip/ open, in ${theme}, ${mode}`, async ({ page }) => {
+      await open(page, '/components/tooltip/', theme, mode);
+      const button = page.getByRole('button', { name: 'Download' });
+      await button.focus();
+      await page.keyboard.press('Tab');
+      await page.keyboard.press('Shift+Tab');
+      const tip = page.getByRole('tooltip', { name: 'Download' });
+      await expect(tip).toBeVisible();
+      await expect(tip).toHaveCSS('opacity', '1');
+      const { violations } = await new AxeBuilder({ page })
+        .include('.docs-demo')
+        .include('.b-tooltip')
+        .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+        .analyze();
+      const summary = violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`);
+      expect(summary).toEqual([]);
+      await page.keyboard.press('Escape');
+      await expect(tip).toBeHidden();
+    });
+  }
+}

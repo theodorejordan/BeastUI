@@ -1,0 +1,81 @@
+/*
+ * Tooltip: a short line that names or describes a control, shown on hover and on keyboard focus.
+ * Never a button or a link inside: that is a popover.
+ *
+ * <button aria-describedby="tip-1">…</button>
+ * <div class="b-tooltip" id="tip-1" role="tooltip" popover="manual">Download the file</div>
+ *
+ * popover="manual" puts it in the top layer (MDN, Popover API): no overflow clips it (a table
+ * cell, a scrolling panel) and no z-index is needed. @beastui/preact opens it, places it
+ * (decision 0005: no anchor positioning before Safari 26) and closes it on Escape.
+ *
+ * Foundations (04-foundations.md §4): 28 high = a 20 px kbd + 4 above and below; radius = the
+ * kbd's radius-1 + that inset, so it follows each theme (core 8, tool 6, playful 12).
+ * The ground is inverted (ink, with on-ink text): the only ink surface in BeastUI, so it never
+ * reads as a control. A raised ground with a hair line (the modal's look) was tried in a lab and
+ * looked like an outline button. No arrow, no shadow.
+ */
+@import '../layers.css';
+
+@layer beast.components {
+  .b-tooltip {
+    /* Undo the popover's UA box (centred, bordered, canvas colours); the script sets top/left. */
+    position: fixed;
+    inset: auto;
+    margin: 0;
+    box-sizing: border-box;
+    min-block-size: calc(var(--b-size-badge) + 2 * var(--b-inset-nested));
+    max-inline-size: min(var(--b-width-menu), 100vw - 2 * var(--b-space-2));
+    padding: var(--b-space-1-5) var(--b-space-2);
+    overflow: visible;
+    /* Transparent, but there: in forced colours (Windows contrast themes) it draws the edge. */
+    border: var(--b-line-hair) solid transparent;
+    border-radius: calc(var(--b-radius-1) + var(--b-inset-nested));
+    background: var(--b-color-text);
+    color: var(--b-color-on-ink);
+    font-family: var(--b-font-family-ui);
+    font-size: var(--b-font-size-1);
+    line-height: var(--b-font-line-height-1);
+    overflow-wrap: break-word;
+    /* It takes the pointer on purpose: WCAG 1.4.13 wants it hoverable, so someone who zooms in
+       can move onto it and read it. The script keeps it open while the pointer is on it. */
+
+    /* A quick fade. display and overlay are animated too, so it also fades out (MDN,
+       @starting-style + transition-behavior: allow-discrete). */
+    transition:
+      opacity var(--b-duration-1) var(--b-easing-enter),
+      display var(--b-duration-1) allow-discrete,
+      overlay var(--b-duration-1) allow-discrete;
+
+    /* A bridge over the gap to the control: the pointer goes from one to the other without
+       ever being over nothing, so the tooltip stays hoverable however short the close delay. */
+    &::before {
+      content: '';
+      position: absolute;
+      inset-inline: 0;
+      block-size: calc(var(--b-space-1) + 2 * var(--b-line-hair));
+    }
+    &[data-side='top']::before {
+      inset-block-start: 100%;
+    }
+    &[data-side='bottom']::before {
+      inset-block-end: 100%;
+    }
+
+    &[popover]:not(:popover-open) {
+      opacity: 0;
+    }
+
+    &:popover-open {
+      opacity: 1;
+
+      @starting-style {
+        opacity: 0;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+}
