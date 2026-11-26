@@ -1,5 +1,11 @@
 # @beastui/tokens
 
+## 0.0.4
+
+### Patch Changes
+
+- cf6bb89: Playful is rounder: radius 8 / 20 / 24 (was 5 / 10 / 15), so controls are pills; the checkbox keeps a 5px corner so it never reads as a radio.
+
 ## 0.0.3
 
 ### Patch Changes
