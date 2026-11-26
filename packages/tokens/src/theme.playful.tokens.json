@@ -1,5 +1,5 @@
 {
-  "$description": "Playful theme v2: the core's shapes, novelty spent on colour and motion. Values only.",
+  "$description": "Playful theme v2: rounder corners (2026-11-26), novelty spent on colour and motion. Values only.",
   "size": {
     "$type": "dimension",
     "control": {
@@ -25,19 +25,26 @@
     "$type": "dimension",
     "1": {
       "$value": {
-        "value": 5,
+        "value": 8,
         "unit": "px"
       }
     },
     "2": {
       "$value": {
-        "value": 10,
+        "value": 16,
         "unit": "px"
       }
     },
     "3": {
       "$value": {
-        "value": 15,
+        "value": 20,
+        "unit": "px"
+      }
+    },
+    "check": {
+      "$description": "Kept square-ish: at radius 1 (8px) a checkbox reads as a radio.",
+      "$value": {
+        "value": 5,
         "unit": "px"
       }
     }
