@@ -15,6 +15,13 @@
       }
     }
   },
+  "gap": {
+    "$type": "dimension",
+    "row": {
+      "$description": "Round rows need air between them: the panel's nested inset, so each pill has the same space all round.",
+      "$value": "{space.1}"
+    }
+  },
   "inset": {
     "$type": "dimension",
     "control": {
@@ -41,6 +48,10 @@
         "unit": "px"
       }
     },
+    "row": {
+      "$description": "Rows are pills, like the buttons; they fit a radius-2 panel with the nested inset.",
+      "$value": "{radius.2}"
+    },
     "check": {
       "$description": "Kept square-ish: at radius 1 (8px) a checkbox reads as a radio.",
       "$value": {
@@ -49,7 +60,24 @@
       }
     }
   },
+  "line": {
+    "$type": "dimension",
+    "current": {
+      "$description": "No edge: on a pill it bends into a bracket (owner review). The name's weight marks the chosen row.",
+      "$value": {
+        "value": 0,
+        "unit": "px"
+      }
+    }
+  },
   "font": {
+    "weight": {
+      "$type": "fontWeight",
+      "current": {
+        "$description": "A light bold: the chosen row's mark once the edge is gone, readable without colour.",
+        "$value": "{font.weight.medium}"
+      }
+    },
     "size": {
       "$type": "dimension",
       "4": {

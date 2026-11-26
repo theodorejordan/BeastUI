@@ -29,7 +29,9 @@
  * Foundations (04-foundations.md): rows are --b-size-row, like the table; the toggle is the
  * small control (24px, 20 in tool), flush with the row's edge; one half-toggle indent per level
  * (12px, 10 in tool); the control inset on the right; tabular counts; the selected row edge
- * is the bold line.
+ * is the bold line. Rows take --b-radius-row and --b-gap-row: square and edge to edge in core
+ * and tool, pills with air between them in playful (like its buttons). The chosen row's mark
+ * is --b-line-current (the bold edge) and --b-font-weight-current (playful: no edge, medium).
  */
 @import '../layers.css';
 
@@ -49,6 +51,15 @@
       padding: 0;
       list-style: none;
     }
+    /* The space between rows, nested lists included: each list and each item is a column with
+       the gap, so a branch's first child sits as far from its parent as from its sibling. */
+    &,
+    & ul,
+    & li {
+      display: flex;
+      flex-direction: column;
+      gap: var(--b-gap-row);
+    }
   }
 
   .b-tree-row {
@@ -59,6 +70,7 @@
     grid-template-columns: var(--b-tree-toggle) minmax(0, 1fr) auto;
     align-items: center;
     height: var(--b-size-row);
+    border-radius: var(--b-radius-row);
     /* The arrow's box starts after the selected edge's width and the name right after it: the
        arrow, centred in its box, sits as far from the edge's inner side as from the text (owner
        review). Every row keeps that width, so choosing a row never moves it. One step per level
@@ -74,11 +86,12 @@
     &[data-trail] {
       background: var(--b-color-hover);
     }
-    /* Selected: the tint, kept, plus the bold edge. Not colour alone, and not a darker tint
+    /* Selected: the tint, kept, plus a mark that isn't colour: the bold edge, or in a theme with
+       round rows (where the edge bends into a bracket) a light bold name. Not a darker tint
        (muted counts would drop under 4.5:1, see the table). */
     &:has(> .b-tree-name[aria-current]:not([aria-current='false'])) {
       background: var(--b-color-hover);
-      box-shadow: inset var(--b-line-bold) 0 0 var(--b-color-text);
+      box-shadow: inset var(--b-line-current) 0 0 var(--b-color-text);
     }
   }
 
@@ -140,6 +153,8 @@
       content: '';
       position: absolute;
       inset: 0;
+      /* The row's corners, so the ring follows a round row. */
+      border-radius: var(--b-radius-row);
     }
     &:focus-visible {
       outline: none;
@@ -161,11 +176,17 @@
     white-space: nowrap;
     cursor: pointer;
 
+    &[aria-current]:not([aria-current='false']) {
+      font-weight: var(--b-font-weight-current);
+    }
+
     /* The whole row is the target: the stretched-link pattern. */
     &::after {
       content: '';
       position: absolute;
       inset: 0;
+      /* The row's corners, so the ring follows a round row. */
+      border-radius: var(--b-radius-row);
     }
     /* The ring goes round the row, the button's real target. */
     &:focus-visible {

@@ -61,6 +61,13 @@
   "gap": {
     "$type": "dimension",
     "$description": "Proximity ladder (§3): the space inside a group is always smaller than the space around it.",
+    "row": {
+      "$description": "Between the rows of a list (tree): none, rows sit edge to edge like the table's. A theme with round rows opens it.",
+      "$value": {
+        "value": 0,
+        "unit": "px"
+      }
+    },
     "hint": {
       "$value": "{space.1}"
     },
@@ -169,6 +176,13 @@
     "check": {
       "$value": "{radius.1}"
     },
+    "row": {
+      "$description": "A list row's corners (tree): square, rows sit edge to edge like the table's.",
+      "$value": {
+        "value": 0,
+        "unit": "px"
+      }
+    },
     "tag": {
       "$value": {
         "value": 999,
@@ -196,6 +210,10 @@
         "value": 2,
         "unit": "px"
       }
+    },
+    "current": {
+      "$description": "The edge that marks the chosen row of a list (tree, aria-current): the bold line. A theme with round rows drops it (0) and marks the row with --b-font-weight-current instead.",
+      "$value": "{line.bold}"
     }
   },
   "blur": {
@@ -353,6 +371,10 @@
       },
       "display": {
         "$value": 300
+      },
+      "current": {
+        "$description": "The chosen row's name (tree, aria-current): regular where the bold edge marks it, medium where a theme drops the edge.",
+        "$value": "{font.weight.regular}"
       }
     }
   },
