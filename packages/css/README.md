@@ -41,6 +41,7 @@ Fonts are not bundled: load Inter Tight, Outfit and IBM Plex Mono the way your a
 | Field | `b-field`, `b-input` |
 | Progress | `b-progress` with `role="progressbar"`, `data-size="thin"` |
 | Modal, drawer | `<dialog class="b-modal">`, `+ b-drawer` on an edge (`data-side="start"`); parts `b-modal-head`, `-title`, `-body`, `-foot` |
+| Empty | `<div class="b-empty">`; parts `b-empty__media`, `__title`, `__description`, `__actions`; `data-tone="danger"`, `data-frame="dashed"` |
 | Segmented control | `b-seg` |
 | Table | `b-table`, with `data-grow` and `data-align` on cells |
 | Tag | `b-tag`, `data-variant="warn"` |

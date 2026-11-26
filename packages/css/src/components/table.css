@@ -131,6 +131,15 @@
     & tbody tr:hover {
       background: var(--b-color-hover);
     }
+    /* An empty view in one full-width cell is not a row: no hover, no line under it. */
+    & tbody tr:has(> td > .b-empty) {
+      background: none;
+
+      & > td {
+        border-block-end: 0;
+        padding: 0;
+      }
+    }
     /* Selected: the same tint, kept without the pointer, plus the bold edge. Not a darker tint:
        muted text drops under 4.5:1 past one step in light mode (test/contrast.test.ts). The
        edge and the ticked box tell selected from hovered. */

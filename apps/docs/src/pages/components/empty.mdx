@@ -1,0 +1,110 @@
+---
+layout: ../../layouts/Docs.astro
+title: Empty
+description: "What a region shows when it has nothing to show, or could not load it."
+---
+import Demo from '../../components/Demo.astro';
+import Pre from '../../components/Pre.astro';
+
+export const components = { pre: Pre };
+
+# Empty
+
+<p class="docs-lead">What a region shows when it has nothing to show, or could not load it.</p>
+
+## When to use it
+
+A list, a table or a panel with no content: no items yet, no search results, a request that failed. Say what happened, then offer the next step.
+
+- A wrong value in a form: use the field's error, next to the input.
+- A whole page that cannot load: that is the app's error page, not a region.
+
+## No results
+
+The tile, a title, a line that says what to do, and the action that does it.
+
+<Demo html={`
+<div class="b-empty">
+  <div class="b-empty__media"><svg class="b-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></div>
+  <p class="b-empty__title">No results</p>
+  <p class="b-empty__description">Nothing matches “budg”. Check the spelling or clear the filter.</p>
+  <div class="b-empty__actions"><button class="b-btn" data-variant="secondary" type="button">Clear filter</button></div>
+</div>
+`} />
+
+## Nothing yet
+
+`data-frame="dashed"` outlines a place the user is meant to fill: a folder with no files, a drop area. Dashed, because a solid outline is a control.
+
+<Demo html={`
+<div class="b-empty" data-frame="dashed">
+  <div class="b-empty__media"><svg class="b-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/></svg></div>
+  <p class="b-empty__title">No files yet</p>
+  <p class="b-empty__description">Upload a file, or drop it here.</p>
+  <div class="b-empty__actions">
+    <button class="b-btn" data-variant="primary" type="button">Upload</button>
+    <button class="b-btn" data-variant="quiet" type="button">New folder</button>
+  </div>
+</div>
+`} />
+
+## Error
+
+`data-tone="danger"`: the tile and the title turn red, the line stays ink. Say what failed, whether anything was lost, and offer to try again.
+
+<Demo html={`
+<div class="b-empty" data-tone="danger">
+  <div class="b-empty__media"><svg class="b-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg></div>
+  <p class="b-empty__title">Couldn’t load Projects</p>
+  <p class="b-empty__description">The server didn’t answer. Your files are safe.</p>
+  <div class="b-empty__actions"><button class="b-btn" data-variant="secondary" type="button">Try again</button></div>
+</div>
+`} />
+
+When the error appears after an action (a click, a retry), add `role="alert"` so a screen reader says it. Not on first load: then it is the page's content, read in order.
+
+## Title only
+
+Every part but the title is optional. In a small panel, a title alone is enough.
+
+<Demo html={`
+<div class="b-empty">
+  <p class="b-empty__title">No comments</p>
+</div>
+`} />
+
+## In a table
+
+One cell across all the columns. The header stays, so the user still sees what the table holds. That row has no hover and no line.
+
+<Demo html={`
+<table class="b-table">
+  <thead><tr><th data-grow>Name</th><th>Owner</th><th data-align="end">Size</th></tr></thead>
+  <tbody><tr><td colspan="3">
+    <div class="b-empty">
+      <p class="b-empty__title">No files in this folder</p>
+      <p class="b-empty__description">Files you add show up here.</p>
+    </div>
+  </td></tr></tbody>
+</table>
+`} />
+
+## Writing it
+
+- The title says what is there, not how you feel: “No results”, not “Oops!”.
+- The line says what to do next, or why it is empty.
+- One main action at most. Name it with a verb: “Upload”, “Try again”.
+
+## The CSS contract
+
+| Markup | Effect |
+|---|---|
+| `<div class="b-empty">` | Centred column, 48px above and below. |
+| `.b-empty__media` | The 40px tile, for one `.b-icon`. |
+| `.b-empty__title` | Step 2, medium. Required. |
+| `.b-empty__description` | Step 1, muted, 40 characters wide at most. |
+| `.b-empty__actions` | A row of buttons, 24px under the text. |
+| `data-tone="danger"` | Red tile and title: the region failed to load. |
+| `data-frame="dashed"` | A dashed outline: a place to fill. |
+
+No Preact component: there is no behaviour to add. Write the markup, or wrap it in your own component.

@@ -1,0 +1,83 @@
+/*
+ * Empty: what a region shows when it has nothing to show, or could not load what it should.
+ * A list with no items, a search with no results, a panel whose request failed.
+ *
+ * <div class="b-empty">
+ *   <div class="b-empty__media"><svg class="b-icon" viewBox="0 0 24 24" aria-hidden="true">…</svg></div>
+ *   <p class="b-empty__title">No results</p>
+ *   <p class="b-empty__description">Nothing matches "budg". Check the spelling or clear the filter.</p>
+ *   <div class="b-empty__actions"><button class="b-btn" type="button">Clear filter</button></div>
+ * </div>
+ *
+ * After shadcn/ui's Empty and Linear's empty views: one small icon tile, a title, one or two
+ * lines, then the next step. No illustration: BeastUI is line and shape, and an empty view is a
+ * moment to move on, not to decorate. Every part but the title is optional.
+ *
+ * data-tone="danger": the region failed to load. Only the tile and the title turn red: the
+ * description stays readable ink and says what to do. The app adds role="alert" when the error
+ * appears after an action; BeastUI does not, because an empty view on first load is not news.
+ *
+ * data-frame="dashed": a dashed outline around the view, for a place the user is meant to fill
+ * (a folder with no files yet, a drop area). Dashed, not solid: solid outlines are controls.
+ *
+ * Foundations: the tile is a glyph plus a 12px inset on each side (40px), radius 2, filled with
+ * the same 8% ink tint as a tag (filled = read only). Title on font step 2, description step 1
+ * muted, 40 characters wide at most so the lines stay short in a wide table.
+ */
+@import '../layers.css';
+
+@layer beast.components {
+  .b-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--b-space-12) var(--b-space-6);
+    text-align: center;
+    color: var(--b-color-text);
+
+    &[data-frame='dashed'] {
+      border: var(--b-line-hair) dashed var(--b-color-border-strong);
+      border-radius: var(--b-radius-3);
+    }
+  }
+
+  .b-empty__media {
+    display: grid;
+    place-items: center;
+    inline-size: calc(var(--b-size-glyph) + 2 * var(--b-space-3));
+    block-size: calc(var(--b-size-glyph) + 2 * var(--b-space-3));
+    margin-block-end: var(--b-space-4);
+    border-radius: var(--b-radius-2);
+    background: color-mix(in srgb, currentColor 8%, transparent);
+  }
+
+  .b-empty__title,
+  .b-empty__description {
+    margin: 0;
+    max-inline-size: 40ch;
+    text-wrap: balance;
+  }
+
+  .b-empty__title {
+    font: var(--b-font-weight-medium) var(--b-font-size-2) / var(--b-font-line-height-2) var(--b-font-family-ui);
+  }
+
+  .b-empty__description {
+    margin-block-start: var(--b-space-1);
+    color: var(--b-color-text-muted);
+    font: var(--b-font-weight-regular) var(--b-font-size-1) / var(--b-font-line-height-1) var(--b-font-family-ui);
+    text-wrap: pretty;
+  }
+
+  .b-empty__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--b-space-2);
+    margin-block-start: var(--b-space-6);
+  }
+
+  .b-empty[data-tone='danger'] :is(.b-empty__media, .b-empty__title) {
+    color: var(--b-color-danger);
+  }
+}

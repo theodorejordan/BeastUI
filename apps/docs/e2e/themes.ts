@@ -14,6 +14,7 @@ export const PAGES = [
   '/components/progress/',
   '/components/modal/',
   '/components/drawer/',
+  '/components/empty/',
 ] as const;
 
 /** Opens a page in a theme and mode, the way the docs remember a visitor's choice. */
