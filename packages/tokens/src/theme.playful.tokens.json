@@ -31,13 +31,13 @@
     },
     "2": {
       "$value": {
-        "value": 16,
+        "value": 20,
         "unit": "px"
       }
     },
     "3": {
       "$value": {
-        "value": 20,
+        "value": 24,
         "unit": "px"
       }
     },
