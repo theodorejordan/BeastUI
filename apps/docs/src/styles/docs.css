@@ -55,9 +55,9 @@
   }
 
   /* ---------- Page ---------- */
-  /* The page: an 880px column for demos, code and tables, centred on the screen, the menu in the
+  /* The page: a 720px column for demos, code and tables, centred on the screen, the menu in the
      left margin and "On this page" in the right one from 1200px (owner, 2026-11-23, after
-     Tailwind's docs). The column stays centred: the eye comes back to the middle of the screen,
+     Tailwind's docs; 720px since 2026-11-26, so the text sits closer to the middle). The column stays centred: the eye comes back to the middle of the screen,
      not left of it. 1024–1199px: menu and column. Below: the menu opens in a drawer. */
   .docs-page {
     --docs-toc-w: 200px;
@@ -66,10 +66,10 @@
     /* Always three columns of plain lengths (margin, column, margin), so the browser can slide
        from one layout to the next: grid-template-columns only animates between track lists of
        the same length made of lengths, not fr or minmax (MDN, grid-template-columns). */
-    --docs-left: max(0px, (100% - 880px) / 2);
-    --docs-right: max(0px, (100% - 880px) / 2);
+    --docs-left: max(0px, (100% - 720px) / 2);
+    --docs-right: max(0px, (100% - 720px) / 2);
     display: grid;
-    grid-template-columns: var(--docs-left) minmax(0, 880px) var(--docs-right);
+    grid-template-columns: var(--docs-left) minmax(0, 720px) var(--docs-right);
     padding-inline: var(--b-space-6);
   }
   .docs-nav {
@@ -83,7 +83,9 @@
   .docs-toc {
     grid-column: 3;
     grid-row: 1;
-    margin-inline-start: var(--b-space-12);
+    /* Flush with the right edge, as the menu is with the left one: the page mirrors around the
+       column (owner, 2026-11-26). The margin is a menu wide plus 48px, so that gap stays. */
+    justify-self: end;
   }
   /* 1024–1199px: the menu and the column. */
   @media (min-width: 1024px) {
@@ -96,7 +98,7 @@
      1400px rather than moving off centre. */
   @media (min-width: 1200px) {
     .docs-page {
-      --docs-left: max(var(--docs-side), (100% - 880px) / 2);
+      --docs-left: max(var(--docs-side), (100% - 720px) / 2);
       --docs-right: var(--docs-left);
     }
   }
