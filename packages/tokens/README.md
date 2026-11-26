@@ -16,7 +16,7 @@ npm install @beastui/tokens
 
 Every token becomes a `--b-*` variable on `:root`. Two attributes on `<html>` pick the set:
 
-- `data-theme="core" | "tool" | "playful"`: the theme (`core` when absent);
+- `data-theme="core" | "tool" | "playful"`: the theme (`core` when absent). It also works on any element, so one part of the page can use another theme;
 - `data-mode="light" | "dark"`: forces a colour mode (the system setting when absent).
 
 If you use [`@beastui/css`](https://www.npmjs.com/package/@beastui/css), import its `tokens.css` instead: same variables, inside BeastUI's cascade layers.

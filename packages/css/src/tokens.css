@@ -7,7 +7,10 @@
 @import '@beastui/tokens/tokens.css';
 
 @layer beast.themes {
-  :root {
+  /* On every [data-theme] element too: --b-color-hover and --b-easing-press read other tokens,
+     and a var() is resolved where it is declared (see @beastui/tokens). */
+  :root,
+  [data-theme] {
     /* A spring as a CSS linear() easing, from the Phase 3 preview. DTCG only types cubic
        Béziers, so it can't live in @beastui/tokens. */
     --b-easing-spring: linear(
@@ -26,7 +29,7 @@
        the whole page behind a modal or a drawer: two different messages, two different looks. */
     --b-color-veil: color-mix(in srgb, var(--b-color-surface) 70%, transparent);
   }
-  :root[data-theme='playful'] {
+  [data-theme='playful'] {
     --b-easing-press: var(--b-easing-spring);
   }
 }

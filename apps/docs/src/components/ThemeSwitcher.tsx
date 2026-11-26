@@ -1,6 +1,8 @@
 /**
- * Theme and mode for the whole page: data-theme and data-mode on <html>, as an app would set them.
- * The choice is remembered in localStorage; an inline script in the layout applies it before the
+ * The theme goes on the demos only (data-theme on each .docs-demo__stage): the docs' frame stays
+ * in core, so the reading doesn't move and only what is compared changes (owner, 2026-11-26).
+ * The mode is the page's: data-mode on <html>, as an app would set it.
+ * The choice is remembered in localStorage; inline scripts in the layout apply it before the
  * first paint, so the page never flashes the default theme.
  */
 import { SegmentedControl } from '@beastui/preact';
@@ -17,13 +19,25 @@ const title = (word: string): string => word[0]!.toUpperCase() + word.slice(1);
 const themeOptions = themes.map((value) => ({ value, label: value === 'tool' ? value : title(value) }));
 const modeOptions = modes.map((value) => ({ value, label: title(value) }));
 
-// Also read by the inline script in layouts/Docs.astro.
+// Also read by the inline scripts in layouts/Docs.astro, which use the same stage selector.
 const STORAGE_KEY = 'beastui-docs';
+const STAGES = '.docs-demo__stage';
+
+function saved(): { theme?: Theme; mode?: Mode } {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? 'null') ?? {};
+  } catch {
+    return {};
+  }
+}
 
 function apply(theme: Theme, mode: Mode): void {
   const root = document.documentElement;
-  if (theme === 'core') delete root.dataset.theme;
-  else root.dataset.theme = theme;
+  // Core is the frame's own theme: a stage in core just takes it from the page.
+  for (const stage of document.querySelectorAll<HTMLElement>(STAGES)) {
+    if (theme === 'core') delete stage.dataset.theme;
+    else stage.dataset.theme = theme;
+  }
   if (mode === 'system') delete root.dataset.mode;
   else root.dataset.mode = mode;
   try {
@@ -37,11 +51,11 @@ export default function ThemeSwitcher(): JSX.Element {
   const [theme, setTheme] = useState<Theme>('core');
   const [mode, setMode] = useState<Mode>('system');
 
-  // The server renders the defaults; the real choice is on <html>, set by the inline script.
+  // The server renders the defaults; the real choice is in storage (a page may have no demo).
   useEffect(() => {
-    const root = document.documentElement;
-    setTheme((root.dataset.theme as Theme | undefined) ?? 'core');
-    setMode((root.dataset.mode as Mode | undefined) ?? 'system');
+    const choice = saved();
+    setTheme(choice.theme && themes.includes(choice.theme) ? choice.theme : 'core');
+    setMode(choice.mode && modes.includes(choice.mode) ? choice.mode : 'system');
   }, []);
 
   const pick = (next: { theme?: Theme; mode?: Mode }): void => {
@@ -49,7 +63,7 @@ export default function ThemeSwitcher(): JSX.Element {
     const m = next.mode ?? mode;
     setTheme(t);
     setMode(m);
-    // A crossfade instead of a jump: the page's sizes change with the theme (owner). The
+    // A crossfade instead of a jump: the demos' sizes change with the theme (owner). The
     // browser shoots the old page, applies the new theme, and fades one into the other (MDN,
     // View Transition API). No fade without the API, or when the visitor asks for less motion.
     const still = matchMedia('(prefers-reduced-motion: reduce)').matches;

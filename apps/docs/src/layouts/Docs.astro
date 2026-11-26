@@ -45,10 +45,10 @@ const menu = [
     <title>{title === 'BeastUI' ? title : `${title} · BeastUI`}</title>
     {description && <meta name="description" content={description} />}
     <script is:inline>
-      // Apply the remembered theme before the first paint (key shared with ThemeSwitcher.tsx).
+      // Apply the remembered mode before the first paint (key shared with ThemeSwitcher.tsx).
+      // The theme goes on the demos, at the end of <body>: they don't exist yet.
       try {
         const saved = JSON.parse(localStorage.getItem('beastui-docs') ?? 'null');
-        if (saved?.theme && saved.theme !== 'core') document.documentElement.dataset.theme = saved.theme;
         if (saved?.mode && saved.mode !== 'system') document.documentElement.dataset.mode = saved.mode;
       } catch {}
     </script>
@@ -85,6 +85,16 @@ const menu = [
         )
       }
     </div>
+    <script is:inline>
+      // The remembered theme, on every demo before the first paint: the frame stays in core
+      // (ThemeSwitcher.tsx, same key and selector). Inline, so it runs as the parser gets here.
+      try {
+        const saved = JSON.parse(localStorage.getItem('beastui-docs') ?? 'null');
+        if (saved?.theme && saved.theme !== 'core') {
+          for (const stage of document.querySelectorAll('.docs-demo__stage')) stage.dataset.theme = saved.theme;
+        }
+      } catch {}
+    </script>
     <dialog class="docs-drawer" aria-label="Docs">
       <div class="docs-drawer__body">
         <div class="docs-drawer__head">

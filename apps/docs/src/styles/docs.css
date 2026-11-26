@@ -13,10 +13,11 @@
   }
 
   /* ---------- Top bar ---------- */
-  /* Its height on one line, the same in every theme: a 32px control (pinned in .docs-bar) with
-     12px above and below, and its bottom line. On :root, so the page under it can read it too. */
+  /* Its height on one line: a control with 12px above and below, and its bottom line. The frame
+     is always core (only the demos take the theme), so this never moves. On :root, so the page
+     under it can read it too. */
   :root {
-    --docs-bar-h: calc(2 * var(--b-space-3) + 32px + var(--b-line-hair));
+    --docs-bar-h: calc(2 * var(--b-space-3) + var(--b-size-control) + var(--b-line-hair));
   }
 
   .docs-bar {
@@ -28,15 +29,6 @@
     flex-wrap: wrap;
     align-items: center;
     gap: var(--b-gap-inline) var(--b-gap-group);
-    /* The same height in every theme: the switchers are controls, whose size changes with the
-       theme (28px in tool, 40 in playful), and the page must not jump when the visitor picks one
-       (owner). The bar is the docs' frame, not a demo: it keeps core's size, width and
-       case. */
-    --b-size-control: 32px;
-    --b-inset-control: var(--b-space-3);
-    --b-font-size-2: 14px;
-    --b-case: none;
-    --b-line-stroke: 1.5px;
     padding: var(--b-space-3) var(--b-space-6);
     background: var(--b-color-surface);
     border-bottom: var(--b-line-hair) solid var(--b-color-border-subtle);

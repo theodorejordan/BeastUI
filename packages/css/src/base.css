@@ -16,17 +16,21 @@
  * Copy is always written with an initial capital: lowercase is only a rendering choice.
  * Never user content, units or proper nouns: those carry .b-keep (below). */
 @layer beast.voice {
-  :root {
+  /* data-theme can sit on any element (a part of the page in another theme): the case follows. */
+  :root,
+  [data-theme] {
     --b-case: none;
   }
-  :root[data-theme='tool'] {
+  [data-theme='tool'] {
     --b-case: lowercase;
   }
-  /* After the theme rule, same specificity: an explicit choice wins. */
-  :root[data-case='sentence'] {
+  /* After the theme rules: an explicit choice wins, in the themed parts of the page too. */
+  :root[data-case='sentence'],
+  :root[data-case='sentence'] [data-theme] {
     --b-case: none;
   }
-  :root[data-case='lower'] {
+  :root[data-case='lower'],
+  :root[data-case='lower'] [data-theme] {
     --b-case: lowercase;
   }
 }

@@ -7,7 +7,8 @@
 //     §4, option A; decision 0005). Terrazzo writes one block per mode. So the dark permutation
 //     runs first, emits nothing, and records each colour; the light one then writes the pair.
 //  2. Themes as small overrides. A theme block lists only the tokens its file changes, not the
-//     whole set again.
+//     whole set again. data-theme works on any element, not only <html>: a part of the page can
+//     take another theme (Radix Themes nests its <Theme> the same way).
 import { readFileSync } from 'node:fs';
 import { defineConfig } from '@terrazzo/cli';
 import css from '@terrazzo/plugin-css';
@@ -70,20 +71,26 @@ export default defineConfig({
             return dark && dark !== light ? `light-dark(${light}, ${dark})` : light;
           },
           // light-dark() needs color-scheme. The system follows the OS; data-mode forces a mode.
+          // The mode is the page's, so color-scheme stays on :root. The tokens are declared again
+          // on every [data-theme] element: an alias (--b-radius-control: var(--b-radius-2)) is
+          // resolved where it is declared and inherited as a value, so a theme set on a part of
+          // the page must re-declare it there to follow its own --b-radius-2 (MDN, "Using CSS
+          // custom properties", inheritance).
           prepare: (contents) =>
-            `@layer beast.tokens {\n  :root {\n    color-scheme: light dark;\n    ${contents}\n  }\n` +
+            `@layer beast.tokens {\n  :root {\n    color-scheme: light dark;\n  }\n` +
             `  :root[data-mode='light'] {\n    color-scheme: light;\n  }\n` +
-            `  :root[data-mode='dark'] {\n    color-scheme: dark;\n  }\n}`,
+            `  :root[data-mode='dark'] {\n    color-scheme: dark;\n  }\n` +
+            `  :root,\n  [data-theme] {\n    ${contents}\n  }\n}`,
         },
         {
           input: { mode: 'light', theme: 'tool' },
           include: tokenIds('theme.tool.tokens.json'),
-          prepare: (contents) => `@layer beast.tokens {\n  :root[data-theme='tool'] {\n    ${contents}\n  }\n}`,
+          prepare: (contents) => `@layer beast.tokens {\n  [data-theme='tool'] {\n    ${contents}\n  }\n}`,
         },
         {
           input: { mode: 'light', theme: 'playful' },
           include: tokenIds('theme.playful.tokens.json'),
-          prepare: (contents) => `@layer beast.tokens {\n  :root[data-theme='playful'] {\n    ${contents}\n  }\n}`,
+          prepare: (contents) => `@layer beast.tokens {\n  [data-theme='playful'] {\n    ${contents}\n  }\n}`,
         },
       ],
     }),

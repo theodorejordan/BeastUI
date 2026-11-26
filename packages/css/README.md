@@ -28,7 +28,7 @@ Or only what you use:
 <button class="b-btn" data-variant="primary" type="button">Save</button>
 ```
 
-`data-theme="core" | "tool" | "playful"` and `data-mode="light" | "dark"` on `<html>` pick the theme and colour mode.
+`data-theme="core" | "tool" | "playful"` and `data-mode="light" | "dark"` on `<html>` pick the theme and colour mode. `data-theme` also works on any element, so one part of the page can use another theme. The mode stays the page's.
 
 Fonts are not bundled: load Inter Tight, Outfit and IBM Plex Mono the way your app prefers.
 

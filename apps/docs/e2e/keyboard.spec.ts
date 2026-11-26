@@ -37,10 +37,10 @@ test('the theme switcher works from the keyboard and is remembered', async ({ pa
   await hydrated(page, '.docs-switch');
   await theme.getByRole('radio', { name: 'Core' }).focus();
   await page.keyboard.press('ArrowRight');
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'tool');
+  await expect(page.locator('.docs-demo__stage').first()).toHaveAttribute('data-theme', 'tool');
   await expect(theme.getByRole('radio', { name: 'tool', exact: true })).toBeChecked();
   await page.reload();
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'tool');
+  await expect(page.locator('.docs-demo__stage').first()).toHaveAttribute('data-theme', 'tool');
   // After the reload the switcher starts on the saved choice: no slide from the default.
   await hydrated(page, '.docs-switch');
   await expect(theme.getByRole('radio', { name: 'tool', exact: true })).toBeChecked();
