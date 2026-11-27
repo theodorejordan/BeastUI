@@ -18,3 +18,7 @@ export { Veil } from './veil';
 export type { VeilProps } from './veil';
 export { Tooltip } from './tooltip';
 export type { TooltipProps } from './tooltip';
+export { Menu, MenuGroup, MenuItem, MenuSeparator } from './menu';
+export type { MenuGroupProps, MenuItemProps, MenuProps } from './menu';
+export { Popover } from './popover';
+export type { PopoverProps } from './popover';

@@ -44,6 +44,8 @@ Fonts are not bundled: load Inter Tight, Outfit and IBM Plex Mono the way your a
 | Empty | `<div class="b-empty">`; parts `b-empty__media`, `__title`, `__description`, `__actions`; `data-tone="danger"`, `data-frame="dashed"` |
 | Veil | `<div class="b-veil-region">`; parts `b-veil-content` (`inert aria-busy`), `b-veil` (`data-delay`), `-frame`, `-card`, `-title`, `-body`, `-actions`, `-status` (`role="status"`) |
 | Tooltip | `<div class="b-tooltip" role="tooltip" popover="manual">`; the script sets `top`/`left` |
+| Menu | `<div class="b-menu" role="menu" popover="auto">`; parts `b-menu-item` (`role="menuitem"`, `data-tone="danger"`), `-group`, `-label`, `-separator` |
+| Popover | `<div class="b-popover" role="dialog" popover="auto">` |
 | Segmented control | `b-seg` |
 | Table | `b-table`, with `data-grow` and `data-align` on cells |
 | Tag | `b-tag`, `data-variant="warn"` |

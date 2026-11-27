@@ -1,0 +1,151 @@
+/*
+ * Menu: a list of actions opened by a button (Rename, Duplicate, Delete).
+ *
+ * <button class="b-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="m-1"
+ *         popovertarget="m-1">More</button>
+ * <div class="b-menu" id="m-1" role="menu" popover="auto">
+ *   <div class="b-menu-group" role="group" aria-labelledby="g-1">
+ *     <div class="b-menu-label" id="g-1">File</div>
+ *     <button class="b-menu-item" role="menuitem" tabindex="-1" type="button">
+ *       <svg class="b-icon" …/>Rename
+ *     </button>
+ *   </div>
+ *   <div class="b-menu-separator" role="separator"></div>
+ *   <button class="b-menu-item" role="menuitem" tabindex="-1" type="button" data-tone="danger">Delete</button>
+ * </div>
+ *
+ * popover="auto" puts it in the top layer and gives, for free, a close on a click outside, on
+ * Escape (only it: a modal around it stays open) and when another menu opens (MDN, Popover
+ * API). @beastui/preact adds the keys of the APG Menu Button pattern and places it.
+ *
+ * Foundations (04-foundations.md): the box is the modal's (raised ground, strong hair line, no
+ * shadow), --b-width-menu wide, nested inset 4 all round. Items are controls (--b-size-control
+ * high, the control's text size). The box has the button's radius, like the tooltip and the
+ * popover (owner: one curve for every small floating thing); an item has that minus the inset,
+ * so both curves stay parallel (rule 2): core 8/4, tool 4/0, playful 20/16. One highlight only:
+ * the pointer moves the focus, so hover and keyboard focus are the same tint, the button's.
+ */
+@import '../layers.css';
+
+@layer beast.components {
+  .b-menu {
+    /* Undo the popover's UA box (centred, bordered, canvas colours); the script sets top/left. */
+    position: fixed;
+    inset: auto;
+    margin: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    min-inline-size: var(--b-width-menu);
+    max-inline-size: calc(100vw - 2 * var(--b-space-2));
+    max-block-size: calc(100svh - 2 * var(--b-space-2));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: var(--b-inset-nested);
+    border: var(--b-line-hair) solid var(--b-color-border-strong);
+    border-radius: var(--b-radius-control);
+    background: var(--b-color-surface-raised);
+    color: var(--b-color-text);
+    font: var(--b-font-weight-regular) var(--b-font-size-2) / var(--b-font-line-height-2)
+      var(--b-font-family-ui);
+
+    &:not(:popover-open) {
+      display: none;
+    }
+    /* Focused after a click, so the keys work with no item lit: not a target, no ring. */
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .b-menu-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .b-menu-item {
+    all: unset;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: var(--b-gap-icon);
+    min-block-size: var(--b-size-control);
+    padding-inline: var(--b-space-2);
+    border-radius: max(0px, var(--b-radius-control) - var(--b-inset-nested));
+    cursor: default;
+    user-select: none;
+    white-space: nowrap;
+
+    /* Hover and keyboard focus are one highlight: the pointer moves the focus (preact). */
+    &:hover:not([aria-disabled='true']),
+    &:focus {
+      background: var(--b-color-hover);
+    }
+    /* The tint is the mark; the ring would draw a second one on the same item. In forced
+       colours the tint disappears, so the outline comes back there. */
+    &:focus {
+      outline: none;
+    }
+    @media (forced-colors: active) {
+      &:focus {
+        outline: var(--b-line-bold) solid Highlight;
+        outline-offset: calc(-1 * var(--b-line-bold));
+      }
+    }
+
+    &[data-tone='danger'] {
+      color: var(--b-color-danger);
+
+      &:hover:not([aria-disabled='true']),
+      &:focus {
+        background: color-mix(in srgb, var(--b-color-danger) 8%, transparent);
+      }
+    }
+
+    &[aria-disabled='true'] {
+      opacity: var(--b-opacity-disabled);
+    }
+
+    & > .b-icon {
+      flex: none;
+    }
+  }
+
+  /* A group's name: small, muted, not a target. */
+  .b-menu-label {
+    padding: var(--b-space-1-5) var(--b-space-2) var(--b-space-1);
+    color: var(--b-color-text-muted);
+    font-size: var(--b-font-size-1);
+    line-height: var(--b-font-line-height-1);
+  }
+
+  /* Edge to edge: it runs under the box's inset, a line across the whole menu. */
+  .b-menu-separator {
+    flex: none;
+    block-size: var(--b-line-hair);
+    margin: var(--b-space-1) calc(-1 * var(--b-inset-nested));
+    background: var(--b-color-border-subtle);
+  }
+
+  /* The tooltip's quick fade. Off with reduced motion. */
+  @media (prefers-reduced-motion: no-preference) {
+    .b-menu {
+      transition:
+        opacity var(--b-duration-1) var(--b-easing-enter),
+        display var(--b-duration-1) allow-discrete,
+        overlay var(--b-duration-1) allow-discrete;
+
+      &:not(:popover-open) {
+        opacity: 0;
+      }
+
+      &:popover-open {
+        opacity: 1;
+
+        @starting-style {
+          opacity: 0;
+        }
+      }
+    }
+  }
+}

@@ -40,6 +40,8 @@ import { Button } from '@beastui/preact';
 | `Modal`, `Drawer` | `open` state to `showModal()`/`close()`, backdrop click, focus back to the opener |
 | `Veil` | `busy` → `inert` + `aria-busy` on the region's content, a live title, focus caught and given back |
 | `Tooltip` | hover delay, keyboard focus, Escape (not the modal around it), hoverable, placed and flipped in the top layer; `mode` = description or label |
+| `Menu`, `MenuItem`, `MenuGroup`, `MenuSeparator` | the APG menu button keys (arrows, Home/End, letters), one highlight for pointer and keys, focus back to the button, placed and flipped in the top layer |
+| `Popover` | any content in a non-modal box, placed and flipped; `open`/`onOpenChange` to close it from inside |
 | `SegmentedControl` | One choice out of a few, with arrow keys |
 | `SortHeader`, `useSort`, `useSelection`, `useDetail` | Sortable columns, row selection and detail rows for a `b-table` |
 | `Tree` | Nested items that fold, from data |

@@ -1,0 +1,98 @@
+---
+layout: ../../layouts/Docs.astro
+title: Menu
+description: "A list of actions opened by a button. Also called a dropdown menu."
+---
+import MenuDemo from '../../components/MenuDemo';
+import Pre from '../../components/Pre.astro';
+
+export const components = { pre: Pre };
+
+# Menu
+
+<p class="docs-lead">A list of actions opened by a button: rename, duplicate, delete. Also called a dropdown menu.</p>
+
+## When to use it
+
+When a thing has more actions than you want to show as buttons, or the actions are used rarely.
+
+- One or two actions: show them as buttons. A menu hides them behind a click.
+- The content is a form, text or anything that isn't an action: use a popover. Arrow keys and screen readers treat a menu as a list of commands, nothing else.
+- Choosing a value for a field: a select.
+
+<figure class="docs-demo">
+  <div class="docs-demo__stage"><MenuDemo client:visible /></div>
+</figure>
+
+## How it behaves
+
+- A click on the button opens it under the button, lined up with its start edge. It goes above when there is no room below.
+- The pointer and the arrow keys move the same highlight: there is never one item under the pointer and another under the keyboard.
+- A click outside, Escape or Tab closes it. Escape closes only the menu: a modal around it stays open.
+- Choosing an item closes the menu, gives focus back to the button, then runs the action. An action that opens a modal gets the focus.
+- It is never cut by a scrolling box or a table cell: it lives in the top layer.
+
+## Keyboard
+
+| Key | On the button | In the menu |
+|---|---|---|
+| Enter, Space | Opens, on the first item | Runs the item |
+| ↓ / ↑ | Opens, on the first / last item | Next / previous item, wraps around |
+| Home, End | | First, last item |
+| A letter | | The next item starting with it |
+| Escape, Tab | | Closes, focus back on the button |
+
+A disabled item stays in the list, faded, so the user sees it exists. The keys skip it.
+
+## In Preact
+
+```tsx
+import { Button, Menu, MenuGroup, MenuItem, MenuSeparator } from '@beastui/preact';
+
+<Menu trigger={<Button>Actions</Button>}>
+  <MenuGroup label="Budget 2027.xlsx">
+    <MenuItem onSelect={rename}>Rename</MenuItem>
+    <MenuItem disabled>Move to…</MenuItem>
+  </MenuGroup>
+  <MenuSeparator />
+  <MenuItem tone="danger" onSelect={remove}>Delete</MenuItem>
+</Menu>
+```
+
+| `Menu` | Type | Default | |
+|---|---|---|---|
+| `trigger` | one element | required | The button. It gets the ARIA attributes; its own handlers still run. |
+| `children` | items | required | `MenuItem`, `MenuSeparator`, `MenuGroup`. |
+| `side` | `'bottom' \| 'top'` | `'bottom'` | The preferred side. It flips when there is no room. |
+| `align` | `'start' \| 'end' \| 'center'` | `'start'` | Which edge of the button it lines up with. `end` for a button at the end of a row. |
+| `onOpenChange` | `(open) => void` | | Called when it opens or closes, however that happened. |
+
+| `MenuItem` | Type | Default | |
+|---|---|---|---|
+| `onSelect` | `() => void` | | Runs after the menu has closed. |
+| `tone` | `'danger'` | | An action that destroys or can't be undone. |
+| `disabled` | `boolean` | `false` | Faded, skipped by the keys, does nothing. |
+| `children` | | required | The text, with an optional leading `<svg class="b-icon">`. |
+
+| `MenuGroup` | Type | | |
+|---|---|---|---|
+| `label` | `string` | required | Shown small above its items, and read before them. |
+
+
+## Writing it
+
+- An item is a verb, or a verb and its object: “Rename”, “Move to…”. The thing they act on is already clear from the button or the group.
+- An ellipsis says the item asks for more before it acts (a modal, a picker).
+- Put the dangerous action last, after a separator.
+
+## Without Preact
+
+```html
+<button class="b-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="m-1" popovertarget="m-1">Actions</button>
+<div class="b-menu" id="m-1" role="menu" popover="auto">
+  <button class="b-menu-item" role="menuitem" tabindex="-1" type="button">Rename</button>
+  <div class="b-menu-separator" role="separator"></div>
+  <button class="b-menu-item" role="menuitem" tabindex="-1" type="button" data-tone="danger">Delete</button>
+```
+
+`popovertarget` and `popover="auto"` open and close it with no script: click outside and Escape included. Placing it (`top` and `left` in viewport pixels), the arrow keys and `aria-expanded` are yours to write; the Preact component does all of it.

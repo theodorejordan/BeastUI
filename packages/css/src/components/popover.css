@@ -1,0 +1,58 @@
+/*
+ * Popover: a floating box with any content (a small filter form, details), opened by a button.
+ * Not a menu: no arrow keys, Tab moves through it as through the page.
+ *
+ * <button class="b-btn" aria-expanded="false" aria-controls="p-1" popovertarget="p-1">Filter</button>
+ * <div class="b-popover" id="p-1" role="dialog" aria-label="Filter" popover="auto">…</div>
+ *
+ * popover="auto" gives the top layer, a close on a click outside and on Escape, and puts focus
+ * back on the button when it closes with focus inside (MDN, Popover API). The box comes right
+ * after the button in the page, so Tab from the button goes into it. @beastui/preact places it.
+ *
+ * Foundations (04-foundations.md): the modal's ground and line (no shadow), but the button's
+ * radius, like the tooltip and the menu (owner: one curve for every small floating thing).
+ * Padding = the control inset (12, playful 16): a panel's 16 was too much in core and tool.
+ * At most a dialog's width.
+ */
+@import '../layers.css';
+
+@layer beast.components {
+  .b-popover {
+    position: fixed;
+    inset: auto;
+    margin: 0;
+    box-sizing: border-box;
+    max-inline-size: min(var(--b-width-dialog), 100vw - 2 * var(--b-space-2));
+    max-block-size: calc(100svh - 2 * var(--b-space-2));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: var(--b-inset-control);
+    border: var(--b-line-hair) solid var(--b-color-border-strong);
+    border-radius: var(--b-radius-control);
+    background: var(--b-color-surface-raised);
+    color: var(--b-color-text);
+    font: var(--b-font-weight-regular) var(--b-font-size-2) / var(--b-font-line-height-2)
+      var(--b-font-family-ui);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .b-popover {
+      transition:
+        opacity var(--b-duration-1) var(--b-easing-enter),
+        display var(--b-duration-1) allow-discrete,
+        overlay var(--b-duration-1) allow-discrete;
+
+      &:not(:popover-open) {
+        opacity: 0;
+      }
+
+      &:popover-open {
+        opacity: 1;
+
+        @starting-style {
+          opacity: 0;
+        }
+      }
+    }
+  }
+}

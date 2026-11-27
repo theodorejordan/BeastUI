@@ -10,7 +10,8 @@
  * (decision 0005: no anchor positioning before Safari 26) and closes it on Escape.
  *
  * Foundations (04-foundations.md §4): 28 high = a 20 px kbd + 4 above and below; radius = the
- * kbd's radius-1 + that inset, so it follows each theme (core 8, tool 6, playful 12).
+ * button's (--b-radius-control: core 8, tool 4, playful 20): every small floating thing
+ * (tooltip, menu, popover) has the button's curve, so they read as one family (owner).
  * The ground is inverted (ink, with on-ink text): the only ink surface in BeastUI, so it never
  * reads as a control. A raised ground with a hair line (the modal's look) was tried in a lab and
  * looked like an outline button. No arrow, no shadow.
@@ -30,7 +31,7 @@
     overflow: visible;
     /* Transparent, but there: in forced colours (Windows contrast themes) it draws the edge. */
     border: var(--b-line-hair) solid transparent;
-    border-radius: calc(var(--b-radius-1) + var(--b-inset-nested));
+    border-radius: var(--b-radius-control);
     background: var(--b-color-text);
     color: var(--b-color-on-ink);
     font-family: var(--b-font-family-ui);

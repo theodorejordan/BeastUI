@@ -96,3 +96,45 @@ for (const theme of THEMES) {
     });
   }
 }
+
+// A menu and a popover open, in every theme and mode.
+for (const theme of THEMES) {
+  for (const mode of MODES) {
+    test(`axe: /components/menu/ open, in ${theme}, ${mode}`, async ({ page }) => {
+      await open(page, '/components/menu/', theme, mode);
+      await page.getByRole('button', { name: 'Actions' }).focus();
+      await page.keyboard.press('ArrowDown');
+      const menu = page.getByRole('menu');
+      await expect(menu).toBeVisible();
+      await expect(menu).toHaveCSS('opacity', '1');
+      await expect(page.getByRole('menuitem', { name: 'Rename' })).toBeFocused();
+      const { violations } = await new AxeBuilder({ page })
+        .include('.docs-demo')
+        .include('.b-menu')
+        .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+        .analyze();
+      const summary = violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`);
+      expect(summary).toEqual([]);
+      await page.keyboard.press('Escape');
+      await expect(menu).toBeHidden();
+      await expect(page.getByRole('button', { name: 'Actions' })).toBeFocused();
+    });
+
+    test(`axe: /components/popover/ open, in ${theme}, ${mode}`, async ({ page }) => {
+      await open(page, '/components/popover/', theme, mode);
+      await page.getByRole('button', { name: 'Filter' }).click();
+      const box = page.getByRole('dialog', { name: 'Filter files' });
+      await expect(box).toBeVisible();
+      await expect(box).toHaveCSS('opacity', '1');
+      const { violations } = await new AxeBuilder({ page })
+        .include('.docs-demo')
+        .include('.b-popover')
+        .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+        .analyze();
+      const summary = violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`);
+      expect(summary).toEqual([]);
+      await page.keyboard.press('Escape');
+      await expect(box).toBeHidden();
+    });
+  }
+}
