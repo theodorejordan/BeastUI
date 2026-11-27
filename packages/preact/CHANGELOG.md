@@ -1,5 +1,40 @@
 # @beastui/preact
 
+## 0.1.0
+
+### Minor Changes
+
+- 8ddf643: First release of the stable API.
+
+### Patch Changes
+
+- c8b7e25: Form controls: radio group, switch, textarea and select, all on native elements. CSS `.b-radio-group` + `.b-radio`, `.b-switch` (`role="switch"`), `textarea.b-input`, and `.b-select` (the field's frame around a `<select>`; the open list is drawn like the menu where `appearance: base-select` exists). Preact `RadioGroup`, `Switch`, `Textarea` and `Select` (the last two take a `Field`'s wiring, like `Input`).
+  
+  Lists breathe: `--b-gap-row` is now 1px (playful keeps 4px) between tree rows, menu items and select options. Group labels in the menu and the select are one style: light (new `--b-font-weight-light`, 300: load Inter Tight 300), `--b-color-text-label`, in capitals with a little tracking (`--b-case-label`, `--b-tracking-label`; lowercase in tool).
+  
+  Menu items and select options show the hand cursor like every other target (`not-allowed` when disabled).
+- 1e83455: Menu and popover, on one base: `popover="auto"` (top layer, click outside and Escape for free). CSS `.b-menu` (`b-menu-item`, `-group`, `-label`, `-separator`, `data-tone="danger"`) and `.b-popover`. Preact `Menu`, `MenuItem`, `MenuGroup`, `MenuSeparator` (APG menu button keys, one highlight for pointer and keys, focus back to the button) and `Popover` (any content, non-modal, controlled with `open`/`onOpenChange`). Both take `side` and `align` (start, end, center).
+  
+  Tooltip, menu and popover now share the button's radius (`--b-radius-control`): core 8, tool 4, playful 20. The popover's padding is the control inset (12, playful 16).
+- 200c0cf: MultiSelect: pick several values from a list. CSS `.b-listbox` (the open list: the menu's box, `.b-listbox-option` rows with a `.b-listbox-check` box drawn from `aria-selected`, `-group` and `-label` like the menu's) and `button.b-select` (the select's box on a button, the chosen labels cut as "PDF, CSV +2" with `.b-select__text`, `__value`, `__more`, `__placeholder`). Preact `MultiSelect` (`options` with optional groups, `value: T[]`, `onChange`, `placeholder`): the APG Listbox keys, the list stays open while picking, the box's name is the label then the whole value. `Field` now gives its label an id.
+- b2bbf87: Skeleton: the shape of content on its way. CSS `.b-skeleton` wraps sample text (invisible, gives the size) or stands alone as one line; `data-shape="circle"` / `"block"`, `data-delay`; pulse from light to dark grey, still under reduced motion.
+  
+  Alert: a message that stays in the page. CSS `.b-alert` and its parts, `data-tone="danger"` / `"warning"`. Preact `Alert` (`tone`, `title`, `icon`, `actions`, `onDismiss`, `dismissLabel`).
+  
+  Token `color.warning-text`: the warning alert's title and icon, a yellow that keeps 4.5:1 on the warning tint.
+- 2bfa8df: Tooltip: a short line that names or describes a control, on hover and keyboard focus. An ink box in the top layer (`popover="manual"`), so no overflow clips it. CSS `.b-tooltip`, Preact `Tooltip` (`content`, `mode` = description or label, `side`): hover delay with skip delay, hoverable, Escape closes the tooltip and not the modal around it, flips when there is no room.
+- 4190d8b: Veil: one region of the page is busy, the rest stays usable. The content goes `inert` behind a card (title, progress, Cancel); a live region says the title only. CSS `.b-veil-region` and its parts, Preact `Veil` (`busy`, `title`, `content`, `actions`, `delay`).
+- Updated dependencies [c8b7e25]
+- Updated dependencies [1e83455]
+- Updated dependencies [200c0cf]
+- Updated dependencies [411e0c5]
+- Updated dependencies [8ddf643]
+- Updated dependencies [b109b0f]
+- Updated dependencies [b2bbf87]
+- Updated dependencies [2bfa8df]
+- Updated dependencies [4190d8b]
+  - @beastui/css@0.1.0
+
 ## 0.0.4
 
 ### Patch Changes
