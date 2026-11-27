@@ -47,7 +47,7 @@ function apply(theme: Theme, mode: Mode): void {
   }
 }
 
-export default function ThemeSwitcher(): JSX.Element {
+export default function ThemeSwitcher({ themes: showThemes = true }: { themes?: boolean }): JSX.Element {
   const [theme, setTheme] = useState<Theme>('core');
   const [mode, setMode] = useState<Mode>('system');
 
@@ -73,7 +73,7 @@ export default function ThemeSwitcher(): JSX.Element {
 
   return (
     <div class="docs-switch">
-      <SegmentedControl label="Theme" options={themeOptions} value={theme} onChange={(t) => pick({ theme: t })} />
+      {showThemes && <SegmentedControl label="Theme" options={themeOptions} value={theme} onChange={(t) => pick({ theme: t })} />}
       <SegmentedControl label="Mode" options={modeOptions} value={mode} onChange={(m) => pick({ mode: m })} />
     </div>
   );

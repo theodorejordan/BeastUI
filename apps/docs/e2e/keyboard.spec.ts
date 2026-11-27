@@ -48,3 +48,10 @@ test('the theme switcher works from the keyboard and is remembered', async ({ pa
   const tool = await theme.getByText('tool', { exact: true }).evaluate((span) => (span.parentElement as HTMLElement).offsetLeft);
   expect(thumb).toBe(`matrix(1, 0, 0, 1, ${tool}, 0)`);
 });
+
+test('the intro shows the mode switch but not the theme switch', async ({ page }) => {
+  await open(page, '/', 'core', 'light');
+  await hydrated(page, '.docs-switch');
+  await expect(page.getByRole('radiogroup', { name: 'Mode' })).toBeVisible();
+  await expect(page.getByRole('radiogroup', { name: 'Theme' })).toHaveCount(0);
+});

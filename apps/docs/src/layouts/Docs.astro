@@ -17,7 +17,10 @@ interface Props {
   // MDX pages that name this layout pass their frontmatter instead, and their headings.
   frontmatter?: { title: string; description?: string };
   headings?: { depth: number; slug: string; text: string }[];
+  // False on a page with no demo: the theme only changes demos, so the control would do nothing.
+  themes?: boolean;
 }
+const themes = Astro.props.themes ?? true;
 const title = Astro.props.frontmatter?.title ?? Astro.props.title ?? 'BeastUI';
 const description = Astro.props.frontmatter?.description ?? Astro.props.description;
 // BASE_URL is "/" locally but "/BeastUI" (no slash) on Pages: end it with one, like `here`.
@@ -60,7 +63,7 @@ const menu = [
         <svg class="b-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
       </button>
       <a class="docs-mark" href={home}>beastui</a>
-      <ThemeSwitcher client:load />
+      <ThemeSwitcher themes={themes} client:load />
     </header>
     <div class="docs-page">
       <nav class="docs-nav" aria-label="Docs">
