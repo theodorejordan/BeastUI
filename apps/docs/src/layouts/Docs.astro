@@ -27,17 +27,25 @@ const description = Astro.props.frontmatter?.description ?? Astro.props.descript
 const home = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 // "On this page": the chapters (h2) and their sections (h3).
 const toc = (Astro.props.headings ?? []).filter((h) => h.depth === 2 || h.depth === 3);
-// The menu: every component page, A–Z, read from the pages themselves so a new page joins it.
+// The menu: every component page, grouped by family (the `group` of its frontmatter), A–Z in
+// each, read from the pages themselves so a new page joins its family.
 const pages = Object.values(
-  import.meta.glob<{ frontmatter: { title: string }; url: string }>('../pages/components/*.mdx', { eager: true }),
+  import.meta.glob<{ frontmatter: { title: string; group: string }; url: string }>('../pages/components/*.mdx', {
+    eager: true,
+  }),
 );
-const components = pages
-  .map((p) => ({ title: p.frontmatter.title, url: `${p.url}/` }))
-  .sort((a, b) => a.title.localeCompare(b.title));
+const FAMILIES = ['Forms', 'Actions', 'Overlays', 'Feedback', 'Data display'];
+const families = FAMILIES.map((title) => ({
+  title,
+  links: pages
+    .filter((p) => p.frontmatter.group === title)
+    .map((p) => ({ title: p.frontmatter.title, url: `${p.url}/` }))
+    .sort((a, b) => a.title.localeCompare(b.title)),
+}));
 const here = Astro.url.pathname.replace(/\/?$/, '/');
 const menu = [
   { title: 'Start', links: [{ title: 'Introduction', url: home }] },
-  { title: 'Components', links: components },
+  { title: 'Components', links: [], families },
 ];
 ---
 

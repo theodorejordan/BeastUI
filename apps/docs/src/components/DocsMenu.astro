@@ -1,8 +1,9 @@
 ---
 // The docs menu, drawn twice by Docs.astro: in the left column on wide screens and in the
 // drawer on small ones. Same look as "On this page": one style for every docs menu.
+type Link = { title: string; url: string };
 interface Props {
-  groups: { title: string; links: { title: string; url: string }[] }[];
+  groups: { title: string; links: Link[]; families?: { title: string; links: Link[] }[] }[];
   here: string;
 }
 const { groups, here } = Astro.props;
@@ -12,15 +13,31 @@ const { groups, here } = Astro.props;
   groups.map((group) => (
     <div class="docs-nav__group">
       <p class="docs-nav__title">{group.title}</p>
-      <ul>
-        {group.links.map((l) => (
-          <li>
-            <a href={l.url} aria-current={l.url === here ? 'page' : undefined}>
-              {l.title}
-            </a>
-          </li>
-        ))}
-      </ul>
+      {group.links.length > 0 && (
+        <ul>
+          {group.links.map((l) => (
+            <li>
+              <a href={l.url} aria-current={l.url === here ? 'page' : undefined}>
+                {l.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+      {group.families?.map((f) => (
+        <div class="docs-nav__family">
+          <p class="docs-nav__subtitle">{f.title}</p>
+          <ul>
+            {f.links.map((l) => (
+              <li>
+                <a href={l.url} aria-current={l.url === here ? 'page' : undefined}>
+                  {l.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </div>
   ))
 }
