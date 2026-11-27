@@ -97,7 +97,7 @@ for (const theme of THEMES) {
   }
 }
 
-// A menu and a popover open, in every theme and mode.
+// A menu, a multi-select's list and a popover open, in every theme and mode.
 for (const theme of THEMES) {
   for (const mode of MODES) {
     test(`axe: /components/menu/ open, in ${theme}, ${mode}`, async ({ page }) => {
@@ -118,6 +118,27 @@ for (const theme of THEMES) {
       await page.keyboard.press('Escape');
       await expect(menu).toBeHidden();
       await expect(page.getByRole('button', { name: 'Actions' })).toBeFocused();
+    });
+
+    test(`axe: /components/multi-select/ open, in ${theme}, ${mode}`, async ({ page }) => {
+      await open(page, '/components/multi-select/', theme, mode);
+      const box = page.getByRole('button', { name: /^Export as/ });
+      await box.focus();
+      await page.keyboard.press('ArrowDown');
+      const list = page.getByRole('listbox', { name: 'Export as' });
+      await expect(list).toBeVisible();
+      await expect(list).toHaveCSS('opacity', '1');
+      await expect(page.getByRole('option', { name: 'PDF' })).toBeFocused();
+      const { violations } = await new AxeBuilder({ page })
+        .include('.docs-demo')
+        .include('.b-listbox')
+        .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+        .analyze();
+      const summary = violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`);
+      expect(summary).toEqual([]);
+      await page.keyboard.press('Escape');
+      await expect(list).toBeHidden();
+      await expect(box).toBeFocused();
     });
 
     test(`axe: /components/popover/ open, in ${theme}, ${mode}`, async ({ page }) => {

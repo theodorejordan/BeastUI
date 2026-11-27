@@ -12,7 +12,8 @@
 import { createContext, type ComponentChildren, type Context, type InputHTMLAttributes, type JSX, type TextareaHTMLAttributes } from 'preact';
 import { useContext, useId } from 'preact/hooks';
 
-type FieldWiring = { id: string; describedBy: string | undefined; invalid: boolean };
+/** labelId: for a control whose name must also carry its value (MultiSelect's button). */
+type FieldWiring = { id: string; labelId: string; describedBy: string | undefined; invalid: boolean };
 
 /** Shared with Select and Textarea: any control in a Field takes its ids from here. */
 export const FieldContext: Context<FieldWiring | null> = createContext<FieldWiring | null>(null);
@@ -38,11 +39,11 @@ export function Field({ label, hint, error, children, class: extraClass, classNa
   const id = useId();
   const hintId = hint ? `${id}-hint` : undefined;
   const errorId = error ? `${id}-error` : undefined;
-  const wiring: FieldWiring = { id, describedBy: join(hintId, errorId), invalid: Boolean(error) };
+  const wiring: FieldWiring = { id, labelId: `${id}-label`, describedBy: join(hintId, errorId), invalid: Boolean(error) };
 
   return (
     <div class={join('b-field', extraClass, className)}>
-      <label class="b-field__label" for={id}>
+      <label class="b-field__label" id={`${id}-label`} for={id}>
         {label}
       </label>
       <FieldContext.Provider value={wiring}>{children}</FieldContext.Provider>

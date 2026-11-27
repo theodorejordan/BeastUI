@@ -12,6 +12,7 @@ export const PAGES = [
   '/components/switch/',
   '/components/textarea/',
   '/components/select/',
+  '/components/multi-select/',
   '/components/tag/',
   '/components/table/',
   '/components/tree/',

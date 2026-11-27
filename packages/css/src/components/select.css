@@ -24,6 +24,8 @@
  * The chevron is drawn by the frame (::after, in currentColor), not the select, so it is the
  * same in every browser and follows the theme's ink.
  *
+ * A <button class="b-select"> is the same box for a multi-select (listbox.css draws its list).
+ *
  * Needs field.css (the frame) when imported alone.
  */
 @import '../layers.css';
@@ -75,6 +77,54 @@
     &:has(> :disabled) {
       cursor: not-allowed;
     }
+  }
+
+  /* The multi-select's box: the same frame on a <button> (preact MultiSelect), its list in
+     listbox.css. The chosen labels in a row, cut where the box ends: "PDF, CSV +2". */
+  button.b-select {
+    margin: 0;
+    padding-inline: calc(var(--b-inset-control) - var(--b-input-line))
+      calc(var(--b-inset-control) - var(--b-input-line) + var(--b-size-glyph) + var(--b-gap-icon));
+    text-align: start;
+    text-transform: var(--b-case);
+    appearance: none;
+
+    /* Open, focus is in the list: the box keeps its focus line, as a native select does. */
+    &[aria-expanded='true'] {
+      --b-input-line: var(--b-line-bold);
+      border-color: var(--b-color-text);
+    }
+  }
+
+  .b-select__text {
+    flex: 1;
+    display: flex;
+    gap: var(--b-gap-inline);
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .b-select__value {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .b-select__more {
+    flex: none;
+    color: var(--b-color-text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .b-select__placeholder {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--b-color-text-muted);
+  }
+  /* Hidden copies of the labels, measured to know how many fit. */
+  .b-select__measure {
+    position: absolute;
+    visibility: hidden;
+    white-space: pre;
+    pointer-events: none;
   }
 
   /* The open list, where CSS can draw it. */

@@ -1,0 +1,185 @@
+/*
+ * Listbox: the open list of a multi-select, a check box at the start of each row.
+ *
+ * <button class="b-select" aria-haspopup="listbox" aria-expanded="false" aria-controls="l-1"
+ *         popovertarget="l-1">…</button>
+ * <div class="b-listbox" id="l-1" role="listbox" aria-multiselectable="true" popover="auto">
+ *   <div class="b-listbox-group" role="group" aria-labelledby="g-1">
+ *     <div class="b-listbox-label" id="g-1">Documents</div>
+ *     <div class="b-listbox-option" role="option" tabindex="-1" aria-selected="true">
+ *       <span class="b-listbox-check" aria-hidden="true"></span>PDF
+ *     </div>
+ *   </div>
+ * </div>
+ *
+ * The state lives in aria-selected, the one thing a screen reader reads: the check box only
+ * draws it. popover="auto" gives the top layer, the click outside and Escape (MDN, Popover API);
+ * @beastui/preact's MultiSelect adds the keys of the APG Listbox pattern and places it.
+ *
+ * Foundations (04-foundations.md): the same list as the menu and the select's open list:
+ * raised ground, strong hair line, no shadow, the button's radius, nested inset 4, rows one
+ * control high and --b-gap-row apart, one highlight (hover and keyboard focus are the same
+ * tint), group names light and in capitals, 4px left of the rows' text. The check box is the
+ * checkbox's (checkbox.css): the glyph slot, --b-radius-check, an ink fill and tick when on.
+ */
+@import '../layers.css';
+
+@layer beast.components {
+  .b-listbox {
+    /* Undo the popover's UA box (centred, bordered, canvas colours); the script sets top/left. */
+    position: fixed;
+    inset: auto;
+    margin: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: var(--b-gap-row);
+    min-inline-size: var(--b-width-menu);
+    max-inline-size: calc(100vw - 2 * var(--b-space-2));
+    max-block-size: calc(100svh - 2 * var(--b-space-2));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: var(--b-inset-nested);
+    border: var(--b-line-hair) solid var(--b-color-border-strong);
+    border-radius: var(--b-radius-control);
+    background: var(--b-color-surface-raised);
+    color: var(--b-color-text);
+    font: var(--b-font-weight-regular) var(--b-font-size-2) / var(--b-font-line-height-2) var(--b-font-family-ui);
+    text-transform: var(--b-case);
+
+    &:not(:popover-open) {
+      display: none;
+    }
+    /* Focused after a click, so the keys work with no row lit: not a target, no ring. */
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .b-listbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--b-gap-row);
+  }
+
+  .b-listbox-option {
+    --b-listbox-tick: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.5 2.5L12 5.5' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: var(--b-gap-choice);
+    min-block-size: var(--b-size-control);
+    padding-inline: var(--b-space-2);
+    border-radius: max(0px, var(--b-radius-control) - var(--b-inset-nested));
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+
+    /* The menu's one highlight: the pointer moves the focus (preact). */
+    &:hover:not([aria-disabled='true']),
+    &:focus {
+      background: var(--b-color-hover);
+      outline: none;
+    }
+    @media (forced-colors: active) {
+      &:focus {
+        outline: var(--b-line-bold) solid Highlight;
+        outline-offset: calc(-1 * var(--b-line-bold));
+      }
+    }
+
+    &[aria-disabled='true'] {
+      opacity: var(--b-opacity-disabled);
+      cursor: not-allowed;
+    }
+  }
+
+  /* The checkbox's box, drawn from the row's state. */
+  .b-listbox-check {
+    flex: none;
+    display: inline-grid;
+    place-content: center;
+    box-sizing: border-box;
+    width: var(--b-size-glyph);
+    height: var(--b-size-glyph);
+    border: var(--b-line-stroke) solid var(--b-color-border-strong);
+    border-radius: var(--b-radius-check);
+    background: var(--b-color-surface-card);
+    transition:
+      background-color var(--b-duration-1) var(--b-easing-move),
+      border-color var(--b-duration-1) var(--b-easing-move);
+
+    &::before {
+      content: '';
+      width: var(--b-size-glyph);
+      height: var(--b-size-glyph);
+      background: var(--b-color-on-ink);
+      mask: var(--b-listbox-tick) center / 100% no-repeat;
+      scale: 0;
+      transition: scale var(--b-duration-1) var(--b-easing-move);
+    }
+
+    .b-listbox-option:is(:hover, :focus):not([aria-disabled='true']) > & {
+      border-color: var(--b-color-text);
+    }
+
+    .b-listbox-option[aria-selected='true'] > & {
+      border-color: var(--b-color-text);
+      background: var(--b-color-text);
+
+      &::before {
+        scale: 1;
+      }
+    }
+
+    /* Forced colours drop the fill: the tick is drawn in the text colour instead. */
+    @media (forced-colors: active) {
+      .b-listbox-option[aria-selected='true'] > &::before {
+        background: CanvasText;
+      }
+    }
+  }
+
+  /* A group's name: the menu's label (menu.css), 4px left of the rows' text. */
+  .b-listbox-label {
+    padding: var(--b-space-3) var(--b-space-2) var(--b-space-1) var(--b-space-1);
+    color: var(--b-color-text-label);
+    font-size: var(--b-font-size-1);
+    font-weight: var(--b-font-weight-light);
+    line-height: var(--b-font-line-height-1);
+    letter-spacing: var(--b-tracking-label);
+    text-transform: var(--b-case-label);
+  }
+  .b-listbox > .b-listbox-group:first-child > .b-listbox-label {
+    padding-block-start: var(--b-space-1-5);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .b-listbox {
+      transition:
+        opacity var(--b-duration-1) var(--b-easing-enter),
+        display var(--b-duration-1) allow-discrete,
+        overlay var(--b-duration-1) allow-discrete;
+
+      &:not(:popover-open) {
+        opacity: 0;
+      }
+
+      &:popover-open {
+        opacity: 1;
+
+        @starting-style {
+          opacity: 0;
+        }
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .b-listbox-check,
+    .b-listbox-check::before {
+      transition: none;
+    }
+  }
+}

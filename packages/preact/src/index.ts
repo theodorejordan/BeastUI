@@ -6,6 +6,8 @@ export { Field, Input, Textarea } from './field';
 export type { FieldProps, InputProps, InputType, TextareaProps } from './field';
 export { Select } from './select';
 export type { SelectOption, SelectProps } from './select';
+export { MultiSelect } from './multi-select';
+export type { MultiSelectGroup, MultiSelectOption, MultiSelectProps } from './multi-select';
 export { Checkbox } from './checkbox';
 export type { CheckboxProps } from './checkbox';
 export { RadioGroup } from './radio';

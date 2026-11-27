@@ -36,6 +36,7 @@ import { Button } from '@beastui/preact';
 | `Button` | `pending` and `iconOnly`, above |
 | `Checkbox` | The `indeterminate` state, which has no HTML attribute |
 | `Field`, `Input`, `Textarea`, `Select` | Label, hint and error wired to the control; `Select` takes `options` and a `placeholder` |
+| `MultiSelect` | Several values from a list: the select's box with "PDF, CSV +2", a listbox with check boxes (APG keys: arrows, Home/End, letters, Space), groups, Field wiring |
 | `RadioGroup` | The fieldset, legend and one shared `name` from `options` |
 | `Switch` | `role="switch"` on a native checkbox, controlled like `Checkbox` |
 | `Progress` | The progressbar ARIA and the fill, from `value` and `max` |

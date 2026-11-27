@@ -42,6 +42,7 @@ Fonts are not bundled: load Inter Tight (300, 400, 500), Outfit (300) and IBM Pl
 | Radio group | `<fieldset class="b-radio-group">` (`data-orientation="horizontal"`), `b-radio` on each input, `b-check` on its label |
 | Switch | `b-switch` on an `<input type="checkbox" role="switch">`, `b-check` on its label |
 | Select | `<span class="b-select">` around a native `<select>`; the open list is drawn like the menu where `appearance: base-select` exists |
+| MultiSelect | `<button class="b-select" aria-haspopup="listbox">` (parts `b-select__text`, `__value`, `__more`, `__placeholder`) + `<div class="b-listbox" role="listbox" aria-multiselectable="true" popover="auto">`; parts `b-listbox-option` (`aria-selected`), `-check`, `-group`, `-label` |
 | Progress | `b-progress` with `role="progressbar"`, `data-size="thin"` |
 | Modal, drawer | `<dialog class="b-modal">`, `+ b-drawer` on an edge (`data-side="start"`); parts `b-modal-head`, `-title`, `-body`, `-foot` |
 | Empty | `<div class="b-empty">`; parts `b-empty__media`, `__title`, `__description`, `__actions`; `data-tone="danger"`, `data-frame="dashed"` |
