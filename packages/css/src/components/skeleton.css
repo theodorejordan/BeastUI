@@ -1,0 +1,115 @@
+/*
+ * Skeleton: the shape of content that is on its way. The user waits, and there is nothing to
+ * show yet (a veil is for a region that already has content).
+ *
+ * <div aria-busy="true">                                  the app marks the region busy
+ *   <span class="b-skeleton" aria-hidden="true">Budget 2027.xlsx</span>     sized by its text
+ *   <div class="b-skeleton" aria-hidden="true" style="inline-size: 60%"></div>   one text line
+ *   <div class="b-skeleton" data-shape="circle" aria-hidden="true"></div>       an avatar
+ *   <div class="b-skeleton" data-shape="block" aria-hidden="true" style="block-size: 96px"></div>
+ * </div>
+ *
+ * After Radix Themes' Skeleton: wrapped around sample text, the text turns invisible and gives
+ * the shape its size, so nothing moves when the real content lands. Empty, it is one line of
+ * text: a 1em bar in the middle of a line box, so a stack of them has the rhythm of a paragraph.
+ *
+ * A pulse in place, not a sweeping shimmer: a gradient that runs is busy, and BeastUI is calm. Under
+ * reduced motion the shape stays still. data-delay hides it one step, like the veil, so content
+ * that arrives at once never flashes grey first. The space is kept while hidden: no jump.
+ *
+ * The app sets aria-busy="true" on the region and aria-hidden on each shape: a screen reader
+ * hears that the region is loading, not a list of fake words (MDN, aria-busy).
+ *
+ * Foundations: the same 8% ink tint as a tag (filled = nothing to press); radius 1 for lines,
+ * radius 2 for blocks, a circle for avatars. The tint pulses between 4% and 12% (owner: more
+ * lively), each way in two steps of the slowest duration, so a theme's tempo carries into it.
+ */
+@import '../layers.css';
+
+@layer beast.components {
+  .b-skeleton {
+    --b-skeleton-delay: 0s;
+    --b-skeleton-pulse: b-skeleton-pulse;
+    border-radius: var(--b-radius-1);
+    background: color-mix(in srgb, var(--b-color-text) 8%, transparent);
+    /* The sample text keeps its size, not its look: it is never read, picked or clicked.
+       Hidden by its fill, not its colour: `color: transparent` reads as failed contrast to
+       axe, even under aria-hidden. text-fill-color works in every browser BeastUI supports. */
+    -webkit-text-fill-color: transparent;
+    user-select: none;
+    pointer-events: none;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    animation:
+      b-skeleton-wait var(--b-skeleton-delay) step-end,
+      var(--b-skeleton-pulse) calc(2 * var(--b-duration-4)) ease-in-out infinite alternate;
+
+    /* Children carry no look of their own (an icon, a nested tag): one flat shape. */
+    & * {
+      visibility: hidden;
+    }
+
+    /* Empty: one line of text, as wide as its container unless the app says less. */
+    &:empty {
+      display: block;
+      block-size: 1em;
+      margin-block: calc((1lh - 1em) / 2);
+    }
+
+    &[data-shape='circle'] {
+      display: block;
+      inline-size: var(--b-size-control);
+      block-size: auto;
+      aspect-ratio: 1;
+      margin-block: 0;
+      border-radius: 50%;
+    }
+
+    /* A picture, a chart, a card: the app gives the height. */
+    &[data-shape='block'] {
+      display: block;
+      block-size: var(--b-size-control);
+      margin-block: 0;
+      border-radius: var(--b-radius-2);
+    }
+
+    &[data-delay] {
+      --b-skeleton-delay: var(--b-duration-2);
+    }
+  }
+
+  /* Hidden for the length of the delay, then the rule ends and the shape shows. */
+  @keyframes b-skeleton-wait {
+    from,
+    to {
+      visibility: hidden;
+    }
+  }
+
+  /* The tint goes from light to dark grey: the shape pulses, nothing inside it fades (an
+     opacity pulse also reads as failed contrast to axe). */
+  @keyframes b-skeleton-pulse {
+    from {
+      background-color: color-mix(in srgb, var(--b-color-text) 4%, transparent);
+    }
+    to {
+      background-color: color-mix(in srgb, var(--b-color-text) 12%, transparent);
+    }
+  }
+
+  /* Reduced motion: no pulse. The delay stays: it is about flashing, not motion. */
+  @media (prefers-reduced-motion: reduce) {
+    .b-skeleton {
+      --b-skeleton-pulse: none;
+    }
+  }
+
+  /* Forced colours paint backgrounds over: the shape keeps a system grey of its own. */
+  @media (forced-colors: active) {
+    .b-skeleton {
+      forced-color-adjust: none;
+      background: GrayText;
+      --b-skeleton-pulse: none;
+    }
+  }
+}

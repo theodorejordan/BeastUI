@@ -1,0 +1,152 @@
+---
+layout: ../../layouts/Docs.astro
+title: Alert
+description: "A message that stays in the page until its cause goes away."
+---
+import Demo from '../../components/Demo.astro';
+import Pre from '../../components/Pre.astro';
+
+export const components = { pre: Pre };
+
+# Alert
+
+<p class="docs-lead">A message that stays in the page until its cause goes away. Also called a callout or a banner.</p>
+
+## When to use it
+
+Something the user should know about this page or this region: a limit, a problem with some items, a change that needs care.
+
+- An event that passes, such as “Link copied”: a notification. It is the same box, but it floats, leaves on its own and is announced. An alert stays as long as its cause: “This link expires in 2 days”.
+- A region with nothing to show, or that failed to load: use an [empty state](../empty/).
+- A wrong value in a form: use the field's error, next to the input.
+
+## Information
+
+No tone: the ink tint and an information icon. A line, or a title and a line.
+
+<Demo html={`
+<div class="b-alert">
+  <span class="b-alert__icon"><svg class="b-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></span>
+  <div class="b-alert__content">
+    <div class="b-alert__description">Files over 2 GB upload in parts. You can close this page meanwhile.</div>
+  </div>
+</div>
+`} />
+
+## Error
+
+`data-tone="danger"`: the tint, the icon and the title turn red; the text stays ink so it reads well. Say what failed, then offer the next step: the action sits under the text, at the end, where the eye lands after reading.
+
+<Demo html={`
+<div class="b-alert" data-tone="danger">
+  <span class="b-alert__icon"><svg class="b-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg></span>
+  <div class="b-alert__content">
+    <p class="b-alert__title">Couldn’t sync 2 files</p>
+    <div class="b-alert__description">Contract.pdf and Logo.svg are over the 2 GB limit. The other files are synced.</div>
+    <div class="b-alert__actions"><button class="b-btn" data-variant="secondary" type="button">Review files</button></div>
+  </div>
+</div>
+`} />
+
+## Warning
+
+`data-tone="warning"`: the same as the error, in yellow. The tint covers the whole box; the icon and the title take a deeper yellow (`--b-color-warning-text`), since the fill yellow is too light to read as text.
+
+<Demo html={`
+<div class="b-alert" data-tone="warning">
+  <span class="b-alert__icon"><svg class="b-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 9v4M12 17h.01M10.3 4.2 2.6 17.5A2 2 0 0 0 4.3 20.5h15.4a2 2 0 0 0 1.7-3L13.7 4.2a2 2 0 0 0-3.4 0z"/></svg></span>
+  <div class="b-alert__content">
+    <p class="b-alert__title">This link expires in 2 days</p>
+    <div class="b-alert__description">People with the link lose access to Projects/Website on Friday.</div>
+  </div>
+</div>
+`} />
+
+## Dismissable
+
+A quiet close button at the end, its X lined up with the first line. Only for a message that stays true but stops being useful once read: a tip, a notice. An error stays until it is fixed.
+
+<Demo html={`
+<div class="b-alert">
+  <span class="b-alert__icon"><svg class="b-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></span>
+  <div class="b-alert__content">
+    <div class="b-alert__description">Drop files anywhere on the page to upload them.</div>
+  </div>
+  <button class="b-btn b-alert__close" data-variant="quiet" data-icon aria-label="Dismiss" type="button"><svg class="b-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+</div>
+`} />
+
+## Without an icon
+
+Every part but the description is optional. An alert inside a modal or a narrow panel can do without its icon.
+
+<Demo html={`
+<div class="b-alert">
+  <div class="b-alert__content">
+    <div class="b-alert__description">Deleted files stay in the bin for 30 days.</div>
+  </div>
+</div>
+`} />
+
+## In Preact
+
+```tsx
+import { Button, Alert } from '@beastui/preact';
+
+<Alert
+  tone="danger"
+  title="Couldn’t sync 2 files"
+  actions={<Button onClick={review}>Review files</Button>}
+>
+  Contract.pdf and Logo.svg are over the 2 GB limit.
+</Alert>
+
+{tipShown && (
+  <Alert onDismiss={() => setTipShown(false)}>
+    Drop files anywhere on the page to upload them.
+  </Alert>
+)}
+```
+
+| Prop | Type | Default | |
+|---|---|---|---|
+| `tone` | `'neutral' \| 'danger' \| 'warning'` | `'neutral'` | Informs, says something failed, or says something needs care. |
+| `title` | `ComponentChildren` | | One short line above the text. |
+| `children` | `ComponentChildren` | | The message. |
+| `icon` | `ComponentChildren \| false` | the tone's icon | Replaces the icon; `false` leaves it out. |
+| `actions` | `ComponentChildren` | | Under the text, at the end: one or two buttons. |
+| `onDismiss` | `() => void` | | Shows the Dismiss button. Remove the alert here, and remember it if it should stay gone. |
+| `dismissLabel` | `string` | `'Dismiss'` | The Dismiss button's name, for a screen reader. |
+
+Other attributes, such as `role` or `id`, go to the box.
+
+## Accessibility
+
+The name is not the role. `role="alert"` is for urgent news only, whatever the component is called.
+
+An alert that is in the page from the start is read in order, like the rest: it has no role. When it appears after an action, a screen reader must be told:
+
+- `role="status"` for news that can wait: “Your changes are saved, publish when ready.”
+- `role="alert"` for an error the user must hear now. It cuts in on whatever is being read ([MDN, alert role](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/alert_role)), so keep it for that.
+
+The colour is never the only sign: the icon and the words say the tone too. After Dismiss, the alert is gone and so is the focus: move it to something nearby if the user was working there.
+
+## Writing it
+
+- The title says what happened or what to know, in a few words: “Couldn’t sync 2 files”, not “Error”.
+- The line says why, and what is safe: “The other files are synced.”
+- One action at most, named with a verb: “Review files”, “Renew link”.
+
+## The CSS contract
+
+| Markup | Effect |
+|---|---|
+| `<div class="b-alert">` | A tinted box, padding and corners of a control. |
+| `.b-alert__icon` | A 20px box for one `.b-icon`, lined up with the first line. |
+| `.b-alert__content` | Holds the title, the description and the actions. |
+| `.b-alert__title` | Medium weight; red in a danger alert. |
+| `.b-alert__description` | The message, ink. |
+| `.b-alert__actions` | A row of buttons under the text, at the end, 12px below. |
+| `.b-alert__close` | On a quiet icon button: the X on the padding edge, centred on the first line. |
+| `data-tone="danger"` | Red tint, icon and title. |
+| `data-tone="warning"` | Yellow tint, icon and title. |

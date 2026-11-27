@@ -146,6 +146,18 @@
         "hex": "#d9b440"
       }
     },
+    "warning-text": {
+      "$description": "Warning title and icon on the warning alert's yellow tint. Yellow (OKLCH hue about 92), darker in light mode and lighter in dark mode so it keeps 4.5:1 on that tint over every ground. A value, not an alias.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.8471,
+          0.7412,
+          0.3176
+        ],
+        "hex": "#d8bd51"
+      }
+    },
     "on-warning": {
       "$description": "Text on the warning fill: dark in both modes. A value, not an alias: the build merges light and dark aliases into one.",
       "$value": {

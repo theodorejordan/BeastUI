@@ -368,6 +368,15 @@
     inline-size: 100%;
     max-inline-size: 320px;
   }
+  /* Skeletons fill their container: the stage gives them a column to fill, as the progress. */
+  .docs-demo__stage:has(> .b-skeleton, > [aria-busy]:not(table)) {
+    flex-direction: column;
+  }
+  .docs-demo__stage > :is(.b-skeleton, [aria-busy]:not(table)) {
+    inline-size: 100%;
+    max-inline-size: 400px;
+    margin-block: 0;
+  }
   .docs-demo__stage .b-table {
     --b-table-ground: var(--b-color-surface-raised);
   }

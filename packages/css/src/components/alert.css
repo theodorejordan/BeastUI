@@ -1,0 +1,120 @@
+/*
+ * Alert: a message that stays in the page until its cause goes away. Not a toast (it does not
+ * leave on its own), not an empty state (the region has content; this is said about it).
+ *
+ * <div class="b-alert" data-tone="danger | warning">                       no tone = neutral
+ *   <span class="b-alert__icon"><svg class="b-icon" …>…</svg></span>          optional
+ *   <div class="b-alert__content">
+ *     <p class="b-alert__title">Couldn’t sync 2 files</p>                     optional
+ *     <div class="b-alert__description">Contract.pdf and Logo.svg are too large.</div>
+ *     <div class="b-alert__actions"><button class="b-btn" …>Review</button></div>   optional
+ *   </div>
+ *   <button class="b-btn b-alert__close" data-variant="quiet" data-icon aria-label="Dismiss">…</button>
+ * </div>
+ *
+ * Named Alert, as in Mantine, shadcn/ui and MUI (Radix Themes says Callout). The name is not
+ * the role: role="alert" is a live region that cuts in on a screen reader (MDN, alert role),
+ * and most alerts are read in order with the page. The app adds role="status" or role="alert"
+ * only when the message appears after an action.
+ *
+ * A notification is the same box with another life: it floats, it leaves on its own, it is
+ * announced. This file draws the box; the notification will reuse it.
+ *
+ * Tones, read like the rest of BeastUI:
+ * - neutral: the 8% ink tint of a tag, ink text. Information.
+ * - danger: the same tint in red; the icon and the title are red, the text stays ink (as in
+ *   the empty state's error).
+ * - warning: a yellow tint over the whole box (owner: the box says it, like the danger one),
+ *   the icon and the title in --b-color-warning-text, as the danger one's are red. The fill
+ *   yellow is too light for text, so that token is a darker (light mode) or lighter (dark
+ *   mode) yellow that keeps 4.5:1 on the tint; not amber, which is orange. The yellow is
+ *   light, so its tint is stronger than the red's (24%, not 8%).
+ *
+ * Foundations: padding = the control inset, corners = the control radius (the floating boxes
+ * share it). The icon box is a badge (20px) = the text's line height, so it lines up with the
+ * first line, whatever the number of lines. The close button is a quiet control aligned by its
+ * glyph, as in the modal: its X sits on the padding edge and on the first line's centre.
+ *
+ * Actions sit under the text, flush to the end (owner): read the message, then the eye lands
+ * on what to do, where a dialog's buttons are.
+ */
+@import '../layers.css';
+
+@layer beast.components {
+  .b-alert {
+    --b-alert-tint: var(--b-color-text);
+    --b-alert-tint-amount: 8%;
+    --b-alert-accent: var(--b-color-text);
+    /* The close button's X is drawn this far inside its box. */
+    --b-alert-glyph-inset: calc((var(--b-size-control) - var(--b-size-glyph)) / 2);
+    display: flex;
+    align-items: flex-start;
+    gap: var(--b-gap-inline);
+    padding: var(--b-inset-control);
+    /* Transparent until forced colours draw it: the box keeps an edge there. */
+    border: var(--b-line-hair) solid transparent;
+    border-radius: var(--b-radius-control);
+    background: color-mix(in srgb, var(--b-alert-tint) var(--b-alert-tint-amount), transparent);
+    color: var(--b-color-text);
+    font-size: var(--b-font-size-2);
+    line-height: var(--b-font-line-height-2);
+
+    &[data-tone='danger'] {
+      --b-alert-tint: var(--b-color-danger);
+      --b-alert-accent: var(--b-color-danger);
+    }
+
+    &[data-tone='warning'] {
+      --b-alert-tint: var(--b-color-warning);
+      --b-alert-tint-amount: 24%;
+      --b-alert-accent: var(--b-color-warning-text);
+    }
+  }
+
+  .b-alert__icon {
+    display: grid;
+    flex: none;
+    place-items: center;
+    inline-size: var(--b-size-badge);
+    block-size: var(--b-size-badge);
+    color: var(--b-alert-accent);
+  }
+
+  .b-alert__content {
+    flex: 1;
+    min-inline-size: 0;
+  }
+
+  .b-alert__title {
+    margin: 0;
+    color: var(--b-alert-accent);
+    font-weight: var(--b-font-weight-medium);
+  }
+
+  .b-alert__description {
+    margin: 0;
+
+    & p {
+      margin: 0;
+    }
+
+    .b-alert__title + & {
+      margin-block-start: var(--b-gap-hint);
+    }
+  }
+
+  .b-alert__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--b-gap-inline);
+    margin-block-start: var(--b-space-3);
+  }
+
+  /* Centred on the first line, its X on the padding edge. */
+  .b-alert__close {
+    flex: none;
+    margin-block: calc((var(--b-font-line-height-2) - var(--b-size-control)) / 2);
+    margin-inline-end: calc(-1 * var(--b-alert-glyph-inset));
+  }
+}

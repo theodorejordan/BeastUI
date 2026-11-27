@@ -42,6 +42,7 @@ import { Button } from '@beastui/preact';
 | `Progress` | The progressbar ARIA and the fill, from `value` and `max` |
 | `Modal`, `Drawer` | `open` state to `showModal()`/`close()`, backdrop click, focus back to the opener |
 | `Veil` | `busy` → `inert` + `aria-busy` on the region's content, a live title, focus caught and given back |
+| `Alert` | The tone's icon, a named Dismiss button from `onDismiss`; `title`, `actions`, `role` passed through |
 | `Tooltip` | hover delay, keyboard focus, Escape (not the modal around it), hoverable, placed and flipped in the top layer; `mode` = description or label |
 | `Menu`, `MenuItem`, `MenuGroup`, `MenuSeparator` | the APG menu button keys (arrows, Home/End, letters), one highlight for pointer and keys, focus back to the button, placed and flipped in the top layer |
 | `Popover` | any content in a non-modal box, placed and flipped; `open`/`onOpenChange` to close it from inside |

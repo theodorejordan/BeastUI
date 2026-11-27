@@ -57,6 +57,27 @@ const PAIRS: Pair[] = [
     ];
   }),
   { what: 'Warn tag label', fg: v('on-warning'), bg: v('warning'), min: 4.5 },
+  // Alert: ink on its tint (as a tag), and the danger alert's red title and ink text on the
+  // same tint in red, over each ground an alert can sit on.
+  ...(['surface', 'surface-raised', 'surface-card'] as const).flatMap((ground) => {
+    const red = `color-mix(in srgb, ${v('danger')} 8%, ${v(ground)})`;
+    return [
+      { what: `Danger alert title, ${ground}`, fg: v('danger'), bg: red, min: 4.5 },
+      { what: `Danger alert text, ${ground}`, fg: v('text'), bg: red, min: 4.5 },
+      {
+        what: `Warning alert title and icon, ${ground}`,
+        fg: v('warning-text'),
+        bg: `color-mix(in srgb, ${v('warning')} 24%, ${v(ground)})`,
+        min: 4.5,
+      },
+      {
+        what: `Warning alert text, ${ground}`,
+        fg: v('text'),
+        bg: `color-mix(in srgb, ${v('warning')} 24%, ${v(ground)})`,
+        min: 4.5,
+      },
+    ];
+  }),
   { what: 'Focus ring', fg: v('focus'), bg: v('surface'), min: 3 },
   { what: 'Red card rank on a card', fg: v('play-red'), bg: v('surface-card'), min: 4.5 },
 ];

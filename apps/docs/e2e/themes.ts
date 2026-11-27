@@ -21,6 +21,8 @@ export const PAGES = [
   '/components/drawer/',
   '/components/empty/',
   '/components/veil/',
+  '/components/skeleton/',
+  '/components/alert/',
   '/components/tooltip/',
   '/components/menu/',
   '/components/popover/',

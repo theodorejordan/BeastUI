@@ -21,6 +21,8 @@
 @import './components/modal.css';
 @import './components/empty.css';
 @import './components/veil.css';
+@import './components/skeleton.css';
+@import './components/alert.css';
 @import './components/tooltip.css';
 @import './components/menu.css';
 @import './components/popover.css';

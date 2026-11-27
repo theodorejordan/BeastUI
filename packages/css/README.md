@@ -47,6 +47,8 @@ Fonts are not bundled: load Inter Tight (300, 400, 500), Outfit (300) and IBM Pl
 | Modal, drawer | `<dialog class="b-modal">`, `+ b-drawer` on an edge (`data-side="start"`); parts `b-modal-head`, `-title`, `-body`, `-foot` |
 | Empty | `<div class="b-empty">`; parts `b-empty__media`, `__title`, `__description`, `__actions`; `data-tone="danger"`, `data-frame="dashed"` |
 | Veil | `<div class="b-veil-region">`; parts `b-veil-content` (`inert aria-busy`), `b-veil` (`data-delay`), `-frame`, `-card`, `-title`, `-body`, `-actions`, `-status` (`role="status"`) |
+| Skeleton | `<span class="b-skeleton">sample text</span>` or an empty `<div class="b-skeleton">` (one line); `data-shape="circle"`, `"block"`; `data-delay`. The app sets `aria-busy` on the region, `aria-hidden` on the shapes |
+| Alert | `<div class="b-alert">`; parts `b-alert__icon`, `__content`, `__title`, `__description`, `__actions`, `__close` (on a quiet icon button); `data-tone="danger"`, `"warning"` |
 | Tooltip | `<div class="b-tooltip" role="tooltip" popover="manual">`; the script sets `top`/`left` |
 | Menu | `<div class="b-menu" role="menu" popover="auto">`; parts `b-menu-item` (`role="menuitem"`, `data-tone="danger"`), `-group`, `-label`, `-separator` |
 | Popover | `<div class="b-popover" role="dialog" popover="auto">` |

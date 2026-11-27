@@ -30,3 +30,5 @@ export { Menu, MenuGroup, MenuItem, MenuSeparator } from './menu';
 export type { MenuGroupProps, MenuItemProps, MenuProps } from './menu';
 export { Popover } from './popover';
 export type { PopoverProps } from './popover';
+export { Alert } from './alert';
+export type { AlertProps, AlertTone } from './alert';
