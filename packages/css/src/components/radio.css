@@ -1,0 +1,121 @@
+/*
+ * Radio group: one choice out of a few, all visible, in a form.
+ *
+ * <fieldset class="b-radio-group">
+ *   <legend class="b-field__label">Export as</legend>
+ *   <label class="b-check">
+ *     <input class="b-radio" type="radio" name="format" value="pdf" checked />
+ *     <span>PDF</span>
+ *   </label>
+ *   <label class="b-check">
+ *     <input class="b-radio" type="radio" name="format" value="csv" />
+ *     <span>CSV</span>
+ *   </label>
+ * </fieldset>
+ *
+ * Native radios sharing one `name`: the browser makes them one tab stop, moves the choice with
+ * the arrow keys and says "2 of 3" (MDN, <input type="radio">). The fieldset and its legend
+ * name the group; the legend takes the field's label look, so a group lines up with a field.
+ *
+ * Foundations (04-foundations.md): the checkbox's twin. Same 16px glyph slot, same line, same
+ * label row (.b-check, in checkbox.css), same states; only the shape says "one of": a circle in
+ * every theme, as a check stays square. On = an ink disc with an on-ink dot, like the checkbox's
+ * ink box with its tick: the state reads at a glance, never by colour alone.
+ *
+ * Needs checkbox.css (.b-check) when imported alone.
+ */
+@import '../layers.css';
+
+@layer beast.components {
+  .b-radio-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--b-gap-choice);
+    min-inline-size: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+
+    /* A rendered legend sits above the fieldset's content box, outside the flex: its own
+       margin gives the field's label gap. */
+    & > legend {
+      margin: 0 0 var(--b-gap-field);
+      padding: 0;
+    }
+
+    /* Side by side, for two or three short options. */
+    &[data-orientation='horizontal'] {
+      flex-direction: row;
+      flex-wrap: wrap;
+      column-gap: var(--b-space-4);
+    }
+
+    &:disabled {
+      opacity: var(--b-opacity-disabled);
+    }
+    /* The whole group fades once; its options must not fade a second time. */
+    &:disabled .b-check:has(> :disabled) {
+      opacity: 1;
+    }
+  }
+
+  .b-radio {
+    flex: none;
+    display: inline-grid;
+    place-content: center;
+    width: var(--b-size-glyph);
+    height: var(--b-size-glyph);
+    margin: 0;
+    border: var(--b-line-stroke) solid var(--b-color-border-strong);
+    border-radius: 50%;
+    background: var(--b-color-surface-card);
+    appearance: none;
+    cursor: inherit;
+    transition:
+      background-color var(--b-duration-1) var(--b-easing-move),
+      border-color var(--b-duration-1) var(--b-easing-move);
+
+    :not(.b-check) > & {
+      cursor: pointer;
+    }
+
+    /* The dot: 6px, a third of the box and a bit more, so it reads at 16px. */
+    &::before {
+      content: '';
+      width: var(--b-space-1-5);
+      height: var(--b-space-1-5);
+      border-radius: 50%;
+      background: var(--b-color-on-ink);
+      scale: 0;
+      transition: scale var(--b-duration-1) var(--b-easing-move);
+    }
+
+    &:hover:not(:disabled),
+    .b-check:hover > &:not(:disabled) {
+      border-color: var(--b-color-text);
+    }
+
+    &:checked {
+      border-color: var(--b-color-text);
+      background: var(--b-color-text);
+
+      &::before {
+        scale: 1;
+      }
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+    }
+    :not(.b-check) > &:disabled {
+      opacity: var(--b-opacity-disabled);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .b-radio::before {
+      transition: none;
+    }
+  }
+}

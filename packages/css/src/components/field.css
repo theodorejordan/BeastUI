@@ -11,6 +11,8 @@
  * </div>
  *
  * Without a unit, the input carries the class itself: <input class="b-input" />.
+ * A longer text takes the same class on a <textarea class="b-input">; a choice in a list, the
+ * same frame around a <select> (<span class="b-select">, select.css). One box for all three.
  * The hint and the error are tied to the input with aria-describedby, so a screen reader reads
  * them after the label (@beastui/preact's Field does the wiring).
  *
@@ -47,7 +49,7 @@
     color: var(--b-color-danger);
   }
 
-  .b-input {
+  :is(.b-input, .b-select) {
     /* The border width; focus raises it to --b-line-bold. */
     --b-input-line: var(--b-line-stroke);
     /* A number rarely needs the whole row: four control heights fit "1024 MB" with room. */
@@ -94,6 +96,31 @@
     & > input::placeholder {
       color: var(--b-color-text-muted);
       opacity: 1;
+    }
+  }
+
+  /* A textarea: the input's box, grown. Its first line sits where an input's text sits (the
+     control's padding above it), and it shows three lines before the user types. It grows with
+     its text where field-sizing exists (Chrome, Edge), up to ten lines, then scrolls; the user
+     can still drag its height. */
+  textarea.b-input {
+    --b-textarea-pad: calc((var(--b-size-control) - var(--b-font-line-height-2)) / 2 - var(--b-input-line));
+
+    display: block;
+    height: auto;
+    min-block-size: calc(3 * var(--b-font-line-height-2) + 2 * var(--b-textarea-pad) + 2 * var(--b-input-line));
+    max-block-size: calc(10 * var(--b-font-line-height-2) + 2 * var(--b-textarea-pad) + 2 * var(--b-input-line));
+    padding-block: var(--b-textarea-pad);
+    resize: vertical;
+    /* field-sizing grows the box with its text in both directions; the width stays the row's,
+       so only the height grows and long lines wrap. */
+    field-sizing: content;
+    inline-size: 100%;
+    min-inline-size: 0;
+
+    /* Drag it taller than ten lines: the user's choice wins. */
+    &[style*='height'] {
+      max-block-size: none;
     }
   }
 

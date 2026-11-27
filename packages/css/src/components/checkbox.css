@@ -14,6 +14,8 @@
  * could reach (MDN, appearance). "Some but not all" is the indeterminate state: a DOM property
  * with no HTML attribute, set by script (@beastui/preact's Checkbox does it).
  *
+ * .b-check is the label row of every small choice: the checkbox, the radio and the switch.
+ *
  * Foundations (04-foundations.md): the box takes the 16px glyph slot, radius --b-radius-check,
  * and sits centred on the 20px line of its label, --b-gap-choice from it. In a form the whole
  * label is the target; in a 36px table row the box alone is.
@@ -31,7 +33,7 @@
     cursor: pointer;
 
     /* Centred on the first line, so a label that wraps keeps its box at the top. */
-    & > .b-checkbox {
+    & > :is(.b-checkbox, .b-radio, .b-switch) {
       margin-block-start: calc((var(--b-font-line-height-2) - var(--b-size-glyph)) / 2);
     }
 

@@ -1,0 +1,109 @@
+/*
+ * Switch: a setting that applies at once (Sync over mobile data, Show hidden files).
+ *
+ * <label class="b-check">
+ *   <input class="b-switch" type="checkbox" role="switch" />
+ *   <span>Show hidden files</span>
+ * </label>
+ *
+ * A native checkbox with role="switch": the keyboard (Space), the form value and :checked
+ * stay the browser's, and a screen reader says "switch, on / off" instead of "checked"
+ * (WAI-ARIA 1.2, switch role; APG Switch pattern, "using HTML input type checkbox").
+ *
+ * Switch or checkbox? The checkbox waits for the form's Save; the switch acts now. A switch
+ * never has a "some" state.
+ *
+ * Foundations (04-foundations.md): the checkbox's family. The track is one glyph high (16) and
+ * one and three quarter glyphs wide (28): it sits on the 20px line of its label in the same .b-check row,
+ * --b-gap-choice from the text. The track is a pill in every theme, like the tag and the radio's
+ * circle: its shape says what it is. The thumb sits 2px inside the line. Off = the checkbox's
+ * empty box (card ground, strong line) with a strong-line thumb; on = the ink box, an on-ink
+ * thumb at the far end. Hover = the line turns ink, as on every small choice.
+ *
+ * Needs checkbox.css (.b-check) when imported alone.
+ */
+@import '../layers.css';
+
+@layer beast.components {
+  .b-switch {
+    /* 2px of air between the line and the thumb. */
+    --b-switch-air: var(--b-space-0-5);
+    --b-switch-thumb: calc(var(--b-size-glyph) - 2 * var(--b-line-stroke) - 2 * var(--b-switch-air));
+    --b-switch-width: calc(var(--b-size-glyph) * 1.75);
+
+    flex: none;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    width: var(--b-switch-width);
+    height: var(--b-size-glyph);
+    margin: 0;
+    padding: 0 var(--b-switch-air);
+    border: var(--b-line-stroke) solid var(--b-color-border-strong);
+    border-radius: var(--b-radius-tag);
+    background: var(--b-color-surface-card);
+    appearance: none;
+    cursor: inherit;
+    transition:
+      background-color var(--b-duration-1) var(--b-easing-move),
+      border-color var(--b-duration-1) var(--b-easing-move);
+
+    :not(.b-check) > & {
+      cursor: pointer;
+    }
+
+    &::before {
+      content: '';
+      flex: none;
+      width: var(--b-switch-thumb);
+      height: var(--b-switch-thumb);
+      border-radius: 50%;
+      background: var(--b-color-border-strong);
+      transition:
+        translate var(--b-duration-1) var(--b-easing-move),
+        background-color var(--b-duration-1) var(--b-easing-move);
+    }
+
+    &:hover:not(:disabled),
+    .b-check:hover > &:not(:disabled) {
+      border-color: var(--b-color-text);
+
+      &::before {
+        background: var(--b-color-text);
+      }
+    }
+
+    /* The thumb travels the inside width, minus itself. Logical: it goes left in RTL. */
+    &:checked {
+      border-color: var(--b-color-text);
+      background: var(--b-color-text);
+
+      &::before {
+        background: var(--b-color-on-ink);
+        translate: calc(var(--b-switch-width) - 2 * var(--b-line-stroke) - 2 * var(--b-switch-air) - var(--b-switch-thumb));
+      }
+      &:dir(rtl)::before {
+        translate: calc(-1 * (var(--b-switch-width) - 2 * var(--b-line-stroke) - 2 * var(--b-switch-air) - var(--b-switch-thumb)));
+      }
+    }
+    /* On + hover keeps the on-ink thumb. */
+    &:checked:hover:not(:disabled)::before,
+    .b-check:hover > &:checked:not(:disabled)::before {
+      background: var(--b-color-on-ink);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+    }
+    :not(.b-check) > &:disabled {
+      opacity: var(--b-opacity-disabled);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .b-switch,
+    .b-switch::before {
+      transition: none;
+    }
+  }
+}

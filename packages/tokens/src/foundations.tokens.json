@@ -62,9 +62,9 @@
     "$type": "dimension",
     "$description": "Proximity ladder (§3): the space inside a group is always smaller than the space around it.",
     "row": {
-      "$description": "Between the rows of a list (tree): none, rows sit edge to edge like the table's. A theme with round rows opens it.",
+      "$description": "Between the rows of a list (tree, menu, select list): 1px, so two tinted rows (the chosen one and its parent, or a hovered one) stay two. A theme with round rows opens it more.",
       "$value": {
-        "value": 0,
+        "value": 1,
         "unit": "px"
       }
     },
@@ -368,6 +368,10 @@
       },
       "medium": {
         "$value": 500
+      },
+      "light": {
+        "$description": "A group's name in a list (menu, select): lighter than the rows it names.",
+        "$value": 300
       },
       "display": {
         "$value": 300

@@ -17,6 +17,7 @@ const PAIRS: Pair[] = [
   { what: 'Text on a card', fg: v('text'), bg: v('surface-card'), min: 4.5 },
   { what: 'Muted text', fg: v('text-muted'), bg: v('surface'), min: 4.5 },
   { what: 'Muted text on raised', fg: v('text-muted'), bg: v('surface-raised'), min: 4.5 },
+  { what: 'Group label on raised (menu, select)', fg: v('text-label'), bg: v('surface-raised'), min: 4.5 },
   { what: 'Primary button label', fg: v('on-ink'), bg: v('text'), min: 4.5 },
   {
     what: 'Primary button label, hovered',

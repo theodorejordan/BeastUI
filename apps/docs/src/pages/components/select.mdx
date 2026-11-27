@@ -1,0 +1,124 @@
+---
+layout: ../../layouts/Docs.astro
+title: Select
+description: "Pick one value from a list, in a form."
+---
+import Demo from '../../components/Demo.astro';
+import SelectDemo from '../../components/SelectDemo';
+import Pre from '../../components/Pre.astro';
+
+export const components = { pre: Pre };
+
+# Select
+
+<p class="docs-lead">Pick one value from a list, in a form.</p>
+
+## When to use it
+
+For a value out of a known list that is too long to show at once: a format, a time zone, a language. The closed box is the [field](../field/)'s, so a select lines up with inputs and buttons.
+
+- An action (Rename, Delete): use a [menu](../menu/). A select holds a value; a menu runs a command.
+- Two to five short options: show them all, with a [segmented control](../segmented-control/) or a [radio group](../radio/).
+
+## Live
+
+<figure class="docs-demo">
+  <div class="docs-demo__stage"><SelectDemo client:visible /></div>
+</figure>
+
+## The open list
+
+A native `<select>`. In Chrome and Edge (135 and later) the open list is drawn like the [menu](../menu/): the same box, rows and highlight, with a tick on the chosen value. Safari and Firefox show the system's list; the closed box stays the same everywhere.
+
+<Demo html={`
+<div class="b-field" style="width: min(100%, 280px)">
+  <label class="b-field__label" for="zone">Time zone</label>
+  <span class="b-select">
+    <select id="zone">
+      <optgroup label="Europe">
+        <option value="london">London</option>
+        <option value="paris" selected>Paris</option>
+      </optgroup>
+      <optgroup label="Americas">
+        <option value="new-york">New York</option>
+        <option value="sao-paulo">São Paulo</option>
+      </optgroup>
+    </select>
+  </span>
+</div>
+`} />
+
+## Error
+
+<Demo html={`
+<div class="b-field" style="width: min(100%, 280px)">
+  <label class="b-field__label" for="lang">Language</label>
+  <span class="b-select">
+    <select id="lang" aria-invalid="true" aria-describedby="lang-error">
+      <option value="" disabled selected hidden>Choose a language</option>
+      <option value="en">English</option>
+      <option value="fr">French</option>
+    </select>
+  </span>
+  <p class="b-field__error" id="lang-error">Choose a language.</p>
+</div>
+`} />
+
+## Disabled
+
+<Demo html={`
+<div class="b-field" style="width: min(100%, 280px)">
+  <label class="b-field__label" for="plan">Plan</label>
+  <span class="b-select">
+    <select id="plan" disabled>
+      <option>Team</option>
+    </select>
+  </span>
+</div>
+`} />
+
+## In Preact
+
+`Select` takes the `Field`'s ids and `aria-*` links, like `Input`.
+
+```tsx
+import { Field, Select } from '@beastui/preact';
+
+<Field label="Export as">
+  <Select
+    value={format}
+    onChange={setFormat}
+    placeholder="Choose a format"
+    options={[
+      { value: 'pdf', label: 'PDF' },
+      { value: 'csv', label: 'CSV' },
+    ]}
+  />
+</Field>
+```
+
+| Prop | Type | Default | |
+|---|---|---|---|
+| `options` | `{ value, label, disabled? }[]` | required | `label` is plain text: an option shows text only. |
+| `value` | `T \| ''` | required | The component is controlled. `''` shows the placeholder. |
+| `onChange` | `(value: T) => void` | required | |
+| `placeholder` | `string` | | Shown in the box while nothing is chosen; never in the open list. |
+| `class` | `string` | | Extra classes, on the frame (`b-select`). |
+| …the native `<select>` props | | | `name`, `disabled`, `required`… |
+
+## The CSS contract
+
+| Markup | Effect |
+|---|---|
+| `<span class="b-select">` around a `<select>` | The field's box with a chevron at the end. The whole box opens the list. |
+| `<optgroup label="…">` | A group, named like a menu label: light, in capitals (lowercase in tool). |
+| `<option value="" disabled selected hidden>` | A placeholder: in the box, never in the list. |
+| `aria-invalid="true"` on the select | Red border. |
+| `disabled` on the select | The box fades. |
+| `--b-input-width` on the frame | Its width, as for an input. |
+
+## Accessibility
+
+- A native select: the arrow keys, letters and Enter, the form value, and the announcement are the browser's.
+- The look of the open list uses `appearance: base-select` ([MDN, Customizable select elements](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Customizable_select)); it changes the drawing only, not the keys or the roles.
+- An error is red **and** written out, never colour alone.

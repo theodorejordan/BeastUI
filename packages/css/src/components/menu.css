@@ -41,6 +41,7 @@
     max-block-size: calc(100svh - 2 * var(--b-space-2));
     overflow-y: auto;
     overscroll-behavior: contain;
+    gap: var(--b-gap-row);
     padding: var(--b-inset-nested);
     border: var(--b-line-hair) solid var(--b-color-border-strong);
     border-radius: var(--b-radius-control);
@@ -61,6 +62,7 @@
   .b-menu-group {
     display: flex;
     flex-direction: column;
+    gap: var(--b-gap-row);
   }
 
   .b-menu-item {
@@ -72,7 +74,8 @@
     min-block-size: var(--b-size-control);
     padding-inline: var(--b-space-2);
     border-radius: max(0px, var(--b-radius-control) - var(--b-inset-nested));
-    cursor: default;
+    /* Every target in BeastUI shows the hand (owner), menus too. */
+    cursor: pointer;
     user-select: none;
     white-space: nowrap;
 
@@ -104,6 +107,7 @@
 
     &[aria-disabled='true'] {
       opacity: var(--b-opacity-disabled);
+      cursor: not-allowed;
     }
 
     & > .b-icon {
@@ -111,12 +115,24 @@
     }
   }
 
-  /* A group's name: small, muted, not a target. */
+  /* A group's name: small, light, in capitals (lowercase in tool), not a target. It starts 4px
+     left of the rows' text (owner): out of their column, it reads as a heading.
+     The select's group names (select.css) are the same. */
   .b-menu-label {
-    padding: var(--b-space-1-5) var(--b-space-2) var(--b-space-1);
-    color: var(--b-color-text-muted);
+    /* Air above: a group's name belongs to the rows under it, not to the ones before. */
+    padding: var(--b-space-3) var(--b-space-2) var(--b-space-1) var(--b-space-1);
+    color: var(--b-color-text-label);
     font-size: var(--b-font-size-1);
+    font-weight: var(--b-font-weight-light);
     line-height: var(--b-font-line-height-1);
+    letter-spacing: var(--b-tracking-label);
+    text-transform: var(--b-case-label);
+  }
+
+  /* At the top of the box, or just under a separator, the inset or the line already gives air. */
+  .b-menu > .b-menu-group:first-child > .b-menu-label,
+  .b-menu-separator + .b-menu-group > .b-menu-label {
+    padding-block-start: var(--b-space-1-5);
   }
 
   /* Edge to edge: it runs under the box's inset, a line across the whole menu. */

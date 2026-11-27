@@ -35,7 +35,9 @@ import { Button } from '@beastui/preact';
 |---|---|
 | `Button` | `pending` and `iconOnly`, above |
 | `Checkbox` | The `indeterminate` state, which has no HTML attribute |
-| `Field`, `Input` | Label, hint and error wired to the input |
+| `Field`, `Input`, `Textarea`, `Select` | Label, hint and error wired to the control; `Select` takes `options` and a `placeholder` |
+| `RadioGroup` | The fieldset, legend and one shared `name` from `options` |
+| `Switch` | `role="switch"` on a native checkbox, controlled like `Checkbox` |
 | `Progress` | The progressbar ARIA and the fill, from `value` and `max` |
 | `Modal`, `Drawer` | `open` state to `showModal()`/`close()`, backdrop click, focus back to the opener |
 | `Veil` | `busy` → `inert` + `aria-busy` on the region's content, a live title, focus caught and given back |

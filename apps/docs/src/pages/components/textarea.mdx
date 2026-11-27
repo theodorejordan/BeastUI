@@ -1,0 +1,89 @@
+---
+layout: ../../layouts/Docs.astro
+title: Textarea
+description: "A box for a longer text: a note, a description, a message."
+---
+import Demo from '../../components/Demo.astro';
+import TextareaDemo from '../../components/TextareaDemo';
+import Pre from '../../components/Pre.astro';
+
+export const components = { pre: Pre };
+
+# Textarea
+
+<p class="docs-lead">A box for a longer text: a note, a description, a message.</p>
+
+## When to use it
+
+When the answer may take more than one line. It is the [field](../field/)'s box, grown: same line, same focus, same error, so the two line up in a form.
+
+- A name, a number, a path: use an [input](../field/).
+
+## Live
+
+Type past 280 characters to see the error.
+
+<figure class="docs-demo">
+  <div class="docs-demo__stage"><TextareaDemo client:visible /></div>
+</figure>
+
+## In a field
+
+Three lines high before you type. In Chrome and Edge it grows with its text up to ten lines, then scrolls; in every browser the user can drag its height.
+
+<Demo html={`
+<div class="b-field" style="width: min(100%, 400px)">
+  <label class="b-field__label" for="note">Description</label>
+  <textarea class="b-input" id="note" aria-describedby="note-hint"></textarea>
+  <p class="b-field__hint" id="note-hint">Shown under the file name.</p>
+</div>
+`} />
+
+## Error
+
+<Demo html={`
+<div class="b-field" style="width: min(100%, 400px)">
+  <label class="b-field__label" for="msg">Message</label>
+  <textarea class="b-input" id="msg" aria-invalid="true" aria-describedby="msg-error">Hi</textarea>
+  <p class="b-field__error" id="msg-error">At least 10 characters.</p>
+</div>
+`} />
+
+## Disabled
+
+<Demo html={`
+<div class="b-field" style="width: min(100%, 400px)">
+  <label class="b-field__label" for="old">Archived note</label>
+  <textarea class="b-input" id="old" disabled>Sent last year.</textarea>
+</div>
+`} />
+
+## In Preact
+
+`Textarea` takes the `Field`'s ids and `aria-*` links, like `Input`.
+
+```tsx
+import { Field, Textarea } from '@beastui/preact';
+
+<Field label="Description" hint="Shown under the file name.">
+  <Textarea value={text} onInput={(e) => setText(e.currentTarget.value)} />
+</Field>
+```
+
+| Prop | Type | Default | |
+|---|---|---|---|
+| `class` | `string` | | Extra classes, after `b-input`. |
+| …the native `<textarea>` props | | | `value`, `onInput`, `rows`, `maxLength`, `disabled`… |
+
+## The CSS contract
+
+| Markup | Effect |
+|---|---|
+| `<textarea class="b-input">` | The input's box: three lines high, growing to ten where supported. |
+| `aria-invalid="true"` | Red border. |
+| `disabled` | The box fades. |
+
+## Accessibility
+
+- The same as the [field](../field/#accessibility): a real `<label for>`, hint and error through `aria-describedby`.
+- Growing with the text uses `field-sizing: content` ([MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/field-sizing)); where it is missing, the box keeps three lines and scrolls.

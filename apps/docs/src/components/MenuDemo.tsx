@@ -14,7 +14,7 @@ export default function MenuDemo(): JSX.Element {
   return (
     <div style={{ display: 'flex', gap: 'var(--b-space-4)', alignItems: 'center' }}>
       <Menu trigger={<Button>Actions</Button>}>
-        <MenuGroup label="Budget 2027.xlsx">
+        <MenuGroup label="File">
           <MenuItem onSelect={() => setLast('Rename')}>{icon('M4 20h4L19 9l-4-4L4 16v4M13 7l4 4')}Rename</MenuItem>
           <MenuItem onSelect={() => setLast('Duplicate')}>{icon('M8 8h12v12H8zM4 16V4h12')}Duplicate</MenuItem>
           <MenuItem disabled>{icon('M4 7h6l2 2h8v10H4z')}Move to…</MenuItem>

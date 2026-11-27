@@ -9,14 +9,15 @@
  * Field shares its ids with the Input inside it through a context, so the app writes
  * <Field label="…"><Input /></Field> and never handles an id.
  */
-import { createContext, type ComponentChildren, type InputHTMLAttributes, type JSX } from 'preact';
+import { createContext, type ComponentChildren, type Context, type InputHTMLAttributes, type JSX, type TextareaHTMLAttributes } from 'preact';
 import { useContext, useId } from 'preact/hooks';
 
 type FieldWiring = { id: string; describedBy: string | undefined; invalid: boolean };
 
-const FieldContext = createContext<FieldWiring | null>(null);
+/** Shared with Select and Textarea: any control in a Field takes its ids from here. */
+export const FieldContext: Context<FieldWiring | null> = createContext<FieldWiring | null>(null);
 
-const join = (...parts: (string | false | null | undefined)[]): string | undefined =>
+export const join = (...parts: (string | false | null | undefined)[]): string | undefined =>
   parts.filter(Boolean).join(' ') || undefined;
 
 export type FieldProps = {
@@ -111,5 +112,35 @@ export function Input({
         {unit}
       </span>
     </span>
+  );
+}
+
+type NativeTextareaProps = Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'class' | 'className' | 'role'>;
+
+export type TextareaProps = NativeTextareaProps & {
+  /** Extra classes, after `b-input`. */
+  class?: string;
+  className?: string;
+};
+
+/** A longer text: the input's box, three lines high, growing with its text (where supported). */
+export function Textarea({
+  id,
+  'aria-describedby': describedBy,
+  'aria-invalid': invalid,
+  class: extraClass,
+  className,
+  ...rest
+}: TextareaProps): JSX.Element {
+  const field = useContext(FieldContext);
+  const ownId = useId();
+  return (
+    <textarea
+      {...rest}
+      id={id ?? field?.id ?? ownId}
+      class={join('b-input', extraClass, className)}
+      aria-describedby={join(field?.describedBy, describedBy as string | undefined)}
+      aria-invalid={field?.invalid ? 'true' : invalid}
+    />
   );
 }

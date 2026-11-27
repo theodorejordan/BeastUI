@@ -10,6 +10,9 @@
 @import './components/segmented.css';
 @import './components/field.css';
 @import './components/checkbox.css';
+@import './components/radio.css';
+@import './components/switch.css';
+@import './components/select.css';
 @import './components/tag.css';
 @import './components/table.css';
 @import './components/tree.css';

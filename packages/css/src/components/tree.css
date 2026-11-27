@@ -29,9 +29,10 @@
  * Foundations (04-foundations.md): rows are --b-size-row, like the table; the toggle is the
  * small control (24px, 20 in tool), flush with the row's edge; one half-toggle indent per level
  * (12px, 10 in tool); the control inset on the right; tabular counts; the selected row edge
- * is the bold line. Rows take --b-radius-row and --b-gap-row: square and edge to edge in core
- * and tool, pills with air between them in playful (like its buttons). The chosen row's mark
- * is --b-line-current (the bold edge) and --b-font-weight-current (playful: no edge, medium).
+ * is the bold line. Rows take --b-radius-row and --b-gap-row: square and 1px apart in core
+ * and tool, pills 4px apart in playful (like its buttons); the menu and the select list share
+ * the gap. The chosen row's mark is --b-line-current (the bold edge) and
+ * --b-font-weight-current (playful: no edge, medium).
  */
 @import '../layers.css';
 

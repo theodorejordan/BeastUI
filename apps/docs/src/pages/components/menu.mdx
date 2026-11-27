@@ -50,7 +50,7 @@ A disabled item stays in the list, faded, so the user sees it exists. The keys s
 import { Button, Menu, MenuGroup, MenuItem, MenuSeparator } from '@beastui/preact';
 
 <Menu trigger={<Button>Actions</Button>}>
-  <MenuGroup label="Budget 2027.xlsx">
+  <MenuGroup label="File">
     <MenuItem onSelect={rename}>Rename</MenuItem>
     <MenuItem disabled>Move to…</MenuItem>
   </MenuGroup>
@@ -76,7 +76,7 @@ import { Button, Menu, MenuGroup, MenuItem, MenuSeparator } from '@beastui/preac
 
 | `MenuGroup` | Type | | |
 |---|---|---|---|
-| `label` | `string` | required | Shown small above its items, and read before them. |
+| `label` | `string` | required | A heading for its items ("File", "Share"), shown small in light capitals (lowercase in tool) and read before them. Not a file or person name: the capitals would change it. |
 
 
 ## Writing it

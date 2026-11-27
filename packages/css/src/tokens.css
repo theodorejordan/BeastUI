@@ -28,6 +28,10 @@
        ground, so it fades back without going dark. The backdrop (--b-color-backdrop) darkens
        the whole page behind a modal or a drawer: two different messages, two different looks. */
     --b-color-veil: color-mix(in srgb, var(--b-color-surface) 70%, transparent);
+    /* A group's name in a list (menu, select): a step lighter than muted text, on the raised
+       ground those lists sit on. 87% is as light as text may go: 4.6:1, WCAG AA asks 4.5:1
+       (contrast.test.ts). */
+    --b-color-text-label: color-mix(in srgb, var(--b-color-text-muted) 87%, var(--b-color-surface-raised));
   }
   [data-theme='playful'] {
     --b-easing-press: var(--b-easing-spring);

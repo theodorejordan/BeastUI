@@ -2,7 +2,7 @@ import '@beastui/css/beastui.css';
 import { render } from 'preact';
 import { afterEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
-import { Field, Input } from './field';
+import { Field, Input, Textarea } from './field';
 
 const root = document.body.appendChild(document.createElement('div'));
 afterEach(() => render(null, root));
@@ -72,5 +72,28 @@ describe('Field', () => {
     );
     const boxes = [...root.querySelectorAll('.b-input')];
     expect(boxes.map((b) => b.getBoundingClientRect().height)).toEqual([32, 32]);
+  });
+});
+
+describe('Textarea', () => {
+  it('takes the Field wiring, like Input', () => {
+    render(
+      <Field label="Note" hint="Shown to everyone with the link." error="Too long.">
+        <Textarea />
+      </Field>,
+      root,
+    );
+    const area = page.getByRole('textbox', { name: 'Note' }).element() as HTMLTextAreaElement;
+    expect(area).toBeInstanceOf(HTMLTextAreaElement);
+    expect(area.classList.contains('b-input')).toBe(true);
+    expect(area.getAttribute('aria-invalid')).toBe('true');
+    expect(area.getAttribute('aria-describedby')?.split(' ')).toHaveLength(2);
+  });
+
+  it('starts three lines high', () => {
+    render(<Textarea aria-label="Note" />, root);
+    const area = root.querySelector('textarea')!;
+    const line = parseFloat(getComputedStyle(area).lineHeight);
+    expect(area.getBoundingClientRect().height).toBeGreaterThanOrEqual(3 * line);
   });
 });

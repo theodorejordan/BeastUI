@@ -1,0 +1,128 @@
+---
+layout: ../../layouts/Docs.astro
+title: Radio group
+description: "One choice out of a few, all visible, in a form."
+---
+import Demo from '../../components/Demo.astro';
+import RadioDemo from '../../components/RadioDemo';
+import Pre from '../../components/Pre.astro';
+
+export const components = { pre: Pre };
+
+# Radio group
+
+<p class="docs-lead">One choice out of a few, all visible, in a form.</p>
+
+## When to use it
+
+When the options need a sentence each, or the choice waits for the form's Save. Every option stays in sight, so the user compares them without opening anything.
+
+- A short switch of view or mode, applied at once: use a [segmented control](../segmented-control/).
+- More than five or six options, or labels of a word: use a [select](../select/).
+- On or off: use a [checkbox](../checkbox/) or a [switch](../switch/).
+
+## Live
+
+<figure class="docs-demo">
+  <div class="docs-demo__stage"><RadioDemo client:visible /></div>
+</figure>
+
+## Stacked
+
+The default. A long label wraps; the circle stays on the first line.
+
+<Demo html={`
+<fieldset class="b-radio-group">
+  <legend class="b-field__label">Who can open the link</legend>
+  <label class="b-check">
+    <input class="b-radio" type="radio" name="access" value="team" checked />
+    <span>People in your team</span>
+  </label>
+  <label class="b-check">
+    <input class="b-radio" type="radio" name="access" value="anyone" />
+    <span>Anyone with the link, including people outside your team who were sent it</span>
+  </label>
+</fieldset>
+`} />
+
+## Side by side
+
+For two or three short options.
+
+<Demo html={`
+<fieldset class="b-radio-group" data-orientation="horizontal">
+  <legend class="b-field__label">Page size</legend>
+  <label class="b-check">
+    <input class="b-radio" type="radio" name="size" value="a4" checked />
+    <span>A4</span>
+  </label>
+  <label class="b-check">
+    <input class="b-radio" type="radio" name="size" value="letter" />
+    <span>Letter</span>
+  </label>
+</fieldset>
+`} />
+
+## Disabled
+
+`disabled` on the fieldset turns every option off at once; on one radio, only that option.
+
+<Demo html={`
+<fieldset class="b-radio-group" disabled>
+  <legend class="b-field__label">Export as</legend>
+  <label class="b-check">
+    <input class="b-radio" type="radio" name="format-off" value="pdf" checked />
+    <span>PDF</span>
+  </label>
+  <label class="b-check">
+    <input class="b-radio" type="radio" name="format-off" value="csv" />
+    <span>CSV</span>
+  </label>
+</fieldset>
+`} />
+
+## In Preact
+
+`RadioGroup` makes the fieldset, the legend and one shared `name`.
+
+```tsx
+import { RadioGroup } from '@beastui/preact';
+
+<RadioGroup
+  label="Export as"
+  value={format}
+  onChange={setFormat}
+  options={[
+    { value: 'pdf', label: 'PDF' },
+    { value: 'csv', label: 'CSV' },
+  ]}
+/>
+```
+
+| Prop | Type | Default | |
+|---|---|---|---|
+| `label` | `ComponentChildren` | required | The group's name, as its legend. |
+| `options` | `{ value, label, disabled? }[]` | required | |
+| `value` | `T \| undefined` | required | The component is controlled. |
+| `onChange` | `(value: T) => void` | required | |
+| `orientation` | `'vertical' \| 'horizontal'` | `'vertical'` | |
+| `disabled` | `boolean` | `false` | Turns the whole group off. |
+| `name` | `string` | made for you | The form field name. |
+| `class` | `string` | | Extra classes, on the fieldset. |
+
+## The CSS contract
+
+| Markup | Effect |
+|---|---|
+| `<fieldset class="b-radio-group">` + `<legend class="b-field__label">` | The group and its name, the label 8px above the options. |
+| `<input class="b-radio" type="radio">` | The 16px circle. |
+| `<label class="b-check">` around the radio and a `<span>` | The label row, as for the checkbox. |
+| `checked` | An ink disc with a dot. |
+| `data-orientation="horizontal"` on the fieldset | Options side by side, 16px apart. |
+| `disabled` on the fieldset or a radio | The group, or the option, fades. |
+
+## Accessibility
+
+- Native radios with one `name`: Tab reaches the group once, the arrow keys move the choice, and a screen reader says "2 of 3" ([MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/radio)).
+- The `<fieldset>` and `<legend>` name the group ([MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/fieldset)).
+- On is a filled disc **and** a dot, never colour alone.

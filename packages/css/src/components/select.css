@@ -1,0 +1,213 @@
+/*
+ * Select: pick one value from a list, in a form (Export as: PDF, CSV, Excel).
+ *
+ * <span class="b-select">
+ *   <select id="format">
+ *     <option value="pdf">PDF</option>
+ *     <option value="csv">CSV</option>
+ *   </select>
+ * </span>
+ *
+ * A native <select>: the value, the keys (arrows, letters, Enter), the form and the
+ * announcement are the browser's. Select or menu? A select holds a value the form sends; a
+ * menu (menu.css) runs an action and holds nothing.
+ *
+ * The closed box is the input's (field.css shares its frame, hover, 2px focus line and
+ * invalid red), with a chevron at the end, so a select lines up with fields and buttons.
+ * The open list:
+ * - Chrome and Edge 135+: appearance: base-select lets CSS draw it, and it is drawn as the
+ *   menu: raised ground, strong hair line, the button's radius, nested inset 4, items one
+ *   control high and --b-gap-row apart, the menu's one highlight, a tick at the end of the chosen one (MDN,
+ *   Customizable select elements).
+ * - Safari and Firefox: the system's own list. The closed box stays BeastUI's.
+ *
+ * The chevron is drawn by the frame (::after, in currentColor), not the select, so it is the
+ * same in every browser and follows the theme's ink.
+ *
+ * Needs field.css (the frame) when imported alone.
+ */
+@import '../layers.css';
+
+@layer beast.components {
+  .b-select {
+    --b-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    --b-select-tick: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.5 2.5L12 5.5' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+
+    position: relative;
+    /* The select fills the frame (the whole box opens it); the frame keeps no inset of its own. */
+    padding: 0;
+    cursor: pointer;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset-block: 0;
+      inset-inline-end: calc(var(--b-inset-control) - var(--b-input-line));
+      width: var(--b-size-glyph);
+      margin-block: auto;
+      height: var(--b-size-glyph);
+      background: currentColor;
+      mask: var(--b-select-chevron) center / 100% no-repeat;
+      pointer-events: none;
+    }
+
+    & > select {
+      flex: 1;
+      box-sizing: border-box;
+      min-width: 0;
+      height: 100%;
+      margin: 0;
+      /* Room for the chevron: the control inset, the glyph, the icon gap. */
+      padding-block: 0;
+      padding-inline: calc(var(--b-inset-control) - var(--b-input-line))
+        calc(var(--b-inset-control) - var(--b-input-line) + var(--b-size-glyph) + var(--b-gap-icon));
+      border: 0;
+      border-radius: inherit;
+      background: none;
+      color: inherit;
+      font: inherit;
+      text-transform: inherit;
+      appearance: none;
+      cursor: inherit;
+      outline: none;
+    }
+
+    &:has(> :disabled) {
+      cursor: not-allowed;
+    }
+  }
+
+  /* The open list, where CSS can draw it. */
+  @supports (appearance: base-select) {
+    .b-select > select {
+      appearance: base-select;
+      /* A base-select is a button: its text sits at the top unless centred. */
+      display: flex;
+      align-items: center;
+
+      /* The frame draws the chevron; the browser's own goes. */
+      &::picker-icon {
+        display: none;
+      }
+
+      &::picker(select) {
+        appearance: base-select;
+        box-sizing: border-box;
+        min-inline-size: anchor-size(inline);
+        max-block-size: calc(100svh - 2 * var(--b-space-2));
+        margin-block: var(--b-space-1);
+        padding: var(--b-inset-nested);
+        overscroll-behavior: contain;
+        border: var(--b-line-hair) solid var(--b-color-border-strong);
+        border-radius: var(--b-radius-control);
+        background: var(--b-color-surface-raised);
+        color: var(--b-color-text);
+      }
+    }
+
+    /* A hidden option (the placeholder) stays out of the list: display: flex would bring it back. */
+    .b-select option[hidden] {
+      display: none;
+    }
+
+    .b-select option:not([hidden]) {
+      display: flex;
+      align-items: center;
+      gap: var(--b-gap-icon);
+      min-block-size: var(--b-size-control);
+      padding-block: 0;
+      padding-inline: var(--b-space-2);
+      border-radius: max(0px, var(--b-radius-control) - var(--b-inset-nested));
+      color: var(--b-color-text);
+      font: var(--b-font-weight-regular) var(--b-font-size-2) / var(--b-font-line-height-2) var(--b-font-family-ui);
+      text-transform: var(--b-case);
+      cursor: pointer;
+      outline: none;
+
+      /* The menu's one highlight: the pointer and the keys move the same tint. */
+      &:is(:hover, :focus-visible, :focus):not(:disabled) {
+        background: var(--b-color-hover);
+      }
+      &:checked {
+        background: none;
+        font-weight: var(--b-font-weight-medium);
+      }
+      &:checked:is(:hover, :focus-visible, :focus) {
+        background: var(--b-color-hover);
+      }
+
+      /* The chosen one's tick, at the end of the row. */
+      &::checkmark {
+        order: 1;
+        margin-inline-start: auto;
+        content: '';
+        width: var(--b-size-glyph);
+        height: var(--b-size-glyph);
+        background: currentColor;
+        mask: var(--b-select-tick) center / 100% no-repeat;
+      }
+
+      &:disabled {
+        opacity: var(--b-opacity-disabled);
+        cursor: not-allowed;
+      }
+
+      @media (forced-colors: active) {
+        &:focus {
+          outline: var(--b-line-bold) solid Highlight;
+          outline-offset: calc(-1 * var(--b-line-bold));
+        }
+      }
+    }
+
+    /* A group's name: the menu label (small, muted, regular). The browser makes it bold; the
+       options inside set their own text back. */
+    /* As in the menu, the name starts 4px left of the rows' text. The browser draws it with its
+       own 6px inset: the group moves 6px out and 4px in, its options 2px back.
+       Air above the name; the first group sits under the box's inset. */
+    .b-select optgroup {
+      --b-select-label-inset: 6px;
+      margin-inline-start: calc(-1 * var(--b-select-label-inset));
+      padding: var(--b-space-3) 0 0 var(--b-space-1);
+      color: var(--b-color-text-label);
+      font: var(--b-font-weight-light) var(--b-font-size-1) / var(--b-font-line-height-1) var(--b-font-family-ui);
+      letter-spacing: var(--b-tracking-label);
+      text-transform: var(--b-case-label);
+    }
+    .b-select optgroup option {
+      margin-inline-start: calc(var(--b-select-label-inset) - var(--b-space-1));
+      letter-spacing: normal;
+    }
+    .b-select optgroup:first-child {
+      padding-block-start: var(--b-space-1-5);
+    }
+    .b-select optgroup > option:first-of-type {
+      margin-block-start: var(--b-space-1);
+    }
+    /* The rows' gap, as in the menu and the tree (--b-gap-row: 1px, 4px in playful). */
+    .b-select :is(option, optgroup) + :is(option, optgroup) {
+      margin-block-start: var(--b-gap-row);
+    }
+    .b-select optgroup option {
+      color: var(--b-color-text);
+    }
+
+    /* The menu's quick fade. */
+    @media (prefers-reduced-motion: no-preference) {
+      .b-select > select::picker(select) {
+        transition:
+          opacity var(--b-duration-1) var(--b-easing-enter),
+          display var(--b-duration-1) allow-discrete,
+          overlay var(--b-duration-1) allow-discrete;
+        opacity: 0;
+      }
+      .b-select > select:open::picker(select) {
+        opacity: 1;
+
+        @starting-style {
+          opacity: 0;
+        }
+      }
+    }
+  }
+}
