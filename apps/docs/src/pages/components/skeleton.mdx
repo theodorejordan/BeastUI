@@ -12,16 +12,6 @@ export const components = { pre: Pre };
 
 <p class="docs-lead">The shape of content that is on its way. The page keeps its layout while it loads, so nothing jumps when the content lands.</p>
 
-## When to use it
-
-The user waits, and the region has nothing to show yet: a table on first load, a profile, a list of files.
-
-- The region already has content, and a job runs on it: use a [veil](../veil/).
-- A job with a known length: use a [progress bar](../progress/).
-- The load ended with nothing: use an [empty state](../empty/).
-
-## Text
-
 Wrap sample text, about as long as the real one. The text turns invisible and gives the shape its size, so the real content takes the same room.
 
 <Demo html={`
@@ -30,7 +20,17 @@ Wrap sample text, about as long as the real one. The text turns invisible and gi
 </p>
 `} />
 
-## Lines
+## When to use it
+
+The user waits, and the region has nothing to show yet: a table on first load, a profile, a list of files.
+
+- The region already has content, and a job runs on it: use a [veil](../veil/).
+- A job with a known length: use a [progress bar](../progress/).
+- The load ended with nothing: use an [empty state](../empty/).
+
+## Examples
+
+### Lines
 
 Empty, a skeleton is one line of text, as wide as its container. Give each line a width: real paragraphs never end at the same place.
 
@@ -42,7 +42,7 @@ Empty, a skeleton is one line of text, as wide as its container. Give each line 
 </div>
 `} />
 
-## Shapes
+### Shapes
 
 `data-shape="circle"` for an avatar, 32px unless you set a width. `data-shape="block"` for a picture or a chart: set its height.
 
@@ -57,7 +57,7 @@ Empty, a skeleton is one line of text, as wide as its container. Give each line 
 <div class="b-skeleton" data-shape="block" aria-hidden="true" style="block-size: 96px; margin-block-start: 16px"></div>
 `} />
 
-## In a table
+### In a table
 
 Keep the header: the user sees what is coming. Sample text in each cell gives the rows their real height and the columns their real width.
 
@@ -72,7 +72,7 @@ Keep the header: the user sees what is coming. Sample text in each cell gives th
 </table>
 `} />
 
-## A beat late
+### A beat late
 
 `data-delay` keeps the skeleton hidden for one motion step (160ms). Content that arrives at once never flashes grey first. The room stays reserved meanwhile: nothing jumps.
 
@@ -83,7 +83,7 @@ Keep the header: the user sees what is coming. Sample text in each cell gives th
 </div>
 `} />
 
-## Motion
+## How it behaves
 
 The tint pulses from light to dark grey, under a second each way: lively, but in place. Not a sweeping shimmer: a moving gradient pulls the eye across the page. The pulse follows the theme's tempo. With reduced motion, the shape stays still.
 
@@ -91,7 +91,7 @@ The tint pulses from light to dark grey, under a second each way: lively, but in
 
 A skeleton has nothing to read. Put `aria-busy="true"` on the region that loads and `aria-hidden="true"` on the shapes (or on the part that holds them): a screen reader then knows the region is loading, and does not read sample text. Remove `aria-busy` when the content is in ([MDN, aria-busy](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-busy)).
 
-## The CSS contract
+## In HTML
 
 | Markup | Effect |
 |---|---|

@@ -13,21 +13,21 @@ export const components = { pre: Pre };
 
 <p class="docs-lead">A box for a longer text: a note, a description, a message.</p>
 
-## When to use it
-
-When the answer may take more than one line. It is the [field](../field/)'s box, grown: same line, same focus, same error, so the two line up in a form.
-
-- A name, a number, a path: use an [input](../field/).
-
-## Live
-
 Type past 280 characters to see the error.
 
 <figure class="docs-demo">
   <div class="docs-demo__stage"><TextareaDemo client:visible /></div>
 </figure>
 
-## In a field
+## When to use it
+
+When the answer may take more than one line. It is the [field](../field/)'s box, grown: same line, same focus, same error, so the two line up in a form.
+
+- A name, a number, a path: use an [input](../field/).
+
+## Examples
+
+### In a field
 
 Three lines high before you type. In Chrome and Edge it grows with its text up to ten lines, then scrolls; in every browser the user can drag its height.
 
@@ -39,7 +39,7 @@ Three lines high before you type. In Chrome and Edge it grows with its text up t
 </div>
 `} />
 
-## Error
+### Error
 
 <Demo html={`
 <div class="b-field" style="width: min(100%, 400px)">
@@ -49,7 +49,7 @@ Three lines high before you type. In Chrome and Edge it grows with its text up t
 </div>
 `} />
 
-## Disabled
+### Disabled
 
 <Demo html={`
 <div class="b-field" style="width: min(100%, 400px)">
@@ -57,6 +57,19 @@ Three lines high before you type. In Chrome and Edge it grows with its text up t
   <textarea class="b-input" id="old" disabled>Sent last year.</textarea>
 </div>
 `} />
+
+## Accessibility
+
+- The same as the [field](../field/#accessibility): a real `<label for>`, hint and error through `aria-describedby`.
+- Growing with the text uses `field-sizing: content` ([MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/field-sizing)); where it is missing, the box keeps three lines and scrolls.
+
+## In HTML
+
+| Markup | Effect |
+|---|---|
+| `<textarea class="b-input">` | The input's box: three lines high, growing to ten where supported. |
+| `aria-invalid="true"` | Red border. |
+| `disabled` | The box fades. |
 
 ## In Preact
 
@@ -74,16 +87,3 @@ import { Field, Textarea } from '@beastui/preact';
 |---|---|---|---|
 | `class` | `string` | | Extra classes, after `b-input`. |
 | …the native `<textarea>` props | | | `value`, `onInput`, `rows`, `maxLength`, `disabled`… |
-
-## The CSS contract
-
-| Markup | Effect |
-|---|---|
-| `<textarea class="b-input">` | The input's box: three lines high, growing to ten where supported. |
-| `aria-invalid="true"` | Red border. |
-| `disabled` | The box fades. |
-
-## Accessibility
-
-- The same as the [field](../field/#accessibility): a real `<label for>`, hint and error through `aria-describedby`.
-- Growing with the text uses `field-sizing: content` ([MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/field-sizing)); where it is missing, the box keeps three lines and scrolls.

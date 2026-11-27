@@ -13,6 +13,10 @@ export const components = { pre: Pre };
 
 <p class="docs-lead">Pick one value from a list, in a form.</p>
 
+<figure class="docs-demo">
+  <div class="docs-demo__stage"><SelectDemo client:visible /></div>
+</figure>
+
 ## When to use it
 
 For a value out of a known list that is too long to show at once: a format, a time zone, a language. The closed box is the [field](../field/)'s, so a select lines up with inputs and buttons.
@@ -20,13 +24,9 @@ For a value out of a known list that is too long to show at once: a format, a ti
 - An action (Rename, Delete): use a [menu](../menu/). A select holds a value; a menu runs a command.
 - Two to five short options: show them all, with a [segmented control](../segmented-control/) or a [radio group](../radio/).
 
-## Live
+## Examples
 
-<figure class="docs-demo">
-  <div class="docs-demo__stage"><SelectDemo client:visible /></div>
-</figure>
-
-## The open list
+### The open list
 
 A native `<select>`. In Chrome and Edge (135 and later) the open list is drawn like the [menu](../menu/): the same box, rows and highlight, with a tick on the chosen value. Safari and Firefox show the system's list; the closed box stays the same everywhere.
 
@@ -48,7 +48,7 @@ A native `<select>`. In Chrome and Edge (135 and later) the open list is drawn l
 </div>
 `} />
 
-## Error
+### Error
 
 <Demo html={`
 <div class="b-field" style="width: min(100%, 280px)">
@@ -64,7 +64,7 @@ A native `<select>`. In Chrome and Edge (135 and later) the open list is drawn l
 </div>
 `} />
 
-## Disabled
+### Disabled
 
 <Demo html={`
 <div class="b-field" style="width: min(100%, 280px)">
@@ -76,6 +76,23 @@ A native `<select>`. In Chrome and Edge (135 and later) the open list is drawn l
   </span>
 </div>
 `} />
+
+## Accessibility
+
+- A native select: the arrow keys, letters and Enter, the form value, and the announcement are the browser's.
+- The look of the open list uses `appearance: base-select` ([MDN, Customizable select elements](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Customizable_select)); it changes the drawing only, not the keys or the roles.
+- An error is red **and** written out, never colour alone.
+
+## In HTML
+
+| Markup | Effect |
+|---|---|
+| `<span class="b-select">` around a `<select>` | The field's box with a chevron at the end. The whole box opens the list. |
+| `<optgroup label="…">` | A group, named like a menu label: light, in capitals (lowercase in tool). |
+| `<option value="" disabled selected hidden>` | A placeholder: in the box, never in the list. |
+| `aria-invalid="true"` on the select | Red border. |
+| `disabled` on the select | The box fades. |
+| `--b-input-width` on the frame | Its width, as for an input. |
 
 ## In Preact
 
@@ -105,20 +122,3 @@ import { Field, Select } from '@beastui/preact';
 | `placeholder` | `string` | | Shown in the box while nothing is chosen; never in the open list. |
 | `class` | `string` | | Extra classes, on the frame (`b-select`). |
 | …the native `<select>` props | | | `name`, `disabled`, `required`… |
-
-## The CSS contract
-
-| Markup | Effect |
-|---|---|
-| `<span class="b-select">` around a `<select>` | The field's box with a chevron at the end. The whole box opens the list. |
-| `<optgroup label="…">` | A group, named like a menu label: light, in capitals (lowercase in tool). |
-| `<option value="" disabled selected hidden>` | A placeholder: in the box, never in the list. |
-| `aria-invalid="true"` on the select | Red border. |
-| `disabled` on the select | The box fades. |
-| `--b-input-width` on the frame | Its width, as for an input. |
-
-## Accessibility
-
-- A native select: the arrow keys, letters and Enter, the form value, and the announcement are the browser's.
-- The look of the open list uses `appearance: base-select` ([MDN, Customizable select elements](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Customizable_select)); it changes the drawing only, not the keys or the roles.
-- An error is red **and** written out, never colour alone.

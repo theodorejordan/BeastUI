@@ -12,6 +12,10 @@ export const components = { pre: Pre };
 
 <p class="docs-lead">A modal on an edge of the screen, for longer content beside the page's context.</p>
 
+<figure class="docs-demo">
+  <div class="docs-demo__stage"><DrawerDemo client:visible /></div>
+</figure>
+
 ## When to use it
 
 For content that takes room and relates to the page: a file's details, settings, a guide. The page stays visible on the side, so the user keeps their place.
@@ -19,9 +23,11 @@ For content that takes room and relates to the page: a file's details, settings,
 - A short task or a question: use a [modal](../modal/).
 - A panel that stays open while the user works in the page: that is the app's layout, not a drawer. A drawer is modal: the page waits behind it.
 
-<figure class="docs-demo">
-  <div class="docs-demo__stage"><DrawerDemo client:visible /></div>
-</figure>
+## Examples
+
+### Side
+
+`end` by default: the right in a left-to-right page, the left in a right-to-left one. `start` for the other edge.
 
 ## How it behaves
 
@@ -29,9 +35,21 @@ The same as a [modal](../modal/#how-it-behaves): a native `<dialog>`, the page i
 
 It is 360px wide, the full height of the screen, and leaves a strip of backdrop on small screens, so it can be closed with a tap.
 
-## Side
+## Accessibility
 
-`end` by default: the right in a left-to-right page, the left in a right-to-left one. `start` for the other edge.
+- The same as a [modal](../modal/#accessibility): a native `<dialog>`, named by its title, with a close button named by `closeLabel`.
+- The edge is only for the eye: a screen reader reads a drawer the same on either side.
+
+## In HTML
+
+A modal with the class `b-drawer`, and `data-side="start"` for the other edge.
+
+```html
+<dialog class="b-modal b-drawer" aria-labelledby="file-title">
+  <header class="b-modal-head">…</header>
+  <div class="b-modal-body">…</div>
+</dialog>
+```
 
 ## In Preact
 
@@ -47,14 +65,3 @@ import { Button, Drawer } from '@beastui/preact';
 |---|---|---|---|
 | `side` | `'start' \| 'end'` | `'end'` | The edge it comes from. |
 | `open`, `onClose`, `title`, `footer`, `closeLabel` | | | As on the [modal](../modal/#in-preact). |
-
-## Without Preact
-
-A modal with the class `b-drawer`, and `data-side="start"` for the other edge.
-
-```html
-<dialog class="b-modal b-drawer" aria-labelledby="file-title">
-  <header class="b-modal-head">…</header>
-  <div class="b-modal-body">…</div>
-</dialog>
-```

@@ -13,6 +13,10 @@ export const components = { pre: Pre };
 
 <p class="docs-lead">Pick several values from a list, in a form. The box is the select's; the list has a check box on each row and stays open while you pick.</p>
 
+<figure class="docs-demo">
+  <div class="docs-demo__stage"><MultiSelectDemo client:visible /></div>
+</figure>
+
 ## When to use it
 
 For several values out of a known list too long to show at once: export formats, file types to search, languages.
@@ -21,32 +25,9 @@ For several values out of a known list too long to show at once: export formats,
 - Two to six short options: show them all, with [checkboxes](../checkbox/). Nothing is hidden behind a click.
 - Values the user types or that come from a long search (people, tags): a combobox, which BeastUI doesn't have.
 
-<figure class="docs-demo">
-  <div class="docs-demo__stage"><MultiSelectDemo client:visible /></div>
-</figure>
+## Examples
 
-## How it behaves
-
-- A click on the box opens the list under it, at least as wide as the box. It goes above when there is no room below.
-- A click on a row checks or unchecks it. The list stays open, so you pick several in a row.
-- A click outside, Escape or Tab closes it; focus goes back to the box.
-- The box writes the chosen labels in the list's order and stops where it ends: “PDF, CSV +1”. A screen reader hears the whole value.
-- The pointer and the arrow keys move the same highlight.
-- It is never cut by a scrolling box or a table cell: it lives in the top layer.
-
-## Keyboard
-
-| Key | On the box | In the list |
-|---|---|---|
-| Enter, Space | Opens, on the first chosen option | Checks or unchecks the option |
-| ↓ / ↑ | Opens, on the first chosen option (or the first / last) | Next / previous option, stops at the ends |
-| Home, End | | First, last option |
-| A letter | | The next option starting with it |
-| Escape, Tab | | Closes, focus back on the box |
-
-A disabled option stays in the list, faded, so the user sees it exists. The keys skip it.
-
-## Error
+### Error
 
 <figure class="docs-demo">
   <div class="docs-demo__stage"><MultiSelectErrorDemo client:visible /></div>
@@ -54,7 +35,7 @@ A disabled option stays in the list, faded, so the user sees it exists. The keys
 
 The `Field`'s `error` marks the box invalid. It stays written out under the box, and goes as soon as the value is valid.
 
-## Disabled
+### Disabled
 
 <Demo html={`
 <div class="b-field" style="width: min(100%, 280px)">
@@ -66,6 +47,70 @@ The `Field`'s `error` marks the box invalid. It stays written out under the box,
   </button>
 </div>
 `} />
+
+## How it behaves
+
+- A click on the box opens the list under it, at least as wide as the box. It goes above when there is no room below.
+- A click on a row checks or unchecks it. The list stays open, so you pick several in a row.
+- A click outside, Escape or Tab closes it; focus goes back to the box.
+- The box writes the chosen labels in the list's order and stops where it ends: “PDF, CSV +1”. A screen reader hears the whole value.
+- The pointer and the arrow keys move the same highlight.
+- It is never cut by a scrolling box or a table cell: it lives in the top layer.
+
+## Writing it
+
+- The label names the set (“Export as”, “File types”), the options are short nouns: the box writes several in a row.
+- The placeholder says what to do (“Choose formats”) or what nothing means (“Any type”), never repeats the label.
+- Put the options in a fixed, meaningful order (by group, then A–Z): the box writes them in that order.
+
+## Accessibility
+
+- The WAI-ARIA [Listbox pattern](https://www.w3.org/WAI/ARIA/apg/patterns/listbox/), multiple selection, opened by a button with `aria-haspopup="listbox"` and `aria-expanded`.
+- The box's name is the label then the whole value (`aria-labelledby`), so “Export as, PDF, CSV, Excel workbook” is read even when the box shows “PDF, CSV +1”.
+- A row's state is `aria-selected`; the check box only draws it, and in forced colours the tick stays.
+- An error is red **and** written out, never colour alone.
+
+### Keyboard
+
+| Key | On the box | In the list |
+|---|---|---|
+| Enter, Space | Opens, on the first chosen option | Checks or unchecks the option |
+| ↓ / ↑ | Opens, on the first chosen option (or the first / last) | Next / previous option, stops at the ends |
+| Home, End | | First, last option |
+| A letter | | The next option starting with it |
+| Escape, Tab | | Closes, focus back on the box |
+
+A disabled option stays in the list, faded, so the user sees it exists. The keys skip it.
+
+## In HTML
+
+| Markup | Effect |
+|---|---|
+| `<button class="b-select" aria-haspopup="listbox">` | The select's box, with its chevron, hover, focus line and invalid red. |
+| `.b-select__text` > `.b-select__value` + `.b-select__more` | The chosen labels, cut with an ellipsis, then “+2” in muted ink. |
+| `.b-select__placeholder` | The placeholder, in muted ink. |
+| `aria-expanded="true"` on the box | Keeps the focus line while the list is open. |
+| `<div class="b-listbox" role="listbox" aria-multiselectable="true" popover="auto">` | The list: the menu's box, rows one control high. |
+| `.b-listbox-option` `role="option"` `aria-selected` | A row. `aria-selected="true"` fills its check box. |
+| `.b-listbox-check` | The check box at the start of a row, drawn like the checkbox. |
+| `.b-listbox-group` + `.b-listbox-label` | A group and its name, like the menu's. |
+| `aria-disabled="true"` on an option | Faded, the `not-allowed` cursor. |
+
+```html
+<label class="b-field__label" id="f-label" for="f">Export as</label>
+<button class="b-select" type="button" id="f" aria-haspopup="listbox" aria-expanded="false"
+        aria-controls="f-list" aria-labelledby="f-label f-value" popovertarget="f-list">
+  <span id="f-value" hidden>PDF, CSV</span>
+  <span class="b-select__text" aria-hidden="true"><span class="b-select__value">PDF, CSV</span></span>
+</button>
+<div class="b-listbox" id="f-list" role="listbox" aria-multiselectable="true" aria-labelledby="f-label" popover="auto">
+  <div class="b-listbox-option" role="option" tabindex="-1" aria-selected="true">
+    <span class="b-listbox-check" aria-hidden="true"></span>PDF
+  </div>
+</div>
+```
+
+`popovertarget` and `popover="auto"` open and close it with no script. Placing it, the keys, `aria-selected`, `aria-expanded` and the cut value are yours to write; the Preact component does all of it.
 
 ## In Preact
 
@@ -106,48 +151,3 @@ import { Field, MultiSelect } from '@beastui/preact';
 | `class` | `string` | | Extra classes, on the box (`b-select`). |
 
 It is not a form element: a form that posts natively needs a hidden input per value (`<input type="hidden" name="format" value="pdf">`).
-
-## Writing it
-
-- The label names the set (“Export as”, “File types”), the options are short nouns: the box writes several in a row.
-- The placeholder says what to do (“Choose formats”) or what nothing means (“Any type”), never repeats the label.
-- Put the options in a fixed, meaningful order (by group, then A–Z): the box writes them in that order.
-
-## The CSS contract
-
-| Markup | Effect |
-|---|---|
-| `<button class="b-select" aria-haspopup="listbox">` | The select's box, with its chevron, hover, focus line and invalid red. |
-| `.b-select__text` > `.b-select__value` + `.b-select__more` | The chosen labels, cut with an ellipsis, then “+2” in muted ink. |
-| `.b-select__placeholder` | The placeholder, in muted ink. |
-| `aria-expanded="true"` on the box | Keeps the focus line while the list is open. |
-| `<div class="b-listbox" role="listbox" aria-multiselectable="true" popover="auto">` | The list: the menu's box, rows one control high. |
-| `.b-listbox-option` `role="option"` `aria-selected` | A row. `aria-selected="true"` fills its check box. |
-| `.b-listbox-check` | The check box at the start of a row, drawn like the checkbox. |
-| `.b-listbox-group` + `.b-listbox-label` | A group and its name, like the menu's. |
-| `aria-disabled="true"` on an option | Faded, the `not-allowed` cursor. |
-
-## Accessibility
-
-- The WAI-ARIA [Listbox pattern](https://www.w3.org/WAI/ARIA/apg/patterns/listbox/), multiple selection, opened by a button with `aria-haspopup="listbox"` and `aria-expanded`.
-- The box's name is the label then the whole value (`aria-labelledby`), so “Export as, PDF, CSV, Excel workbook” is read even when the box shows “PDF, CSV +1”.
-- A row's state is `aria-selected`; the check box only draws it, and in forced colours the tick stays.
-- An error is red **and** written out, never colour alone.
-
-## Without Preact
-
-```html
-<label class="b-field__label" id="f-label" for="f">Export as</label>
-<button class="b-select" type="button" id="f" aria-haspopup="listbox" aria-expanded="false"
-        aria-controls="f-list" aria-labelledby="f-label f-value" popovertarget="f-list">
-  <span id="f-value" hidden>PDF, CSV</span>
-  <span class="b-select__text" aria-hidden="true"><span class="b-select__value">PDF, CSV</span></span>
-</button>
-<div class="b-listbox" id="f-list" role="listbox" aria-multiselectable="true" aria-labelledby="f-label" popover="auto">
-  <div class="b-listbox-option" role="option" tabindex="-1" aria-selected="true">
-    <span class="b-listbox-check" aria-hidden="true"></span>PDF
-  </div>
-</div>
-```
-
-`popovertarget` and `popover="auto"` open and close it with no script. Placing it, the keys, `aria-selected`, `aria-expanded` and the cut value are yours to write; the Preact component does all of it.

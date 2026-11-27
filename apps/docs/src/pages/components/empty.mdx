@@ -12,15 +12,6 @@ export const components = { pre: Pre };
 
 <p class="docs-lead">What a region shows when it has nothing to show, or could not load it.</p>
 
-## When to use it
-
-A list, a table or a panel with no content: no items yet, no search results, a request that failed. Say what happened, then offer the next step.
-
-- A wrong value in a form: use the field's error, next to the input.
-- A whole page that cannot load: that is the app's error page, not a region.
-
-## No results
-
 The tile, a title, a line that says what to do, and the action that does it.
 
 <Demo html={`
@@ -32,7 +23,16 @@ The tile, a title, a line that says what to do, and the action that does it.
 </div>
 `} />
 
-## Nothing yet
+## When to use it
+
+A list, a table or a panel with no content: no items yet, no search results, a request that failed. Say what happened, then offer the next step.
+
+- A wrong value in a form: use the field's error, next to the input.
+- A whole page that cannot load: that is the app's error page, not a region.
+
+## Examples
+
+### Nothing yet
 
 `data-frame="dashed"` outlines a place the user is meant to fill: a folder with no files, a drop area. Dashed, because a solid outline is a control.
 
@@ -48,7 +48,7 @@ The tile, a title, a line that says what to do, and the action that does it.
 </div>
 `} />
 
-## Error
+### Error
 
 `data-tone="danger"`: the tile and the title turn red, the line stays ink. Say what failed, whether anything was lost, and offer to try again.
 
@@ -63,7 +63,7 @@ The tile, a title, a line that says what to do, and the action that does it.
 
 When the error appears after an action (a click, a retry), add `role="alert"` so a screen reader says it. Not on first load: then it is the page's content, read in order.
 
-## Title only
+### Title only
 
 Every part but the title is optional. In a small panel, a title alone is enough.
 
@@ -73,7 +73,7 @@ Every part but the title is optional. In a small panel, a title alone is enough.
 </div>
 `} />
 
-## In a table
+### In a table
 
 One cell across all the columns. The header stays, so the user still sees what the table holds. That row has no hover and no line.
 
@@ -95,7 +95,14 @@ One cell across all the columns. The header stays, so the user still sees what t
 - The line says what to do next, or why it is empty.
 - One main action at most. Name it with a verb: “Upload”, “Try again”.
 
-## The CSS contract
+## Accessibility
+
+- The tile's icon is decoration (`aria-hidden="true"`): the title and the line say everything.
+- On first load it has no role: it is the region's content, read in order. After an action, add `role="alert"` to an error so it is heard ([MDN, alert role](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/alert_role)).
+- An error is red **and** written out, never colour alone.
+- Actions are real buttons, reached with Tab.
+
+## In HTML
 
 | Markup | Effect |
 |---|---|

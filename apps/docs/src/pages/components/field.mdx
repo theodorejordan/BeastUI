@@ -13,6 +13,12 @@ export const components = { pre: Pre };
 
 <p class="docs-lead">A label, a box to type into, and an optional unit, hint and error.</p>
 
+Type a value above 8 in the second field to see the error.
+
+<figure class="docs-demo">
+  <div class="docs-demo__stage"><FieldDemo client:visible /></div>
+</figure>
+
 ## When to use it
 
 For a value the user types: a name, a number, a path. The label stays visible above the box; a placeholder is never the label, since it goes away as you type.
@@ -21,15 +27,9 @@ For a value the user types: a name, a number, a path. The label stays visible ab
 - A longer text: use a [textarea](../textarea/).
 - On or off: use a [checkbox](../checkbox/) or a [switch](../switch/).
 
-## Live
+## Examples
 
-Type a value above 8 in the second field to see the error.
-
-<figure class="docs-demo">
-  <div class="docs-demo__stage"><FieldDemo client:visible /></div>
-</figure>
-
-## Text
+### Text
 
 <Demo html={`
 <div class="b-field">
@@ -38,7 +38,7 @@ Type a value above 8 in the second field to see the error.
 </div>
 `} />
 
-## Number with a unit
+### Number with a unit
 
 The box is narrower for a number, the figures are tabular, and the spin buttons are gone: the arrow keys step by `step`. The unit sits inside the box and is read after the label.
 
@@ -53,7 +53,7 @@ The box is narrower for a number, the figures are tabular, and the spin buttons 
 </div>
 `} />
 
-## Error
+### Error
 
 <Demo html={`
 <div class="b-field">
@@ -66,7 +66,7 @@ The box is narrower for a number, the figures are tabular, and the spin buttons 
 </div>
 `} />
 
-## Disabled
+### Disabled
 
 <Demo html={`
 <div class="b-field">
@@ -74,6 +74,25 @@ The box is narrower for a number, the figures are tabular, and the spin buttons 
   <input class="b-input" id="backup" value="~/Documents/Backups" disabled />
 </div>
 `} />
+
+## Accessibility
+
+- The label is a real `<label for>`: clicking it focuses the box, and a screen reader says it.
+- The unit, hint and error are linked with `aria-describedby` ([MDN](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-describedby)), so they are read after the label. `aria-invalid` says the value is wrong ([MDN](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-invalid)).
+- An error is red **and** written out, never colour alone.
+- Focus has no ring: the border turns 2px and full ink, and the text doesn't move.
+
+## In HTML
+
+| Markup | Effect |
+|---|---|
+| `class="b-field"` | Stacks the label, the box, the hint and the error. |
+| `class="b-field__label"`, `<label for="…">` | The label, 8px above the box. |
+| `class="b-input"` on an `<input>` | The box. |
+| `class="b-input"` on a `<span>` around an `<input>` + `class="b-input__unit"` | A box with a unit. |
+| `class="b-field__hint"` / `class="b-field__error"` | 4px under the box, muted or red. |
+| `aria-invalid="true"` on the input | Red border. |
+| `--b-input-width` on the box | Its width: the whole row, or four control heights for a number. |
 
 ## In Preact
 
@@ -100,22 +119,3 @@ import { Field, Input } from '@beastui/preact';
 | `unit` | `string` | | Shown inside the box, after the value. |
 | `class` | `string` | | Extra classes, on the box. |
 | …the native `<input>` props | | | `value`, `onInput`, `step`, `min`, `max`, `disabled`… |
-
-## The CSS contract
-
-| Markup | Effect |
-|---|---|
-| `class="b-field"` | Stacks the label, the box, the hint and the error. |
-| `class="b-field__label"`, `<label for="…">` | The label, 8px above the box. |
-| `class="b-input"` on an `<input>` | The box. |
-| `class="b-input"` on a `<span>` around an `<input>` + `class="b-input__unit"` | A box with a unit. |
-| `class="b-field__hint"` / `class="b-field__error"` | 4px under the box, muted or red. |
-| `aria-invalid="true"` on the input | Red border. |
-| `--b-input-width` on the box | Its width: the whole row, or four control heights for a number. |
-
-## Accessibility
-
-- The label is a real `<label for>`: clicking it focuses the box, and a screen reader says it.
-- The unit, hint and error are linked with `aria-describedby` ([MDN](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-describedby)), so they are read after the label. `aria-invalid` says the value is wrong ([MDN](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-invalid)).
-- An error is red **and** written out, never colour alone.
-- Focus has no ring: the border turns 2px and full ink, and the text doesn't move.

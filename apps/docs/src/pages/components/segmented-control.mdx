@@ -13,6 +13,10 @@ export const components = { pre: Pre };
 
 <p class="docs-lead">Pick one of 2–5 options, shown side by side. The outline slides to the picked one.</p>
 
+<figure class="docs-demo">
+  <div class="docs-demo__stage"><SegmentedDemo client:visible /></div>
+</figure>
+
 ## When to use it
 
 For a short, exclusive choice whose effect shows at once: a sort order, a view, a version. All options stay visible, so the user sees what else there is.
@@ -21,13 +25,9 @@ For a short, exclusive choice whose effect shows at once: a sort order, a view, 
 - Several options can be on at once: use checkboxes.
 - The choice switches between whole panels of content: use tabs.
 
-## Live
+## Examples
 
-<figure class="docs-demo">
-  <div class="docs-demo__stage"><SegmentedDemo client:visible /></div>
-</figure>
-
-## Without JavaScript
+### Without JavaScript
 
 The CSS alone gives a working control: the picked option draws its own outline. The Preact component adds the sliding outline (`b-seg__thumb`).
 
@@ -39,7 +39,7 @@ The CSS alone gives a working control: the picked option draws its own outline. 
 </div>
 `} />
 
-## Disabled option
+### Disabled option
 
 An option that can't be picked right now fades and is skipped by the arrow keys.
 
@@ -49,6 +49,23 @@ An option that can't be picked right now fades and is skipped by the arrow keys.
   <label><input type="radio" name="version" value="published" disabled /><span>Published</span></label>
 </div>
 `} />
+
+## Accessibility
+
+- Native radio buttons ([WAI-ARIA radio group pattern](https://www.w3.org/WAI/ARIA/apg/patterns/radio/)): a screen reader says "Sort files, radio group, Name, 1 of 3".
+- One tab stop for the whole group; the arrow keys move and pick. The focus ring shows on the label, since the radio itself is invisible.
+- The picked option has no fill: it is marked by ink text **and** an outline at 3:1, never by colour alone.
+- Under "reduce motion", the outline jumps instead of sliding.
+
+## In HTML
+
+| Markup | Effect |
+|---|---|
+| `class="b-seg" role="radiogroup" aria-label="…"` | The frame and its name. |
+| `<label><input type="radio" name="…" /><span>…</span></label>` | One option. The radio is invisible and covers its label. |
+| `checked` | The picked option: ink text and an outline. |
+| `disabled` on the radio | The option fades. |
+| `<span class="b-seg__thumb" aria-hidden="true">` + `data-thumb` + `--b-seg-x`, `--b-seg-w` on the frame | The sliding outline, placed by script. Without `data-thumb`, it stays hidden. |
 
 ## In Preact
 
@@ -76,20 +93,3 @@ const [sort, setSort] = useState<'name' | 'date'>('name');
 | `onChange` | `(value) => void` | required | Called on click and on arrow keys. |
 | `name` | `string` | generated | The radios' form name. |
 | `class` | `string` | | Extra classes, after `b-seg`. |
-
-## The CSS contract
-
-| Markup | Effect |
-|---|---|
-| `class="b-seg" role="radiogroup" aria-label="…"` | The frame and its name. |
-| `<label><input type="radio" name="…" /><span>…</span></label>` | One option. The radio is invisible and covers its label. |
-| `checked` | The picked option: ink text and an outline. |
-| `disabled` on the radio | The option fades. |
-| `<span class="b-seg__thumb" aria-hidden="true">` + `data-thumb` + `--b-seg-x`, `--b-seg-w` on the frame | The sliding outline, placed by script. Without `data-thumb`, it stays hidden. |
-
-## Accessibility
-
-- Native radio buttons ([WAI-ARIA radio group pattern](https://www.w3.org/WAI/ARIA/apg/patterns/radio/)): a screen reader says "Sort files, radio group, Name, 1 of 3".
-- One tab stop for the whole group; the arrow keys move and pick. The focus ring shows on the label, since the radio itself is invisible.
-- The picked option has no fill: it is marked by ink text **and** an outline at 3:1, never by colour alone.
-- Under "reduce motion", the outline jumps instead of sliding.

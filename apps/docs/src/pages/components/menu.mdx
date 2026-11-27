@@ -12,6 +12,10 @@ export const components = { pre: Pre };
 
 <p class="docs-lead">A list of actions opened by a button: rename, duplicate, delete. Also called a dropdown menu.</p>
 
+<figure class="docs-demo">
+  <div class="docs-demo__stage"><MenuDemo client:visible /></div>
+</figure>
+
 ## When to use it
 
 When a thing has more actions than you want to show as buttons, or the actions are used rarely.
@@ -19,10 +23,6 @@ When a thing has more actions than you want to show as buttons, or the actions a
 - One or two actions: show them as buttons. A menu hides them behind a click.
 - The content is a form, text or anything that isn't an action: use a popover. Arrow keys and screen readers treat a menu as a list of commands, nothing else.
 - Choosing a value for a field: a select.
-
-<figure class="docs-demo">
-  <div class="docs-demo__stage"><MenuDemo client:visible /></div>
-</figure>
 
 ## How it behaves
 
@@ -32,7 +32,21 @@ When a thing has more actions than you want to show as buttons, or the actions a
 - Choosing an item closes the menu, gives focus back to the button, then runs the action. An action that opens a modal gets the focus.
 - It is never cut by a scrolling box or a table cell: it lives in the top layer.
 
-## Keyboard
+## Writing it
+
+- An item is a verb, or a verb and its object: “Rename”, “Move to…”. The thing they act on is already clear from the button or the group.
+- An ellipsis says the item asks for more before it acts (a modal, a picker).
+- Put the dangerous action last, after a separator.
+
+## Accessibility
+
+- Built as the WAI-ARIA [menu button](https://www.w3.org/WAI/ARIA/apg/patterns/menu-button/): the button has `aria-haspopup="menu"` and `aria-expanded`, the box `role="menu"` and is named by the button, each item `role="menuitem"`.
+- One Tab stop: the arrow keys move inside, Tab leaves and closes it.
+- A group is named by its label, so a screen reader says "File" before its items.
+- A disabled item carries `aria-disabled="true"`: it is read as unavailable and stays in the list.
+- A danger item is red **and** says what it does ("Delete"), never colour alone.
+
+### Keyboard
 
 | Key | On the button | In the menu |
 |---|---|---|
@@ -43,6 +57,18 @@ When a thing has more actions than you want to show as buttons, or the actions a
 | Escape, Tab | | Closes, focus back on the button |
 
 A disabled item stays in the list, faded, so the user sees it exists. The keys skip it.
+
+## In HTML
+
+```html
+<button class="b-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="m-1" popovertarget="m-1">Actions</button>
+<div class="b-menu" id="m-1" role="menu" popover="auto">
+  <button class="b-menu-item" role="menuitem" tabindex="-1" type="button">Rename</button>
+  <div class="b-menu-separator" role="separator"></div>
+  <button class="b-menu-item" role="menuitem" tabindex="-1" type="button" data-tone="danger">Delete</button>
+```
+
+`popovertarget` and `popover="auto"` open and close it with no script: click outside and Escape included. Placing it (`top` and `left` in viewport pixels), the arrow keys and `aria-expanded` are yours to write; the Preact component does all of it.
 
 ## In Preact
 
@@ -77,22 +103,3 @@ import { Button, Menu, MenuGroup, MenuItem, MenuSeparator } from '@beastui/preac
 | `MenuGroup` | Type | | |
 |---|---|---|---|
 | `label` | `string` | required | A heading for its items ("File", "Share"), shown small in light capitals (lowercase in tool) and read before them. Not a file or person name: the capitals would change it. |
-
-
-## Writing it
-
-- An item is a verb, or a verb and its object: “Rename”, “Move to…”. The thing they act on is already clear from the button or the group.
-- An ellipsis says the item asks for more before it acts (a modal, a picker).
-- Put the dangerous action last, after a separator.
-
-## Without Preact
-
-```html
-<button class="b-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="m-1" popovertarget="m-1">Actions</button>
-<div class="b-menu" id="m-1" role="menu" popover="auto">
-  <button class="b-menu-item" role="menuitem" tabindex="-1" type="button">Rename</button>
-  <div class="b-menu-separator" role="separator"></div>
-  <button class="b-menu-item" role="menuitem" tabindex="-1" type="button" data-tone="danger">Delete</button>
-```
-
-`popovertarget` and `popover="auto"` open and close it with no script: click outside and Escape included. Placing it (`top` and `left` in viewport pixels), the arrow keys and `aria-expanded` are yours to write; the Preact component does all of it.

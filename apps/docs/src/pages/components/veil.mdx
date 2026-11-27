@@ -12,6 +12,10 @@ export const components = { pre: Pre };
 
 <p class="docs-lead">One region of the page is busy. Its content fades back behind a card that says what is happening; the rest of the page stays usable.</p>
 
+<figure class="docs-demo">
+  <div class="docs-demo__stage"><VeilDemo client:visible /></div>
+</figure>
+
 ## When to use it
 
 For a job that runs on content the user can already see: a folder being exported, a list being synced, a view being reloaded. The user waits for that region only.
@@ -20,16 +24,46 @@ For a job that runs on content the user can already see: a folder being exported
 - Nothing to show yet, on a first load: a skeleton, not a veil.
 - A job on one button, a second or two: the button's `pending` state.
 
-<figure class="docs-demo">
-  <div class="docs-demo__stage"><VeilDemo client:visible /></div>
-</figure>
-
 ## How it behaves
 
 - The content is `inert`: no click, no Tab, no screen reader reaches it. The card and its actions stay in reach.
 - The rest of the page is untouched, and the focus stays where it is. If it was inside the region, it lands on the card, then goes back when the job ends.
 - A screen reader hears the title once, when the job starts and when it changes. Never the percent: it would be read every second.
 - In a long list, the card stays in the middle of what is in view as the page scrolls.
+
+## Writing it
+
+- The title is the verb of the job: “Exporting”, “Syncing”. Change it when the stage changes: that is what a screen reader hears.
+- The line under the bar says how far, in things the user knows: “3 of 7 · Contract.pdf”.
+- A job longer than ten seconds gets a Cancel.
+- When it ends, say so where the user looks: the veil leaves, and a line or a toast says the result.
+
+## Accessibility
+
+- The content carries `inert` and `aria-busy="true"`: a screen reader skips it while the job runs, and never reads it half updated ([MDN, aria-busy](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-busy)).
+- The title is told by a `role="status"` line, which waits its turn: it never cuts in on what is being read.
+- The card's actions stay in reach. Cancel is a real button, reached with Tab.
+- Name the progress bar in the card (`aria-label`), with the same verb as the title.
+
+## In HTML
+
+```html
+<div class="b-veil-region">
+  <div class="b-veil-content" inert aria-busy="true">…</div>
+  <div class="b-veil" data-delay>
+    <div class="b-veil-frame">
+      <div class="b-veil-card" tabindex="-1">
+        <p class="b-veil-title">Exporting</p>
+        <div class="b-veil-body">…</div>
+        <div class="b-veil-actions">…</div>
+      </div>
+    </div>
+  </div>
+  <p class="b-veil-status" role="status">Exporting</p>
+</div>
+```
+
+The status line must be in the page before the job starts, empty: a live region that appears with its text is often not read. Set `inert` and `aria-busy` on the content, not the region, or the card and the status line go silent too.
 
 ## In Preact
 
@@ -57,30 +91,3 @@ import { Button, Progress, Veil } from '@beastui/preact';
 | `content` | `ComponentChildren` | | Under the title: a progress bar, a line of detail. |
 | `actions` | `ComponentChildren` | | At the bottom: Cancel, for a job that takes more than a few seconds. |
 | `delay` | `boolean` | `false` | Show the veil one beat late, so a job that ends at once never flashes. |
-
-## Writing it
-
-- The title is the verb of the job: “Exporting”, “Syncing”. Change it when the stage changes: that is what a screen reader hears.
-- The line under the bar says how far, in things the user knows: “3 of 7 · Contract.pdf”.
-- A job longer than ten seconds gets a Cancel.
-- When it ends, say so where the user looks: the veil leaves, and a line or a toast says the result.
-
-## Without Preact
-
-```html
-<div class="b-veil-region">
-  <div class="b-veil-content" inert aria-busy="true">…</div>
-  <div class="b-veil" data-delay>
-    <div class="b-veil-frame">
-      <div class="b-veil-card" tabindex="-1">
-        <p class="b-veil-title">Exporting</p>
-        <div class="b-veil-body">…</div>
-        <div class="b-veil-actions">…</div>
-      </div>
-    </div>
-  </div>
-  <p class="b-veil-status" role="status">Exporting</p>
-</div>
-```
-
-The status line must be in the page before the job starts, empty: a live region that appears with its text is often not read. Set `inert` and `aria-busy` on the content, not the region, or the card and the status line go silent too.

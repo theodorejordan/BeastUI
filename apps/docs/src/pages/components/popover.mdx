@@ -12,6 +12,10 @@ export const components = { pre: Pre };
 
 <p class="docs-lead">A floating box with any content, opened by a button: a small filter, a detail, a short form.</p>
 
+<figure class="docs-demo">
+  <div class="docs-demo__stage"><PopoverDemo client:visible /></div>
+</figure>
+
 ## When to use it
 
 For a few controls that belong to one button and are not worth a place on the page.
@@ -20,16 +24,27 @@ For a few controls that belong to one button and are not worth a place on the pa
 - A short text on hover, with nothing to click: use a tooltip.
 - The user must answer before going on, or the content is long: use a modal.
 
-<figure class="docs-demo">
-  <div class="docs-demo__stage"><PopoverDemo client:visible /></div>
-</figure>
-
 ## How it behaves
 
 - A click on the button opens it under the button, lined up with its start edge. It goes above when there is no room below.
 - Focus stays on the button. Tab goes into the box, then on to the rest of the page: the box comes right after the button.
 - A click outside or Escape closes it. With focus inside, focus goes back to the button.
 - The page stays usable while it is open: it is not a modal.
+
+## Accessibility
+
+- The box is a non-modal dialog (`role="dialog"`), named by `label` or by its button.
+- The button says whether it is open (`aria-expanded`) and which box it opens (`aria-controls`).
+- Keep the content short. Anything that needs scrolling belongs in a modal or a drawer.
+
+## In HTML
+
+```html
+<button class="b-btn" aria-expanded="false" aria-controls="p-1" popovertarget="p-1">Filter</button>
+<div class="b-popover" id="p-1" role="dialog" aria-label="Filter files" popover="auto">…</div>
+```
+
+`popovertarget` and `popover="auto"` open and close it with no script. Placing it and `aria-expanded` are yours to write; the Preact component does both.
 
 ## In Preact
 
@@ -55,19 +70,3 @@ Without `open`, the button alone opens and closes it. Control it when something 
 | `align` | `'start' \| 'end' \| 'center'` | `'start'` | Which edge of the button it lines up with. |
 | `open` | `boolean` | | Controlled: open or closed. |
 | `onOpenChange` | `(open) => void` | | Called when it opens or closes, however that happened. |
-
-
-## Accessibility
-
-- The box is a non-modal dialog (`role="dialog"`), named by `label` or by its button.
-- The button says whether it is open (`aria-expanded`) and which box it opens (`aria-controls`).
-- Keep the content short. Anything that needs scrolling belongs in a modal or a drawer.
-
-## Without Preact
-
-```html
-<button class="b-btn" aria-expanded="false" aria-controls="p-1" popovertarget="p-1">Filter</button>
-<div class="b-popover" id="p-1" role="dialog" aria-label="Filter files" popover="auto">…</div>
-```
-
-`popovertarget` and `popover="auto"` open and close it with no script. Placing it and `aria-expanded` are yours to write; the Preact component does both.

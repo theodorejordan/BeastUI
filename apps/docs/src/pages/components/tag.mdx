@@ -12,6 +12,15 @@ export const components = { pre: Pre };
 
 <p class="docs-lead">A short label on a thing: a status, a category, a count.</p>
 
+Neutral by default; `data-variant="warn"` for a state that needs care.
+
+<Demo html={`
+<span class="b-tag">Design</span>
+<span class="b-tag">Finance</span>
+<span class="b-tag" title="Legal, Photos, Drafts">+3</span>
+<span class="b-tag" data-variant="warn">Expired</span>
+`} />
+
 ## When to use it
 
 To show what something is or what it has, in a row or a card. A tag is read only: nothing happens on click.
@@ -21,16 +30,9 @@ A tag is filled, never outlined: in BeastUI an outline means "you can act on thi
 - An action: use a button.
 - A filter the user turns on and off: use a checkbox or a segmented control.
 
-## Neutral and warn
+## Examples
 
-<Demo html={`
-<span class="b-tag">Design</span>
-<span class="b-tag">Finance</span>
-<span class="b-tag" title="Legal, Photos, Drafts">+3</span>
-<span class="b-tag" data-variant="warn">Expired</span>
-`} />
-
-## In a table
+### In a table
 
 The tint is of the ink over whatever is under it: a tag stays visible on a hovered or selected row.
 
@@ -43,7 +45,12 @@ The tint is of the ink over whatever is under it: a tag stays visible on a hover
 </div>
 `} />
 
-## The CSS contract
+## Accessibility
+
+- A count tag ("+3") hides names: give it a `title`, or list them somewhere a keyboard can reach.
+- Warn is written out, never colour alone. Every tag passes 4.5:1 on every ground, theme and mode (`packages/css/test/contrast.test.ts`).
+
+## In HTML
 
 No Preact component: a tag has no behaviour.
 
@@ -51,8 +58,3 @@ No Preact component: a tag has no behaviour.
 |---|---|
 | `<span class="b-tag">` | An ink tint, ink text, 20px high. |
 | `data-variant="warn"` | A solid yellow (`--b-color-warning`), dark text (`--b-color-on-warning`). |
-
-## Accessibility
-
-- A count tag ("+3") hides names: give it a `title`, or list them somewhere a keyboard can reach.
-- Warn is written out, never colour alone. Every tag passes 4.5:1 on every ground, theme and mode (`packages/css/test/contrast.test.ts`).

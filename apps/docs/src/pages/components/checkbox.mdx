@@ -13,6 +13,12 @@ export const components = { pre: Pre };
 
 <p class="docs-lead">Turn one option on or off, or pick several items from a list.</p>
 
+The first box shows a dash when some files are picked but not all.
+
+<figure class="docs-demo">
+  <div class="docs-demo__stage"><CheckboxDemo client:visible /></div>
+</figure>
+
 ## When to use it
 
 For an option that takes effect when the form is saved, or to select rows.
@@ -20,15 +26,9 @@ For an option that takes effect when the form is saved, or to select rows.
 - One choice out of several: use a [segmented control](../segmented-control/) or a [radio group](../radio/).
 - A setting that applies at once: a [switch](../switch/).
 
-## Live
+## Examples
 
-The first box shows a dash when some files are picked but not all.
-
-<figure class="docs-demo">
-  <div class="docs-demo__stage"><CheckboxDemo client:visible /></div>
-</figure>
-
-## With a label
+### With a label
 
 The whole label is the target. A long label wraps; the box stays on the first line.
 
@@ -39,7 +39,7 @@ The whole label is the target. A long label wraps; the box stays on the first li
 </label>
 `} />
 
-## Alone, in a table
+### Alone, in a table
 
 Without a visible label, the box needs `aria-label`.
 
@@ -48,7 +48,7 @@ Without a visible label, the box needs `aria-label`.
 <input class="b-checkbox" type="checkbox" aria-label="Select Budget.xlsx" checked />
 `} />
 
-## Disabled
+### Disabled
 
 <Demo html={`
 <label class="b-check">
@@ -56,6 +56,21 @@ Without a visible label, the box needs `aria-label`.
   <span>Keep the original files</span>
 </label>
 `} />
+
+## Accessibility
+
+- A native checkbox: Space toggles it, and a screen reader says "checked", "not checked" or "mixed".
+- The mixed state is the `indeterminate` property ([MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox#indeterminate_state_checkboxes)). It has no HTML attribute, so the CSS-only path can't set it: use the Preact component or one line of script.
+- On is a filled box **and** a mark, never colour alone.
+
+## In HTML
+
+| Markup | Effect |
+|---|---|
+| `<input class="b-checkbox" type="checkbox">` | The 16px box. |
+| `<label class="b-check">` around the box and a `<span>` | The label row, 8px from the box. |
+| `checked` / `:indeterminate` | An ink box with a tick / a dash. |
+| `disabled` | The box (and its label) fade. |
 
 ## In Preact
 
@@ -82,18 +97,3 @@ import { Checkbox } from '@beastui/preact';
 | `indeterminate` | `boolean` | `false` | Some but not all: shows a dash. |
 | `children` | `ComponentChildren` | | The label. Without it, `aria-label` is required. |
 | `class` | `string` | | Extra classes, on the label (or the box when alone). |
-
-## The CSS contract
-
-| Markup | Effect |
-|---|---|
-| `<input class="b-checkbox" type="checkbox">` | The 16px box. |
-| `<label class="b-check">` around the box and a `<span>` | The label row, 8px from the box. |
-| `checked` / `:indeterminate` | An ink box with a tick / a dash. |
-| `disabled` | The box (and its label) fade. |
-
-## Accessibility
-
-- A native checkbox: Space toggles it, and a screen reader says "checked", "not checked" or "mixed".
-- The mixed state is the `indeterminate` property ([MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox#indeterminate_state_checkboxes)). It has no HTML attribute, so the CSS-only path can't set it: use the Preact component or one line of script.
-- On is a filled box **and** a mark, never colour alone.

@@ -12,6 +12,10 @@ export const components = { pre: Pre };
 
 <p class="docs-lead">A short line that names or describes a control, on hover and on keyboard focus.</p>
 
+<figure class="docs-demo">
+  <div class="docs-demo__stage"><TooltipDemo client:visible /></div>
+</figure>
+
 ## When to use it
 
 To name an icon-only button, or to add a detail the user may want but doesn't need: when a file was last synced, what a shortcut does.
@@ -20,10 +24,6 @@ To name an icon-only button, or to add a detail the user may want but doesn't ne
 - The user needs it to finish the task: write it on the page. On a phone there is no hover, so a tooltip is never seen.
 - A field's rule or error: the field's hint, under it.
 
-<figure class="docs-demo">
-  <div class="docs-demo__stage"><TooltipDemo client:visible /></div>
-</figure>
-
 ## How it behaves
 
 - It opens on hover at once (10 ms), and on keyboard focus. Moving from one tooltip to the next opens the next at once.
@@ -31,6 +31,27 @@ To name an icon-only button, or to add a detail the user may want but doesn't ne
 - Escape closes it, and only it: a modal around it stays open.
 - A click, a blur or leaving with the pointer closes it. Touch never opens it.
 - It sits above the control, and below when there is no room. It is never cut by a scrolling box or a table cell: it lives in the top layer.
+
+## Writing it
+
+- A few words, no full stop for a name: “Download”, “Share”.
+- A description is one sentence at most: “Last synced 2 minutes ago, by the desktop app”.
+- Never repeat what the control already says.
+
+## Accessibility
+
+- `mode="label"` sets `aria-labelledby` on the control: a screen reader says the tooltip as its name, once. Keep an `aria-label` too, with the same word: it names the button before the script runs.
+- `mode="description"` sets `aria-describedby`: the name first, then the tooltip.
+- A disabled button gets no events, so no tooltip. Say why it is disabled on the page instead.
+
+## In HTML
+
+```html
+<button class="b-btn" data-variant="secondary" data-icon aria-label="Download" aria-labelledby="tip-1">…</button>
+<div class="b-tooltip" id="tip-1" role="tooltip" popover="manual">Download</div>
+```
+
+The CSS draws the box and its fade. Opening it (`showPopover()`), placing it (`top` and `left` in viewport pixels), the delays and Escape are yours to write; the Preact component does all of it.
 
 ## In Preact
 
@@ -54,24 +75,3 @@ import { Button, Tooltip } from '@beastui/preact';
 | `children` | one element | required | The control. It gets the handlers and the ARIA attribute; its own handlers still run. |
 
 No wrapper is added around the control, so it keeps its place in a toolbar, a flex row or a table cell.
-
-## Accessibility
-
-- `mode="label"` sets `aria-labelledby` on the control: a screen reader says the tooltip as its name, once. Keep an `aria-label` too, with the same word: it names the button before the script runs.
-- `mode="description"` sets `aria-describedby`: the name first, then the tooltip.
-- A disabled button gets no events, so no tooltip. Say why it is disabled on the page instead.
-
-## Writing it
-
-- A few words, no full stop for a name: “Download”, “Share”.
-- A description is one sentence at most: “Last synced 2 minutes ago, by the desktop app”.
-- Never repeat what the control already says.
-
-## Without Preact
-
-```html
-<button class="b-btn" data-variant="secondary" data-icon aria-label="Download" aria-labelledby="tip-1">…</button>
-<div class="b-tooltip" id="tip-1" role="tooltip" popover="manual">Download</div>
-```
-
-The CSS draws the box and its fade. Opening it (`showPopover()`), placing it (`top` and `left` in viewport pixels), the delays and Escape are yours to write; the Preact component does all of it.

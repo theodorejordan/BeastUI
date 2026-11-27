@@ -13,7 +13,22 @@ export const components = { pre: Pre };
 
 <p class="docs-lead">An action the user takes. Four variants, an icon-only square, and two ways to be unavailable.</p>
 
-## Variants
+<Demo html={`
+<button class="b-btn" data-variant="primary" type="button">Upload 3 files</button>
+<button class="b-btn" data-variant="secondary" type="button">Cancel</button>
+`} />
+
+## When to use it
+
+For an action on this page: save, upload, delete, open a modal.
+
+- Going to another page: use a link. A screen reader says "link", and the browser lets the user open it in a new tab.
+- One choice out of a few, shown side by side: use a [segmented control](../segmented-control/).
+- Several actions used rarely: put them in a [menu](../menu/), behind one button.
+
+## Examples
+
+### Variants
 
 `secondary` is the default: an outline, the everyday button. Keep `primary` for the one main action of a view.
 
@@ -24,7 +39,7 @@ export const components = { pre: Pre };
 <button class="b-btn" data-variant="danger" type="button">Delete</button>
 `} />
 
-## With an icon
+### With an icon
 
 An icon before the label gets a slightly smaller inset, so it looks as evenly padded as text. An icon-only button becomes a square of the control height, and **must** have an `aria-label`: without it, a screen reader only says "button".
 
@@ -38,7 +53,7 @@ An icon before the label gets a slightly smaller inset, so it looks as evenly pa
 </button>
 `} />
 
-## Disabled and pending
+### Disabled and pending
 
 Two different states, two different looks.
 
@@ -57,6 +72,26 @@ Try it: the save below takes two seconds.
 <figure class="docs-demo">
   <div class="docs-demo__stage"><PendingDemo client:visible /></div>
 </figure>
+
+## Accessibility
+
+- It is a native `<button>`: Enter and Space work, and it is in the tab order.
+- The focus ring is 2 px, 2 px away from the edge, in every theme.
+- Disabled and pending are announced as unavailable (`disabled` or `aria-disabled`). While pending, the content is only made transparent, so the button keeps its name: a screen reader still says "Save".
+- Under "reduce motion", the playful theme's press movement is turned off, and the spinner turns three times slower instead of stopping: a still spinner would no longer say "running".
+
+## In HTML
+
+For apps without Preact. Nothing else is needed than `@beastui/css`.
+
+| Markup | Effect |
+|---|---|
+| `class="b-btn"` | The button. |
+| `data-variant="primary \| secondary \| quiet \| danger"` | The variant. |
+| `data-icon` | Icon only: a square. |
+| `disabled` | Unavailable: the button fades. |
+| `aria-disabled="true"` | The same look, but still focusable. |
+| `data-pending` | With `aria-disabled`: an action is running. A spinner replaces the content, the variant stays. |
 
 ## In Preact
 
@@ -78,23 +113,3 @@ import { Button } from '@beastui/preact';
 | `class` | `string` | | Extra classes, after `b-btn`. |
 
 Every other prop goes to the native `<button>`, `ref` included.
-
-## The CSS contract
-
-For apps without Preact. Nothing else is needed than `@beastui/css`.
-
-| Markup | Effect |
-|---|---|
-| `class="b-btn"` | The button. |
-| `data-variant="primary \| secondary \| quiet \| danger"` | The variant. |
-| `data-icon` | Icon only: a square. |
-| `disabled` | Unavailable: the button fades. |
-| `aria-disabled="true"` | The same look, but still focusable. |
-| `data-pending` | With `aria-disabled`: an action is running. A spinner replaces the content, the variant stays. |
-
-## Accessibility
-
-- It is a native `<button>`: Enter and Space work, and it is in the tab order.
-- The focus ring is 2 px, 2 px away from the edge, in every theme.
-- Disabled and pending are announced as unavailable (`disabled` or `aria-disabled`). While pending, the content is only made transparent, so the button keeps its name: a screen reader still says "Save".
-- Under "reduce motion", the playful theme's press movement is turned off, and the spinner turns three times slower instead of stopping: a still spinner would no longer say "running".

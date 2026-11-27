@@ -7,7 +7,7 @@ test('disabled buttons leave the tab order; pending ones stay in it', async ({ p
   const buttons = stage.locator('.b-btn');
   await buttons.nth(0).evaluate((b) => (b.closest('.docs-demo') as HTMLElement).scrollIntoView());
   // Start from the element before the demo, then Tab through it.
-  await page.locator('h2', { hasText: 'Disabled and pending' }).evaluate((h) => {
+  await page.locator('h3', { hasText: 'Disabled and pending' }).evaluate((h) => {
     h.setAttribute('tabindex', '-1');
     h.focus();
   });

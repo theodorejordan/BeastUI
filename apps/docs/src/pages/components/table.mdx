@@ -14,6 +14,10 @@ export const components = { pre: Pre };
 
 <p class="docs-lead">Rows of things with the same fields: sort them, select some, act on them.</p>
 
+<figure class="docs-demo">
+  <div class="docs-demo__stage"><TableDemo client:visible /></div>
+</figure>
+
 ## When to use it
 
 For a list people compare or scan by column: files, orders, users.
@@ -21,17 +25,60 @@ For a list people compare or scan by column: files, orders, users.
 - A nested list (folders): use a [tree](../tree/).
 - A few settings: use fields, not a table.
 
-## Live
+## Examples
+
+### Detail row
+
+More about one row, without leaving the table: its details, a preview, a short form. A click on the row opens a second row under it, which takes the full width and can hold anything. Cmd+click and Shift+click still select.
+
+<figure class="docs-demo">
+  <div class="docs-demo__stage"><TableDetailDemo client:visible /></div>
+</figure>
+
+No arrow column: the row is the target. Its name is a `<button class="b-table-open">`, plain text to the eye, so the keyboard reaches it and a screen reader hears "collapsed" or "expanded". `useDetail` keeps the open rows and wires the rest: `data-open` on the open row, `aria-expanded` and `aria-controls` on its button, `data-detail` and the matching id on the row under it.
+
+```tsx
+import { useDetail, useSelection } from '@beastui/preact';
+
+const detail = useDetail();
+
+<tr {...detail.row(f.id)} {...selection.row(f.id, () => detail.toggle(f.id))}>
+  <td data-select>…</td>
+  <td data-grow>
+    {/* No handler: its click, mouse or Enter, is the row's. */}
+    <button class="b-table-open" {...detail.button(f.id)}>{f.name}</button>
+  </td>
+  …
+</tr>
+{detail.isOpen(f.id) && (
+  <tr {...detail.detail(f.id)}><td colSpan={4}>…</td></tr>
+)}
+```
+
+Without checkboxes, put the click on the `<tr>`: `onClick={() => detail.toggle(f.id)}`.
+
+**One open, or several.** One at a time by default: a table is for scanning, and each open detail pushes the rows under it down, so with several open the list stops looking like a list. Several make sense when people open details to compare them: `useDetail({ multiple: true })`. Either way the open rows are kept by id, so a sort or a filter keeps them open.
+
+For a long form or a whole page about the row, use a side panel instead.
+
+## How it behaves
 
 - **Sort:** click a header for ascending, again for descending, a third time for the original order.
 - **Select:** tick a box, or click anywhere in its cell. Shift+click selects every row between it and the last one clicked. Cmd+click (Ctrl+click on Windows) adds or removes one row.
 - **Open:** a plain click on a row is the app's: here it opens the file.
 
-<figure class="docs-demo">
-  <div class="docs-demo__stage"><TableDemo client:visible /></div>
-</figure>
+## Accessibility
 
-## Plain
+- A native table: a screen reader moves by row and column and reads each cell with its header.
+- A sortable header is a `<button>`, and only the sorted column carries `aria-sort` ([WAI-ARIA APG, sortable table](https://www.w3.org/WAI/ARIA/apg/patterns/table/examples/sortable-table/)).
+- Each row's checkbox needs a name: `aria-label="Select Contract.pdf"`.
+- Selected is a ticked box **and** an edge, never colour alone.
+- Tab moves through the controls. Arrow keys between cells would be the [grid pattern](https://www.w3.org/WAI/ARIA/apg/patterns/grid/), not built.
+- The row's open button is its name, a `<button>` with `aria-expanded`, and the detail row comes right after its row, so it is read next ([WAI-ARIA APG, disclosure](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/)).
+- Shift+click and Cmd+click are mouse shortcuts; every row can also be ticked one by one with the keyboard.
+- Cut text keeps its full value in `title`, so it shows on hover.
+
+## In HTML
 
 A native `<table>`: no component needed. One column takes the room left with `data-grow` and cuts its text with an ellipsis; numbers align right with `data-align="end"`.
 
@@ -45,6 +92,22 @@ A native `<table>`: no component needed. One column takes the room left with `da
   </tbody>
 </table>
 `} />
+
+| Markup | Effect |
+|---|---|
+| `<table class="b-table">` | 36px rows (32 in `tool`), one line per cell, hairline dividers, tabular figures, a sticky header. |
+| `data-grow` on a column's cells | Takes the room left and shrinks first, with an ellipsis. The table fits its box. |
+| `data-align="end"` on a cell | Right-aligned: long numbers, so digits line up by place. |
+| `data-align="center"` on a cell | Centred: short values of one width, like a date or a duration. |
+| A `.b-btn` in a cell | The small control (24px, 20 in `tool`), so the row keeps air around it. |
+| `data-select` on a cell | The narrow checkbox column. |
+| `data-selected` on a `<tr>` | The hover tint, kept, and a bold edge on the left. |
+| A `<button class="b-table-open">` in a cell | The row's name as the button that opens its detail: plain text, the focus ring goes round the row. |
+| `data-open` on a `<tr>` | The open row: the hover tint, kept, and no line under it. |
+| `data-detail` on a `<tr>`, one cell with `colspan` | The detail row: the same tint, any height, text wraps. With a checkbox column, it starts under the name. Under a selected row, the bold edge runs down it. |
+| `aria-sort` on a `<th>` with a `<button class="b-table-sort">` | A sortable header and its arrow. |
+| `--b-table-gap` | The gap between two columns, the same everywhere: 16px. |
+| `--b-table-ground` | The header's fill. Set it to `var(--b-color-surface-card)` on a card. |
 
 ## In Preact
 
@@ -83,44 +146,6 @@ const selection = useSelection(sort.rows.map((t) => t.id));
   </tbody>
 </table>
 ```
-
-## Detail row
-
-More about one row, without leaving the table: its details, a preview, a short form. A click on the row opens a second row under it, which takes the full width and can hold anything. Cmd+click and Shift+click still select.
-
-<figure class="docs-demo">
-  <div class="docs-demo__stage"><TableDetailDemo client:visible /></div>
-</figure>
-
-No arrow column: the row is the target. Its name is a `<button class="b-table-open">`, plain text to the eye, so the keyboard reaches it and a screen reader hears "collapsed" or "expanded". `useDetail` keeps the open rows and wires the rest: `data-open` on the open row, `aria-expanded` and `aria-controls` on its button, `data-detail` and the matching id on the row under it.
-
-```tsx
-import { useDetail, useSelection } from '@beastui/preact';
-
-const detail = useDetail();
-
-<tr {...detail.row(f.id)} {...selection.row(f.id, () => detail.toggle(f.id))}>
-  <td data-select>…</td>
-  <td data-grow>
-    {/* No handler: its click, mouse or Enter, is the row's. */}
-    <button class="b-table-open" {...detail.button(f.id)}>{f.name}</button>
-  </td>
-  …
-</tr>
-{detail.isOpen(f.id) && (
-  <tr {...detail.detail(f.id)}><td colSpan={4}>…</td></tr>
-)}
-```
-
-Without checkboxes, put the click on the `<tr>`: `onClick={() => detail.toggle(f.id)}`.
-
-### One open, or several
-
-One at a time by default: a table is for scanning, and each open detail pushes the rows under it down, so with several open the list stops looking like a list. Several make sense when people open details to compare them: `useDetail({ multiple: true })`. Either way the open rows are kept by id, so a sort or a filter keeps them open.
-
-For a long form or a whole page about the row, use a side panel instead.
-
-## API
 
 ### useSort
 
@@ -197,32 +222,3 @@ A comparator for text, the way people expect it: case and accents ignored, "File
 ```ts
 compareText(a: string, b: string): number
 ```
-
-## The CSS contract
-
-| Markup | Effect |
-|---|---|
-| `<table class="b-table">` | 36px rows (32 in `tool`), one line per cell, hairline dividers, tabular figures, a sticky header. |
-| `data-grow` on a column's cells | Takes the room left and shrinks first, with an ellipsis. The table fits its box. |
-| `data-align="end"` on a cell | Right-aligned: long numbers, so digits line up by place. |
-| `data-align="center"` on a cell | Centred: short values of one width, like a date or a duration. |
-| A `.b-btn` in a cell | The small control (24px, 20 in `tool`), so the row keeps air around it. |
-| `data-select` on a cell | The narrow checkbox column. |
-| `data-selected` on a `<tr>` | The hover tint, kept, and a bold edge on the left. |
-| A `<button class="b-table-open">` in a cell | The row's name as the button that opens its detail: plain text, the focus ring goes round the row. |
-| `data-open` on a `<tr>` | The open row: the hover tint, kept, and no line under it. |
-| `data-detail` on a `<tr>`, one cell with `colspan` | The detail row: the same tint, any height, text wraps. With a checkbox column, it starts under the name. Under a selected row, the bold edge runs down it. |
-| `aria-sort` on a `<th>` with a `<button class="b-table-sort">` | A sortable header and its arrow. |
-| `--b-table-gap` | The gap between two columns, the same everywhere: 16px. |
-| `--b-table-ground` | The header's fill. Set it to `var(--b-color-surface-card)` on a card. |
-
-## Accessibility
-
-- A native table: a screen reader moves by row and column and reads each cell with its header.
-- A sortable header is a `<button>`, and only the sorted column carries `aria-sort` ([WAI-ARIA APG, sortable table](https://www.w3.org/WAI/ARIA/apg/patterns/table/examples/sortable-table/)).
-- Each row's checkbox needs a name: `aria-label="Select Contract.pdf"`.
-- Selected is a ticked box **and** an edge, never colour alone.
-- Tab moves through the controls. Arrow keys between cells would be the [grid pattern](https://www.w3.org/WAI/ARIA/apg/patterns/grid/), not built.
-- The row's open button is its name, a `<button>` with `aria-expanded`, and the detail row comes right after its row, so it is read next ([WAI-ARIA APG, disclosure](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/)).
-- Shift+click and Cmd+click are mouse shortcuts; every row can also be ticked one by one with the keyboard.
-- Cut text keeps its full value in `title`, so it shows on hover.

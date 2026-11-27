@@ -13,6 +13,10 @@ export const components = { pre: Pre };
 
 <p class="docs-lead">Turn a setting on or off, applied at once.</p>
 
+<figure class="docs-demo">
+  <div class="docs-demo__stage"><SwitchDemo client:visible /></div>
+</figure>
+
 ## When to use it
 
 For a setting that takes effect the moment it is flipped, with no Save button: show hidden files, sync over mobile data.
@@ -20,13 +24,9 @@ For a setting that takes effect the moment it is flipped, with no Save button: s
 - An option that waits for the form's Save, or rows to pick: use a [checkbox](../checkbox/).
 - One choice out of several: use a [radio group](../radio/) or a [segmented control](../segmented-control/).
 
-## Live
+## Examples
 
-<figure class="docs-demo">
-  <div class="docs-demo__stage"><SwitchDemo client:visible /></div>
-</figure>
-
-## With a label
+### With a label
 
 The whole label is the target, as for the checkbox. A long label wraps; the switch stays on the first line.
 
@@ -37,7 +37,7 @@ The whole label is the target, as for the checkbox. A long label wraps; the swit
 </label>
 `} />
 
-## Alone
+### Alone
 
 Without a visible label, the switch needs `aria-label`.
 
@@ -46,7 +46,7 @@ Without a visible label, the switch needs `aria-label`.
 <input class="b-switch" type="checkbox" role="switch" aria-label="Share Budget.xlsx" checked />
 `} />
 
-## Disabled
+### Disabled
 
 <Demo html={`
 <label class="b-check">
@@ -54,6 +54,21 @@ Without a visible label, the switch needs `aria-label`.
   <span>Show hidden files</span>
 </label>
 `} />
+
+## Accessibility
+
+- A native checkbox: Space flips it, and the form sends it like any checkbox.
+- `role="switch"` makes a screen reader say "on" and "off" ([APG, Switch](https://www.w3.org/WAI/ARIA/apg/patterns/switch/)).
+- On is an ink track **and** the thumb's place, never colour alone.
+
+## In HTML
+
+| Markup | Effect |
+|---|---|
+| `<input class="b-switch" type="checkbox" role="switch">` | The 28 × 16 track and its thumb. |
+| `<label class="b-check">` around the switch and a `<span>` | The label row, 8px from the switch. |
+| `checked` | An ink track, the thumb at the far end (the start, right to left). |
+| `disabled` | The switch (and its label) fade. |
 
 ## In Preact
 
@@ -71,18 +86,3 @@ import { Switch } from '@beastui/preact';
 | `onChange` | `(checked: boolean) => void` | required | Apply the setting here, at once. |
 | `children` | `ComponentChildren` | | The label. Without it, `aria-label` is required. |
 | `class` | `string` | | Extra classes, on the label (or the switch when alone). |
-
-## The CSS contract
-
-| Markup | Effect |
-|---|---|
-| `<input class="b-switch" type="checkbox" role="switch">` | The 28 × 16 track and its thumb. |
-| `<label class="b-check">` around the switch and a `<span>` | The label row, 8px from the switch. |
-| `checked` | An ink track, the thumb at the far end (the start, right to left). |
-| `disabled` | The switch (and its label) fade. |
-
-## Accessibility
-
-- A native checkbox: Space flips it, and the form sends it like any checkbox.
-- `role="switch"` makes a screen reader say "on" and "off" ([APG, Switch](https://www.w3.org/WAI/ARIA/apg/patterns/switch/)).
-- On is an ink track **and** the thumb's place, never colour alone.
