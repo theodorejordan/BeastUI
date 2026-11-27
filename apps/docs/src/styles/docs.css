@@ -37,7 +37,7 @@
     margin-inline-end: auto;
     color: inherit;
     /* The mark never changes with the theme (owner): core's display face, at fixed values. */
-    font: 300 20px / 28px 'Outfit', system-ui, sans-serif;
+    font: 300 24px / 32px 'Outfit', system-ui, sans-serif;
     text-decoration: none;
   }
   .docs-switch {
@@ -105,9 +105,15 @@
     margin-block-start: var(--b-gap-stack);
   }
   /* Running text keeps a reading measure: 45 to 75 characters a line (Bringhurst). Demos, code
-     and tables take the full column. */
+     and tables take the full column. Read at 16/24, a reading size; the UI around stays at 14. */
   .docs-main > :is(p, ul, ol) {
     max-width: 72ch;
+    font-size: var(--b-font-size-3);
+    line-height: var(--b-font-line-height-3);
+  }
+  /* Code in the running text follows it: 14px in 16px, a mono face reads larger than its size. */
+  .docs-main > :is(p, ul, ol) code {
+    font-size: 0.875em;
   }
   /* A chapter: a line above it and the section gap, so it reads as a new start. */
   .docs-main > h2 {
@@ -303,8 +309,10 @@
   h2:where(:not(.b-modal-title)) {
     font: var(--b-font-weight-medium) var(--b-font-size-4) / var(--b-font-line-height-4) var(--b-font-family-ui);
   }
+  /* 18px, off the scale on purpose: the running text reads at 16 and h2 sits at 20, and the
+     scale has no step between them. The docs' own exception, like the mark (owner, 2026-11-27). */
   h3 {
-    font: var(--b-font-weight-medium) var(--b-font-size-3) / var(--b-font-line-height-3) var(--b-font-family-ui);
+    font: var(--b-font-weight-medium) 18px / var(--b-font-line-height-3) var(--b-font-family-ui);
   }
   .docs-lead {
     color: var(--b-color-text-muted);
